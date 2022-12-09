@@ -111,6 +111,42 @@ public class MainActivity extends FragmentActivity {
 
         startService();
         startStateCheckTimer();
+        activateMeasurements();
+    }
+
+    private void activateMeasurements(){
+
+        MainActivity.protocolHeartRate.setValue(true);
+        String sharedPreferencesVariableHeartRateBoolean = "HeartRate";
+        sharedPreferences.edit().putBoolean(sharedPreferencesVariableHeartRateBoolean, true).apply();
+        Date now = new Date();
+        String msg = checkedToCommunicationValue(true) + "," + now.getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE;
+        String dataPath = citizenHubPath + MainActivity.nodeIdString;
+        new SendMessage(dataPath, msg).start();
+
+        MainActivity.protocolSteps.setValue(true);
+        String sharedPreferencesVariableStepsBoolean = "Steps";
+        sharedPreferences.edit().putBoolean(sharedPreferencesVariableStepsBoolean, true).apply();
+        Date nowSteps = new Date();
+        String msgSteps = checkedToCommunicationValue(true) + "," + nowSteps.getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT;
+        String dataPathSteps = citizenHubPath + MainActivity.nodeIdString;
+        new SendMessage(dataPathSteps, msgSteps).start();
+
+        if(MainActivity.sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null){
+            MainActivity.sensorManager.registerListener(MainActivity.heartRateListener, MainActivity.heartSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        if (MainActivity.sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null) {
+            MainActivity.sensorManager.registerListener(MainActivity.stepsListener, MainActivity.stepsCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+    }
+
+    private int checkedToCommunicationValue(boolean isChecked){
+        if (isChecked)
+            return 100001;
+        else
+            return 100000;
     }
 
     public void startService() {
