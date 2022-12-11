@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
@@ -31,25 +29,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="25dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_heart" />
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_heart"/>
 
                 <TextView
                     android:id="@+id/textViewHeartRateValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|top"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
                     android:text="--" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/imageViewCitizenHub"
                 android:layout_width="60dp"
-                android:layout_height="105dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/img_citizen_hub_logo_dark_icon" />
 
@@ -66,9 +64,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="25dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_steps" />
 
                 <TextView
@@ -76,8 +74,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|top"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"
                     android:text="--" />
             </LinearLayout>
 
@@ -86,20 +84,19 @@
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="140dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:src="@drawable/img_citizen_hub_logo_dark_name" />
 
         <TextView
-            android:id="@+id/textViewSwipe"
+            android:id="@+id/textViewInitializing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
             android:fontFamily="@font/primus_regular"
             android:gravity="center"
-            android:text="Initializing..."
-            android:textSize="16sp" />
+            android:text="Initializing sensors..."
+            android:textSize="14sp" />
 
     </LinearLayout>
 </ScrollView>

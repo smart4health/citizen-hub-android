@@ -1,6 +1,7 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import pt.uninova.s4h.citizenhub.R;
 public class DataDisplayFragment extends Fragment {
 
     LinearLayout heartRateDataLayout, stepsDataLayout;
-    TextView heartRateDataTextView, stepsDataTextView, swipeLeft;
+    TextView heartRateDataTextView, stepsDataTextView, textBelow;
     View view;
     ImageView heartIcon;
 
@@ -30,10 +31,19 @@ public class DataDisplayFragment extends Fragment {
         heartRateDataTextView = view.findViewById(R.id.textViewHeartRateValue);
         stepsDataLayout = view.findViewById(R.id.stepsDataLayout);
         stepsDataTextView = view.findViewById(R.id.textViewStepsValue);
-        swipeLeft = view.findViewById(R.id.textViewSwipe);
+        textBelow = view.findViewById(R.id.textViewInitializing);
         heartIcon = view.findViewById(R.id.imageIconHeartRate);
 
         enableObservers();
+
+        new CountDownTimer(10000,1000){
+            @Override
+            public void onTick(long millisecondsUntilDone) {}
+            @Override
+            public void onFinish() {
+                textBelow.setVisibility(View.INVISIBLE);
+            }
+        }.start();
 
         return view;
     }
@@ -41,22 +51,6 @@ public class DataDisplayFragment extends Fragment {
     private void enableObservers(){
         MainActivity.listenHeartRateAverage.observe((LifecycleOwner) view.getContext(), s -> heartRateDataTextView.setText(s));
         MainActivity.listenSteps.observe((LifecycleOwner) view.getContext(), s -> stepsDataTextView.setText(s));
-        MainActivity.protocolHeartRate.observe((LifecycleOwner) view.getContext(), aBoolean -> {
-            if (aBoolean) {
-                heartRateDataLayout.setVisibility(View.VISIBLE);
-                swipeLeft.setVisibility(View.GONE);
-            } else {
-                heartRateDataLayout.setVisibility(View.INVISIBLE);
-            }
-        });
-        MainActivity.protocolSteps.observe((LifecycleOwner) view.getContext(), aBoolean -> {
-            if (aBoolean) {
-                stepsDataLayout.setVisibility(View.VISIBLE);
-                swipeLeft.setVisibility(View.GONE);
-            } else {
-                stepsDataLayout.setVisibility(View.INVISIBLE);
-            }
-        });
         MainActivity.heartRateIcon.observe((LifecycleOwner) view.getContext(), s -> heartIcon.setImageResource(s));
     }
 }
