@@ -36,6 +36,7 @@ public class DataDisplayFragment extends Fragment {
 
         enableObservers();
 
+        //TODO change to when receiving first message (HR)
         new CountDownTimer(10000,1000){
             @Override
             public void onTick(long millisecondsUntilDone) {}
