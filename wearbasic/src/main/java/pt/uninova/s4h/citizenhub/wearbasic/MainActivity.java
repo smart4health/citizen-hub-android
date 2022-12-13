@@ -220,6 +220,11 @@ public class MainActivity extends FragmentActivity {
         };
     }
 
+    public void disableListeners(){
+        sensorManager.unregisterListener(heartRateListener);
+        sensorManager.unregisterListener(stepsListener);
+    }
+
     private void checkIfConnected(){
         long currentTime = System.currentTimeMillis();
         if(currentTime-lastTimeConnected > (30 * 1000)){
