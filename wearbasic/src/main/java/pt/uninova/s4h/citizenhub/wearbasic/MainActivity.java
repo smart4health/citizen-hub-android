@@ -117,14 +117,18 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void activateMeasurements(){
-        if(MainActivity.sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null){
-            MainActivity.sensorManager.registerListener(MainActivity.heartRateListener, MainActivity.heartSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null){
+            sensorManager.registerListener(heartRateListener, heartSensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        if (MainActivity.sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null) {
-            MainActivity.sensorManager.registerListener(MainActivity.stepsListener, MainActivity.stepsCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null) {
+            sensorManager.registerListener(stepsListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
+    }
 
+    private void disableMeasurements(){
+        sensorManager.unregisterListener(heartRateListener);
+        sensorManager.unregisterListener(stepsListener);
     }
 
     public void startService() {
@@ -218,11 +222,6 @@ public class MainActivity extends FragmentActivity {
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
-    }
-
-    public void disableListeners(){
-        sensorManager.unregisterListener(heartRateListener);
-        sensorManager.unregisterListener(stepsListener);
     }
 
     private void checkIfConnected(){
