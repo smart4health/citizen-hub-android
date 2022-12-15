@@ -36,7 +36,7 @@ public class DataDisplayFragment extends Fragment {
 
         enableObservers();
 
-        //TODO change to when receiving first message (HR)
+        /*
         new CountDownTimer(10000,1000){
             @Override
             public void onTick(long millisecondsUntilDone) {}
@@ -45,12 +45,18 @@ public class DataDisplayFragment extends Fragment {
                 textBelow.setVisibility(View.INVISIBLE);
             }
         }.start();
+        */
 
         return view;
     }
 
     private void enableObservers(){
-        MainActivity.listenHeartRateAverage.observe((LifecycleOwner) view.getContext(), s -> heartRateDataTextView.setText(s));
+        MainActivity.listenHeartRateAverage.observe((LifecycleOwner) view.getContext(), s ->
+        {
+            heartRateDataTextView.setText(s);
+            textBelow.setVisibility(View.INVISIBLE);
+        }
+        );
         MainActivity.listenSteps.observe((LifecycleOwner) view.getContext(), s -> stepsDataTextView.setText(s));
         MainActivity.heartRateIcon.observe((LifecycleOwner) view.getContext(), s -> heartIcon.setImageResource(s));
     }
