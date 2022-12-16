@@ -1,7 +1,6 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,18 +34,6 @@ public class DataDisplayFragment extends Fragment {
         heartIcon = view.findViewById(R.id.imageIconHeartRate);
 
         enableObservers();
-
-        /*
-        new CountDownTimer(10000,1000){
-            @Override
-            public void onTick(long millisecondsUntilDone) {}
-            @Override
-            public void onFinish() {
-                textBelow.setVisibility(View.INVISIBLE);
-            }
-        }.start();
-        */
-
         return view;
     }
 
