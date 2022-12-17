@@ -78,13 +78,8 @@ public class MainActivity extends FragmentActivity {
 
         sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
-        IntentFilter newFilter = new IntentFilter(Intent.ACTION_SEND);
-        Receiver messageReceiver = new Receiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
-
         permissionRequest();
         sensorsManager();
-        setDevice();
 
         sampleRepository = new SampleRepository(getApplication());
         heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
@@ -99,7 +94,6 @@ public class MainActivity extends FragmentActivity {
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
         viewPager.setCurrentItem(0);
 
-        new SendMessage(citizenHubPath + nodeIdString, "Ready");
 
         final LocalDate now = LocalDate.now();
         stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
@@ -165,7 +159,6 @@ public class MainActivity extends FragmentActivity {
                         checkIfConnected();
 
                         listenHeartRate.setValue(String.valueOf(event.values[0]));
-                        new SendMessage(citizenHubPath + nodeIdString, event.values[0] + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
 
                         Sample sample = new Sample(wearDevice, new HeartRateMeasurement((int) event.values[0]));
                         sampleRepository.create(sample, sampleId -> {
@@ -212,7 +205,6 @@ public class MainActivity extends FragmentActivity {
                             else
                                 stepsTotal = 0;
                             listenSteps.postValue(String.valueOf(stepsTotal));
-                            new SendMessage(citizenHubPath + nodeIdString, stepsTotal + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
                         });
                     }
                 }
@@ -291,72 +283,6 @@ public class MainActivity extends FragmentActivity {
         sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
         stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-    }
-
-    private void setDevice() {
-        new Thread(() -> {
-            try {
-                Node localNode = Tasks.await(Wearable.getNodeClient(getApplicationContext()).getLocalNode());
-                nodeIdString = localNode.getId();
-                wearDevice = new Device(nodeIdString, "WearOS Device", 2);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public static class Receiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("WearOSHeartRateProtocol")) {
-                protocolHeartRate.setValue(Boolean.parseBoolean(intent.getStringExtra("WearOSHeartRateProtocol")));
-                if (Boolean.parseBoolean(intent.getStringExtra("WearOSHeartRateProtocol")))
-                    protocolPhoneConnected.setValue(true);
-            }
-            if (intent.hasExtra("WearOSStepsProtocol")) {
-                protocolSteps.setValue(Boolean.parseBoolean(intent.getStringExtra("WearOSStepsProtocol")));
-                if (Boolean.parseBoolean(intent.getStringExtra("WearOSStepsProtocol")))
-                    protocolPhoneConnected.setValue(true);
-            }
-            if (intent.hasExtra("WearOSAgent")) {
-                protocolPhoneConnected.setValue(Boolean.parseBoolean(intent.getStringExtra("WearOSAgent")));
-            }
-            if (intent.hasExtra("WearOSConnected"))
-            {
-                lastTimeConnected = System.currentTimeMillis();
-            }
-        }
-    }
-
-    class SendMessage extends Thread {
-        String path;
-        String message;
-
-        SendMessage(String p, String msg) {
-            path = p;
-            message = msg;
-        }
-
-        public void run() {
-            Task<List<Node>> nodeListTask = Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-            try {
-                Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
-                Node n = Tasks.await(t);
-                nodeIdString = n.getId();
-                System.out.println("Node associated: " + n.getId() + " Message: " + message);
-                List<Node> nodes = Tasks.await(nodeListTask);
-                for (Node node : nodes) {
-                    Task<Integer> sendMessageTask = Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
-                    try {
-                        Tasks.await(sendMessageTask);
-                    } catch (ExecutionException | InterruptedException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            } catch (ExecutionException | InterruptedException exception) {
-                exception.printStackTrace();
-            }
-        }
     }
 
     @Override
