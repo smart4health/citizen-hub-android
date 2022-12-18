@@ -156,8 +156,6 @@ public class MainActivity extends FragmentActivity {
             public void onSensorChanged(SensorEvent event) {
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     if (Boolean.TRUE.equals(protocolHeartRate.getValue())) {
-                        checkIfConnected();
-
                         listenHeartRate.setValue(String.valueOf(event.values[0]));
 
                         Sample sample = new Sample(wearDevice, new HeartRateMeasurement((int) event.values[0]));
@@ -172,8 +170,7 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
+            public void onAccuracyChanged(Sensor sensor, int i) {}
         };
 
         stepsListener = new SensorEventListener() {
@@ -181,7 +178,6 @@ public class MainActivity extends FragmentActivity {
             public void onSensorChanged(SensorEvent event) {
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     if (Boolean.TRUE.equals(protocolSteps.getValue())) {
-                        checkIfConnected();
                         int stepCounter = (int) event.values[0];
                         final LocalDate now = LocalDate.now();
 
@@ -211,19 +207,8 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
+            public void onAccuracyChanged(Sensor sensor, int i) {}
         };
-    }
-
-    private void checkIfConnected(){
-        long currentTime = System.currentTimeMillis();
-        if(currentTime-lastTimeConnected > (30 * 1000)){
-            protocolPhoneConnected.setValue(false);
-        }
-        else{
-            protocolPhoneConnected.setValue(true);
-        }
     }
 
     private Boolean resetSteps(int steps) {
