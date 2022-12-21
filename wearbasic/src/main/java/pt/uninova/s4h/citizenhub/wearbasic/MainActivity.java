@@ -1,7 +1,10 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -12,6 +15,9 @@ import pt.uninova.s4h.citizenhub.R;
 
 public class MainActivity extends FragmentActivity {
 
+    SensorManager sensorManager;
+    Sensor stepsCounterSensor, heartSensor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +25,8 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         permissionRequest();
+        sensorsManager();
+        //TODO startListeners();
     }
 
     @Override
@@ -36,5 +44,11 @@ public class MainActivity extends FragmentActivity {
                 requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 22);
             }
         }
+    }
+
+    private void sensorsManager() {
+        sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
+        heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+        stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
     }
 }
