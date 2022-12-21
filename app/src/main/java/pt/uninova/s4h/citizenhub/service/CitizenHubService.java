@@ -91,17 +91,19 @@ public class CitizenHubService extends LifecycleService {
 
     private SharedPreferences preferences;
     private int devices;
+
     public CitizenHubService() {
         this.binder = new Binder();
     }
 
-    private Notification buildNotification() {
+    private Notification buildNotification(int devicesConnected, int totalDevices) {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new NotificationCompat.Builder(this, Objects.requireNonNull(CitizenHubService.class.getCanonicalName()))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(NOTIFICATION_TITLE)
-                .setContentText(String.format("Collecting data from \"%d\" devices\n", devices)).setNumber(devices)
+                .setOnlyAlertOnce(true)
+                .setContentText(String.format(getString(R.string.service_notification_message), devicesConnected, totalDevices))
                 .build();
 
         notification.contentIntent = PendingIntent.getActivity(this, 0,
@@ -140,6 +142,19 @@ public class CitizenHubService extends LifecycleService {
         }
 
         throw new Exception();
+    }
+
+    private int getConnectedDevices() {
+        if (orchestrator != null) {
+            int i = 0;
+            for (Device device : orchestrator.getDevices()
+            ) {
+                if (orchestrator.getAgent(device).getState() == Agent.AGENT_STATE_ENABLED) {
+                    i++;
+                }
+            }
+            return i;
+        } else return 0;
     }
 
     private void initAgentOrchestrator() {
@@ -187,6 +202,12 @@ public class CitizenHubService extends LifecycleService {
         orchestrator = new AgentOrchestrator(agentFactoryMap, databaseWriter);
         orchestrator.addListener(new AgentOrchestratorListener() {
             @Override
+            public void onAgentStateChanged(Agent agent) {
+                int i = 0;
+                updateNotification(getConnectedDevices());
+            }
+
+            @Override
             public void onAgentAttached(Device device, Agent agent) {
                 deviceRepository.updateAgent(device.getAddress(), agent.getClass().getCanonicalName());
 
@@ -216,9 +237,10 @@ public class CitizenHubService extends LifecycleService {
 
                 if (agent != null) {
                     agent.removeAllAgentListeners();
-                }
 
+                }
                 deviceRepository.delete(device.getAddress());
+
             }
         });
 
@@ -254,6 +276,18 @@ public class CitizenHubService extends LifecycleService {
         return binder;
     }
 
+    private void updateNotification(int devices) {
+        Notification notification;
+        if (orchestrator.getDevices() != null) {
+            notification = buildNotification(devices, orchestrator.getDevices().size());
+        } else {
+            notification = buildNotification(devices, 0);
+
+        }
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, notification);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -261,19 +295,21 @@ public class CitizenHubService extends LifecycleService {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         createNotificationChannel();
 
-        startForeground(1, buildNotification());
+        startForeground(1, buildNotification(0, 0));
         wearOSMessageService = new WearOSMessageService();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         initAgentOrchestrator();
-        devices = orchestrator.getDevices().size();
+        updateNotification(getConnectedDevices());
         initWorkOrchestrator();
+
     }
 
     private void initWorkOrchestrator() {
         workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(this));
         //workOrchestrator.enqueueSmartBearUploader();
+
         //workOrchestrator.enqueueSmart4HealthUploader();
     }
 
