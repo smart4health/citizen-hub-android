@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub.service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import care.data4life.sdk.Data4LifeClient;
 import care.data4life.sdk.lang.D4LException;
 import care.data4life.sdk.listener.ResultListener;
+import pt.uninova.s4h.citizenhub.MainActivity;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.WorkTimeRangeConverter;
 import pt.uninova.s4h.citizenhub.connectivity.Agent;
@@ -88,16 +90,24 @@ public class CitizenHubService extends LifecycleService {
     private WorkOrchestrator workOrchestrator;
 
     private SharedPreferences preferences;
-
+    private int devices;
     public CitizenHubService() {
         this.binder = new Binder();
     }
 
     private Notification buildNotification() {
-        return new NotificationCompat.Builder(this, Objects.requireNonNull(CitizenHubService.class.getCanonicalName()))
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(this, Objects.requireNonNull(CitizenHubService.class.getCanonicalName()))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(NOTIFICATION_TITLE)
+                .setContentText(String.format("Collecting data from \"%d\" devices\n", devices)).setNumber(devices)
                 .build();
+
+        notification.contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return notification;
     }
 
     private void createNotificationChannel() {
@@ -257,6 +267,7 @@ public class CitizenHubService extends LifecycleService {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         initAgentOrchestrator();
+        devices = orchestrator.getDevices().size();
         initWorkOrchestrator();
     }
 
