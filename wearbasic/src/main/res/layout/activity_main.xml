@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
@@ -16,13 +17,14 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/heartRateDataLayout"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:id="@+id/imageIconHeartRate"
@@ -43,7 +45,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/main_activity_no_measurement" />
-            </TextView>
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/imageViewCitizenHub"
@@ -53,13 +55,14 @@
                 android:src="@drawable/img_citizen_hub_logo_dark_icon"
                 android:contentDescription="@string/main_activity_content_description_app_icon"/>
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/stepsDataLayout"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:id="@+id/imageIconSteps"
@@ -80,7 +83,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="10dp"
                     android:text="@string/main_activity_no_measurement"  />
-            </TextView>
+            </LinearLayout>
 
         </LinearLayout>
 
