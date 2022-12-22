@@ -4,9 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -17,6 +21,8 @@ public class MainActivity extends FragmentActivity {
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
+    SensorEventListener sensorEventListener;
+    TextView heartRateText, stepsText, initializingSensors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +31,9 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         permissionRequest();
+        setViews();
         sensorsManager();
-        //TODO startListeners();
+        startListeners();
     }
 
     @Override
@@ -46,9 +53,32 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void setViews(){
+        heartRateText = findViewById(R.id.textViewHeartRateValue);
+        stepsText = findViewById(R.id.textViewStepsValue);
+        initializingSensors = findViewById(R.id.textViewInitializing);
+    }
+
     private void sensorsManager() {
         sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
         stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+    }
+
+    public void startListeners() {
+        sensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                initializingSensors.setVisibility(View.INVISIBLE);
+                if (event.sensor.getType() == Sensor.TYPE_HEART_RATE)
+                    heartRateText.setText(String.valueOf(event.values[0]));
+                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER)
+                    stepsText.setText(String.valueOf(event.values[0]));
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
     }
 }
