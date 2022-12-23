@@ -21,7 +21,7 @@ public class MainActivity extends FragmentActivity {
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
-    SensorEventListener sensorEventListener;
+    SensorEventListener stepsEventListener, heartRateEventListener;
     TextView heartRateText, stepsText, initializingSensors;
 
     @Override
@@ -66,19 +66,35 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void startListeners() {
-        sensorEventListener = new SensorEventListener() {
+        stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.INVISIBLE);
-                if (event.sensor.getType() == Sensor.TYPE_HEART_RATE)
-                    heartRateText.setText(String.valueOf(event.values[0]));
-                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER)
+                System.out.println("GOT SENSOR DATA: " + event.values[0]);
+                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf(event.values[0]));
+                }
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
+        heartRateEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                initializingSensors.setVisibility(View.INVISIBLE);
+                System.out.println("GOT SENSOR DATA: " + event.values[0]);
+                if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
+                    heartRateText.setText(String.valueOf(event.values[0]));
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+        sensorManager.registerListener(heartRateEventListener, heartSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 }
