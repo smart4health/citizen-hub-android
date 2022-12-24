@@ -70,9 +70,8 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.INVISIBLE);
-                System.out.println("GOT SENSOR DATA: " + event.values[0]);
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                    stepsText.setText(String.valueOf(event.values[0]));
+                    stepsText.setText(String.valueOf((int) event.values[0]));
                 }
             }
 
@@ -84,9 +83,8 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.INVISIBLE);
-                System.out.println("GOT SENSOR DATA: " + event.values[0]);
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-                    heartRateText.setText(String.valueOf(event.values[0]));
+                    heartRateText.setText(String.valueOf((int) event.values[0]));
                 }
             }
 
