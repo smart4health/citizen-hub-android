@@ -9,7 +9,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -22,7 +24,11 @@ public class MainActivity extends FragmentActivity {
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
+
+    long lastHeartRate;
+
     TextView heartRateText, stepsText, initializingSensors;
+    ImageView heartRateIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,8 @@ public class MainActivity extends FragmentActivity {
         setViews();
         sensorsManager();
         startListeners();
+
+        startTimerLastHeartRate();
     }
 
     @Override
@@ -85,6 +93,8 @@ public class MainActivity extends FragmentActivity {
                 initializingSensors.setVisibility(View.INVISIBLE);
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     heartRateText.setText(String.valueOf((int) event.values[0]));
+                    heartRateIcon.setImageResource(R.drawable.ic_heart);
+                    lastHeartRate = System.currentTimeMillis();
                 }
             }
 
@@ -94,5 +104,22 @@ public class MainActivity extends FragmentActivity {
         };
         sensorManager.registerListener(heartRateEventListener, heartSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    private void startTimerLastHeartRate(){
+        Handler handler = new Handler();
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                long currentTime = System.currentTimeMillis();
+                if(currentTime > (lastHeartRate + 5*60000))
+                {
+                    heartRateText.setText("--");
+                    heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
+                }
+                handler.postDelayed(this, 5*60000);
+            }
+        };
+        handler.post(run);
     }
 }
