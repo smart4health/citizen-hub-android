@@ -40,6 +40,7 @@ public class MainActivity extends FragmentActivity {
         setViews();
         sensorsManager();
         startListeners();
+        //TODO startService();
 
         startTimerLastHeartRate();
     }
