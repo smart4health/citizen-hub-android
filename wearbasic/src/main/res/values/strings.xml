@@ -6,4 +6,6 @@
     <string name="main_activity_content_description_icon_heart">White Heart Icon</string>
     <string name="main_activity_content_description_icon_steps">White Man Standing</string>
     <string name="main_activity_content_description_app_icon">Citizen Hub Logo</string>
+    <string name="notification_content_title">"Citizen Wear is Active"</string>
+    <string name="notification_connected_sensors">"2 Sensors are measuring"</string>
 </resources>

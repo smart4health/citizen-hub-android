@@ -66,6 +66,7 @@ public class MainActivity extends FragmentActivity {
         heartRateText = findViewById(R.id.textViewHeartRateValue);
         stepsText = findViewById(R.id.textViewStepsValue);
         initializingSensors = findViewById(R.id.textViewInitializing);
+        heartRateIcon = findViewById(R.id.imageIconHeartRate);
     }
 
     private void sensorsManager() {
