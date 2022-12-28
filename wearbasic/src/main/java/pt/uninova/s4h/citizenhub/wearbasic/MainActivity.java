@@ -2,6 +2,7 @@ package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,6 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +42,7 @@ public class MainActivity extends FragmentActivity {
         setViews();
         sensorsManager();
         startListeners();
-        //TODO startService();
+        startService();
 
         startTimerLastHeartRate();
     }
@@ -123,5 +125,13 @@ public class MainActivity extends FragmentActivity {
             }
         };
         handler.post(run);
+    }
+
+    public void startService() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
+            serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, 2));
+            ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
+        }, 10000);
     }
 }

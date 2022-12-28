@@ -25,6 +25,7 @@ public class ForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String input = intent.getStringExtra("inputExtra");
 
         NotificationChannel serviceChannel = new NotificationChannel(
                 CHANNEL_ID,
@@ -41,7 +42,7 @@ public class ForegroundService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.notification_content_title))
-                .setContentText(getString(R.string.notification_connected_sensors))
+                .setContentText(input)
                 .setSmallIcon(R.drawable.img_logo_figure)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
