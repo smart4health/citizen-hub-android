@@ -27,6 +27,7 @@ public class MainActivity extends FragmentActivity {
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
 
+    boolean sensorsMeasuring;
     long lastHeartRate;
 
     TextView heartRateText, stepsText, initializingSensors;
@@ -45,6 +46,7 @@ public class MainActivity extends FragmentActivity {
         startService();
 
         startTimerLastHeartRate();
+        listenersHandling();
     }
 
     @Override
@@ -108,6 +110,19 @@ public class MainActivity extends FragmentActivity {
         };
         sensorManager.registerListener(heartRateEventListener, heartSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorsMeasuring = true;
+
+        // change service message and set textview to sensors measuring
+        //TODO
+    }
+
+    private void stopListeners(){
+        sensorManager.unregisterListener(heartRateEventListener);
+        sensorManager.unregisterListener(stepsEventListener);
+        sensorsMeasuring = false;
+
+        // change service message and set textview to sensors not measuring or saving battery
+        //TODO
     }
 
     private void startTimerLastHeartRate(){
@@ -121,6 +136,21 @@ public class MainActivity extends FragmentActivity {
                     heartRateText.setText("--");
                     heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
                 }
+                handler.postDelayed(this, 5*60000);
+            }
+        };
+        handler.post(run);
+    }
+
+    private void listenersHandling(){
+        Handler handler = new Handler();
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                if(sensorsMeasuring)
+                    stopListeners();
+                else
+                    startListeners();
                 handler.postDelayed(this, 5*60000);
             }
         };
