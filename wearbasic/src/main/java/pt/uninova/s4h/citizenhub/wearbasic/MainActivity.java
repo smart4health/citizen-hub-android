@@ -27,10 +27,10 @@ public class MainActivity extends FragmentActivity {
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
 
-    boolean sensorsMeasuring;
+    boolean sensorsMeasuring, firstTime = true;
     long lastHeartRate;
 
-    TextView heartRateText, stepsText, initializingSensors;
+    TextView heartRateText, stepsText, initializingSensors, sensorsAreMeasuring;
     ImageView heartRateIcon;
 
     @Override
@@ -43,10 +43,11 @@ public class MainActivity extends FragmentActivity {
         setViews();
         sensorsManager();
         startListeners();
-        startService();
 
         startTimerLastHeartRate();
         listenersHandling();
+
+        //TODO Tap icon to measure HR (and then enable listeners again for 5 minutes)
     }
 
     @Override
@@ -70,6 +71,8 @@ public class MainActivity extends FragmentActivity {
         heartRateText = findViewById(R.id.textViewHeartRateValue);
         stepsText = findViewById(R.id.textViewStepsValue);
         initializingSensors = findViewById(R.id.textViewInitializing);
+        sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
+        sensorsAreMeasuring.setVisibility(View.GONE);
         heartRateIcon = findViewById(R.id.imageIconHeartRate);
     }
 
@@ -83,7 +86,7 @@ public class MainActivity extends FragmentActivity {
         stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                initializingSensors.setVisibility(View.INVISIBLE);
+                initializingSensors.setVisibility(View.GONE);
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf((int) event.values[0]));
                 }
@@ -96,7 +99,7 @@ public class MainActivity extends FragmentActivity {
         heartRateEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                initializingSensors.setVisibility(View.INVISIBLE);
+                initializingSensors.setVisibility(View.GONE);
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     heartRateText.setText(String.valueOf((int) event.values[0]));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
@@ -112,8 +115,9 @@ public class MainActivity extends FragmentActivity {
         sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorsMeasuring = true;
 
-        // change service message and set textview to sensors measuring
-        //TODO
+        startService(2);
+        sensorsAreMeasuring.setVisibility(View.VISIBLE);
+        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
     }
 
     private void stopListeners(){
@@ -121,8 +125,9 @@ public class MainActivity extends FragmentActivity {
         sensorManager.unregisterListener(stepsEventListener);
         sensorsMeasuring = false;
 
-        // change service message and set textview to sensors not measuring or saving battery
-        //TODO
+        startService(0);
+        sensorsAreMeasuring.setVisibility(View.VISIBLE);
+        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
     }
 
     private void startTimerLastHeartRate(){
@@ -147,7 +152,9 @@ public class MainActivity extends FragmentActivity {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                if(sensorsMeasuring)
+                if (firstTime)
+                    firstTime = false;
+                else if(sensorsMeasuring)
                     stopListeners();
                 else
                     startListeners();
@@ -157,10 +164,10 @@ public class MainActivity extends FragmentActivity {
         handler.post(run);
     }
 
-    public void startService() {
+    public void startService(int sensors) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
-            serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, 2));
+            serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, sensors));
             ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         }, 10000);
     }
