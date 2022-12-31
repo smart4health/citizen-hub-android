@@ -31,7 +31,7 @@ public class MainActivity extends FragmentActivity {
     long lastHeartRate;
 
     TextView heartRateText, stepsText, initializingSensors, sensorsAreMeasuring;
-    ImageView heartRateIcon;
+    ImageView heartRateIcon, citizenHubIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,6 @@ public class MainActivity extends FragmentActivity {
 
         startTimerLastHeartRate();
         listenersHandling();
-
-        //TODO Tap icon to measure HR (and then enable listeners again for 5 minutes)
     }
 
     @Override
@@ -74,6 +72,13 @@ public class MainActivity extends FragmentActivity {
         sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
         sensorsAreMeasuring.setVisibility(View.GONE);
         heartRateIcon = findViewById(R.id.imageIconHeartRate);
+        citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
+
+        //TODO test this
+        citizenHubIcon.setOnClickListener(view -> {
+            if (sensorsMeasuring)
+                startListeners();
+        });
     }
 
     private void sensorsManager() {
