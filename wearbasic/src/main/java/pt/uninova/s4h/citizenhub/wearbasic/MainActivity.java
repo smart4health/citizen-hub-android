@@ -74,9 +74,8 @@ public class MainActivity extends FragmentActivity {
         heartRateIcon = findViewById(R.id.imageIconHeartRate);
         citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
 
-        //TODO test this
         citizenHubIcon.setOnClickListener(view -> {
-            if (sensorsMeasuring)
+            if (!sensorsMeasuring)
                 startListeners();
         });
     }
@@ -146,7 +145,7 @@ public class MainActivity extends FragmentActivity {
                     heartRateText.setText("--");
                     heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
                 }
-                handler.postDelayed(this, 5*60000);
+                handler.postDelayed(this, 40000);
             }
         };
         handler.post(run);
@@ -163,7 +162,7 @@ public class MainActivity extends FragmentActivity {
                     stopListeners();
                 else
                     startListeners();
-                handler.postDelayed(this, 5*60000);
+                handler.postDelayed(this, 40000);
             }
         };
         handler.post(run);
