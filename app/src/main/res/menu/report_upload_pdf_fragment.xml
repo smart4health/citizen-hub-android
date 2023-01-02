@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/upload_pdf"
-        android:title="@string/report_upload"
+        android:title="Download PDF"
         app:showAsAction="never" />
 
 </menu>
