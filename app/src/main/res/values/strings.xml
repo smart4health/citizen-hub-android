@@ -4,37 +4,8 @@
     <string name="fragment_license_of_use_text_view_info">License of Use info</string>
     <string name="fragment_open_source_licenses_text_view_info">open source licenses</string>
 
-    <!-- content descriptions -->
-    <string name="content_description_activity_main_img_s4h_logo" translatable="false">TODO</string>
-    <string name="content_description_activity_main_side_logo" translatable="false">TODO</string>
-    <string name="content_description_citizen_hub_logo_without_text" translatable="false">citizen hub logo without text</string>
-    <string name="content_description_fragment_device_list_item_image_device" translatable="false">TODO</string>
-    <string name="content_description_fragment_device_list_item_img_settings" translatable="false">TODO</string>
-    <string name="content_description_fragment_logout_imageView_s4h" translatable="false">Smart4Health</string>
-    <string name="content_description_fragment_pairing_guide_image" translatable="false">Pairing Guide Image</string>
-    <string name="content_description_fragment_report_master_logo" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_ic_heartbeat" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_image_view_calories" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_image_view_distance" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_image_view_heart_rate" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_image_view_posture" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_image_view_steps" translatable="false">TODO</string>
-    <string name="content_description_fragment_summary_img_caloriess" translatable="false">TODO</string>
-    <string name="content_description_slide_screen_left_arrow" translatable="false">left arrow</string>
-    <string name="content_description_slide_screen_right_arrow" translatable="false">content description right arrow</string>
-    <string name="content_description_splash_activity_ind_circle" translatable="false">TODO</string>
-    <string name="content_descrition_citizen_hub_logo_without_text" translatable="false">citizen hub logo without text</string>
-    <string name="content_descrition_splash_activity_ind_circle" translatable="false">TODO</string>
-
-    <string name="citizen_hub_logo_with_text">logo with text</string>
-    <string name="app_name">Citizen Hub</string>
-
     <!-- Search Dialog -->
-    <string name="dialog_connection_bluetooth_textview">Bluetooth</string>
-    <string name="dialog_connection_button_submit">Search</string>
     <string name="dialog_connection_search_text">Please select the method of connection compatible with your device</string>
-    <string name="dialog_connection_search_title">Method of Connection</string>
-    <string name="dialog_connection_wearos_textview">WearOS</string>
 
     <string name="fragment_configuration_text_view_address">%1$s</string>
     <string name="fragment_configuration_text_view_name">%1$s</string>
@@ -43,38 +14,29 @@
     <string name="fragment_presentation_text">Presentation</string>
 
     <string name="fragment_logout_button_logOut">log out</string>
-    <string name="fragment_logout_imageView_s4h_contentDescription" translatable="false">Smart4Health</string>
     <string name="fragment_logout_label">Logout</string>
     <string name="fragment_logout_textView_logOut_text">You will be logged out from the Smart4Health platform.\n\nYou won\'t be able to use Citizen Hub until you log in again.</string>
 
-    <string name="fragment_pairing_guide_button_connect_text">Connect to a device</string>
-    <string name="fragment_pairing_guide_button_skip_text">Skip</string>
-    <string name="fragment_pairing_guide_image_description">Pairing Guide Image</string>
-    <string name="fragment_pairing_guide_text">Pairing guide</string>
-
     <string name="fragment_privacy_policy_label">Privacy Policy</string>+
-    <string name="fragment_privacy_policy_text_view_info">Privacy Policy Info</string>
 
     <!-- <string name="fragment_summary_text_view_lumbar_text">Duration: %1$s s\nScore: %2$.2f %%\n Repetitions: %3$d</string> -->
     <string name="layout_list_item_feature_unknown_feature">unknown enabledMeasurementRecord</string>
     <string name="slide_screen_skip">continue</string>
     <string name="slide_screen_text_placeholder">placeholder for each layout</string>
     <string name="slide_screen_welcome_text">Welcome</string>
-    <string name="fragment_lumbar_extension_training_label">Low Back Program</string>
     <string name="fragment_report_detail_title_date_day_month">10 June</string>
     <string name="fragment_report_detail_title_date_year">2021</string>
-    <string name="fragment_report_label">Daily Activity Reports</string>
     <string name="fragment_report_text_view_no_data_summary">You don\'t seem to have any data for today.\n\nDo you have your devices connected?</string>
     <!-- -->
     <string name="dialog_do_not_show_this_message_again_text">Don\'t show this message again</string>
-    <string name="drawer_accounts_title">Accounts</string>
     <string-array name="empty_array" />
     <string name="open_source_licenses_fragment_label">Open Source Licenses</string>
 
     <!-- Model 2 -->
+    <string name="app_name">Citizen Hub</string>
+    <string name="citizen_hub_logo_with_text">logo with text</string>
 
     <!-- About Fragment Strings -->
-    <string name="fragment_about_label">About</string>
     <string name="fragment_about_button_text_licenses_of_use">terms and conditions</string>
     <string name="fragment_about_button_text_privacy_policy_button">privacy policy</string>
     <string name="fragment_about_developedBy"><![CDATA[Developed by]]></string>
@@ -111,6 +73,22 @@
     <string name="date_month_12">December</string>
     <string name="fragment_report_master_select_a_day">Select a Day</string>
 
+    <!-- Content Descriptions -->
+    <string name="content_description_activity_main_img_s4h_logo" translatable="false">TODO</string>
+    <string name="content_description_activity_main_side_logo" translatable="false">TODO</string>
+    <string name="content_description_citizen_hub_logo_without_text" translatable="false">citizen hub logo without text</string>
+    <string name="content_description_fragment_logout_imageView_s4h" translatable="false">Smart4Health</string>
+    <string name="content_description_fragment_pairing_guide_image" translatable="false">Pairing Guide Image</string>
+    <string name="content_description_fragment_report_master_logo" translatable="false">TODO</string>
+    <string name="content_description_fragment_summary_ic_heartbeat" translatable="false">TODO</string>
+    <string name="content_description_fragment_summary_image_view_distance" translatable="false">TODO</string>
+    <string name="content_description_fragment_summary_image_view_posture" translatable="false">TODO</string>
+    <string name="content_description_fragment_summary_image_view_steps" translatable="false">TODO</string>
+    <string name="content_description_fragment_summary_img_caloriess" translatable="false">TODO</string>
+    <string name="content_description_slide_screen_left_arrow" translatable="false">left arrow</string>
+    <string name="content_description_slide_screen_right_arrow" translatable="false">content description right arrow</string>
+    <string name="content_description_splash_activity_ind_circle" translatable="false">TODO</string>
+
     <!-- Device Fragment Strings -->
     <string name="menu_fragment_device_list_search_title">Search</string>
     <string name="fragment_device_list_item_text_view_title">Title</string>
@@ -121,8 +99,17 @@
     <string name="fragment_device_search_label">Device Search…</string>
     <string name="fragment_device_configuration_add_loading_features_text">Loading device features…</string>
 
-    <!-- Main / Summary / Today's Activity Fragment Strings -->
+    <!-- Drawer Strings -->
     <string name="fragment_summary_label">Today\'s Activity</string>
+    <string name="fragment_report_label">Daily Activity Reports</string>
+    <string name="fragment_lumbar_extension_training_label">Low Back Program</string>
+    <string name="label_devices">Devices</string>
+    <string name="fragment_settings_label">Settings</string>
+    <string name="drawer_smart4health_title">Smart4Health Platform</string>
+    <string name="drawer_accounts_title">Accounts</string>
+    <string name="fragment_about_label">About</string>
+
+    <!-- Main / Summary / Today's Activity Fragment Strings -->
     <string name="fragment_report_text_view_no_data_summary_nodevices">You don\'t seem to have devices connected.\n\nHave you checked the Devices section on the side menu?</string>
     <string name="fragment_summary_text_activity">Activity</string>
     <string name="fragment_summary_text_view_steps_text">Steps: %1$.0f steps</string>
@@ -152,6 +139,11 @@
     <string name="medex_fragment_explanation_textview">Press the button below to find the machine you trained on.</string>
     <string name="fragment_medex_button_search">search</string>
     <string name="medex_fragment_explanation2">If you are not a medex user or want to hide this content, you can always change it in the settings.</string>
+
+    <!-- Pairing Guide Strings -->
+    <string name="fragment_pairing_guide_button_connect_text">Connect to a device</string>
+    <string name="fragment_pairing_guide_button_skip_text">Skip</string>
+    <string name="fragment_pairing_guide_text">Pairing guide</string>
 
     <!-- Report Strings -->
     <string name="report_footer">The information included in this report is provided without any representations or warranties, express or implied. If you have any specific questions, you should consult your doctor or other professional healthcare provider.</string>
@@ -186,7 +178,6 @@
     <string name="report_lumbar_training_duration_label">Duration</string>
 
     <!-- Settings Fragment Strings -->
-    <string name="fragment_settings_label">Settings</string>
     <string name="fragment_settings_work_hours_title">Work Hours</string>
     <string name="fragment_settings_work_days">Work Days</string>
     <string name="fragment_settings_choose_work_days_text">Choose your working days</string>
@@ -215,6 +206,16 @@
         <item>7</item>
     </string-array>
 
+    <!-- Smart Bear Fragment Strings -->
+    <string name="fragment_smart_bear_account_fragment_advanced_settings_title">Advanced settings</string>
+    <string name="fragment_smart_bear_account_fragment_log_out_title">Log out</string>
+    <string name="menu_fragment_advanced_smart_bear_account_accept_title">Accept</string>
+    <string name="menu_fragment_advanced_smart_bear_account_gate_confirm_title">Confirm</string>
+    <string name="fragment_advanced_smart_bear_account_fragment_advanced_settings_text">Advanced Settings</string>
+    <string name="fragment_advanced_smart_bear_account_fragment_patient_id_text">Patient Id</string>
+    <string name="fragment_advanced_smart_bear_account_gate_security_text">Security</string>
+    <string name="fragment_advanced_smart_bear_account_gate_confirmation_code_text">Confirmation Code</string>
+
     <!-- Smart4Health Fragment Strings -->
     <string name="fragment_smart4health_account_fragment_logout_failure_toast">Failure to log out.</string>
     <string name="fragment_smart4health_account_log_in_title">Login</string>
@@ -228,16 +229,6 @@
     <string name="smart4health_heart_rate">Heart Rate</string>
     <string name="smart4health_lumbar_extension_training">Lumbar Extension Training</string>
     <string name="smart4health_posture">Posture</string>
-
-    <!-- Smart Bear Fragment Strings -->
-    <string name="fragment_smart_bear_account_fragment_advanced_settings_title">Advanced settings</string>
-    <string name="fragment_smart_bear_account_fragment_log_out_title">Log out</string>
-    <string name="fragment_advanced_smart_bear_account_fragment_advanced_settings_text">Advanced Settings</string>
-    <string name="fragment_advanced_smart_bear_account_fragment_patient_id_text">Patient Id</string>
-    <string name="fragment_advanced_smart_bear_account_gate_security_text">Security</string>
-    <string name="fragment_advanced_smart_bear_account_gate_confirmation_code_text">Confirmation Code</string>
-    <string name="menu_fragment_advanced_smart_bear_account_accept_title">Accept</string>
-    <string name="menu_fragment_advanced_smart_bear_account_gate_confirm_title">Confirm</string>
 
     <!-- Summary Detail Fragments Strings -->
     <string name="summary_detail_time_today">Today</string>
@@ -319,8 +310,6 @@
     <string name="welcome_slide_view_pager_connect_devices_message">Simplifying different devices connection into one app</string>
     <string name="welcome_slide_view_pager_connect_real_time_data_title">Real-time data</string>
     <string name="welcome_slide_view_pager_connect_real_time_data_message">Live visualisation and analytics on your health and wellbeing data!</string>
-
-    <string name="drawer_smart4health_title">Smart4Health Platform</string>
 
     <string name="heart_rate_title">Average heart rate</string>
     <string name="heart_rate_value" translatable="false">%1$.0f bpm</string>
@@ -416,7 +405,6 @@
     <string name="label_active_streams">Collected data</string>
     <string name="label_address">Address</string>
     <string name="label_advanced_settings">Advanced settings</string>
-    <string name="label_devices">Devices</string>
     <string name="label_name">Name</string>
     <string name="label_udi">Unique Device Identifier</string>
 
