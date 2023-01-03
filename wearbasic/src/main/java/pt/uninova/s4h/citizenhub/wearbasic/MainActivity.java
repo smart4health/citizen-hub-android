@@ -87,12 +87,14 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void startListeners() {
+        checkStepsReset();
         stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.GONE);
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf((int) event.values[0]));
+                    saveMeasurementeLocally();
                 }
             }
 
@@ -108,6 +110,7 @@ public class MainActivity extends FragmentActivity {
                     heartRateText.setText(String.valueOf((int) event.values[0]));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
                     lastHeartRate = System.currentTimeMillis();
+                    saveMeasurementeLocally();
                 }
             }
 
@@ -125,6 +128,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void stopListeners(){
+        checkStepsReset();
         sensorManager.unregisterListener(heartRateEventListener);
         sensorManager.unregisterListener(stepsEventListener);
         sensorsMeasuring = false;
@@ -166,6 +170,14 @@ public class MainActivity extends FragmentActivity {
             }
         };
         handler.post(run);
+    }
+
+    private void checkStepsReset(){
+        //TODO
+    }
+
+    private void saveMeasurementeLocally(){
+        //TODO
     }
 
     public void startService(int sensors) {
