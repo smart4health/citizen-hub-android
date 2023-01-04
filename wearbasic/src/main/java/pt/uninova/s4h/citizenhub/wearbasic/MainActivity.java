@@ -20,18 +20,22 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
 
 public class MainActivity extends FragmentActivity {
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
-
     boolean sensorsMeasuring, firstTime = true;
     long lastHeartRate;
-
     TextView heartRateText, stepsText, initializingSensors, sensorsAreMeasuring;
     ImageView heartRateIcon, citizenHubIcon;
+    StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
+    HeartRateMeasurementRepository heartRateMeasurementRepository;
+    SampleRepository sampleRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class MainActivity extends FragmentActivity {
 
         permissionRequest();
         setViews();
+        setDatabases();
         sensorsManager();
         startListeners();
 
@@ -78,6 +83,12 @@ public class MainActivity extends FragmentActivity {
             if (!sensorsMeasuring)
                 startListeners();
         });
+    }
+
+    private void setDatabases(){
+        sampleRepository = new SampleRepository(getApplication());
+        heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
+        stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
     }
 
     private void sensorsManager() {
