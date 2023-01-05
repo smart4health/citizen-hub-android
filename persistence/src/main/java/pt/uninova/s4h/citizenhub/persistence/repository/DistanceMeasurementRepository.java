@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.DistanceMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceMeasurementRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
+import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class DistanceMeasurementRepository {
 
@@ -35,4 +37,13 @@ public class DistanceMeasurementRepository {
     public LiveData<Double> getDistanceAllTypes (LocalDate localDate) {
         return distanceMeasurementDao.getDistanceAllTypes(localDate, localDate.plusDays(1));
     }
+
+    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectLastDay(localDate)));
+    }
+
+    public void readLastSevenDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate, days)));
+    }
+
 }
