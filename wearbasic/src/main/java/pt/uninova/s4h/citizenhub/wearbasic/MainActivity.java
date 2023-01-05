@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub.wearbasic;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -15,6 +16,9 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -36,12 +40,15 @@ public class MainActivity extends FragmentActivity {
     StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     HeartRateMeasurementRepository heartRateMeasurementRepository;
     SampleRepository sampleRepository;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
         permissionRequest();
         setViews();
@@ -98,14 +105,25 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void startListeners() {
-        checkStepsReset();
         stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.GONE);
+                int stepCounter = (int) event.values[0];
+
+                if (checkStepsReset(stepCounter)) {
+                    sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
+                    sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
+                }
+
+                if (stepCounter < getLastStepCounter())
+                    sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
+                sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
+                sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
+
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf((int) event.values[0]));
-                    saveMeasurementeLocally();
+                    saveMeasurementLocally();
                 }
             }
 
@@ -121,7 +139,7 @@ public class MainActivity extends FragmentActivity {
                     heartRateText.setText(String.valueOf((int) event.values[0]));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
                     lastHeartRate = System.currentTimeMillis();
-                    saveMeasurementeLocally();
+                    saveMeasurementLocally();
                 }
             }
 
@@ -139,7 +157,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void stopListeners(){
-        checkStepsReset();
         sensorManager.unregisterListener(heartRateEventListener);
         sensorManager.unregisterListener(stepsEventListener);
         sensorsMeasuring = false;
@@ -183,11 +200,35 @@ public class MainActivity extends FragmentActivity {
         handler.post(run);
     }
 
-    private void checkStepsReset(){
-        //TODO
+    private boolean checkStepsReset(int steps){
+        //TODO test this and rebooting device (if it keeps counted steps)
+        long recordedDate = sharedPreferences.getLong("dayLastStepCounter", 0);
+        if (recordedDate == 0) {
+            if (steps > 0)
+                sharedPreferences.edit().putInt("offsetStepCounter", -steps).apply();
+            return false;
+        }
+        Date dateRecorded = new Date(recordedDate);
+        Calendar calendarRecordedDate = Calendar.getInstance();
+        calendarRecordedDate.setTime(dateRecorded);
+
+        Date currentDay = new Date();
+        Calendar calendarCurrentDate = Calendar.getInstance();
+        calendarCurrentDate.setTime(currentDay);
+
+        return !(calendarRecordedDate.get(Calendar.DAY_OF_YEAR) == calendarCurrentDate.get(Calendar.DAY_OF_YEAR)
+                && calendarRecordedDate.get(Calendar.YEAR) == calendarCurrentDate.get(Calendar.YEAR));
     }
 
-    private void saveMeasurementeLocally(){
+    private int getOffsetStepCounter() {
+        return sharedPreferences.getInt("offsetStepCounter", 0);
+    }
+
+    private int getLastStepCounter() {
+        return sharedPreferences.getInt("lastStepCounter", 0);
+    }
+
+    private void saveMeasurementLocally(){
         //TODO
     }
 
