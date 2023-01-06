@@ -24,6 +24,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
+import pt.uninova.s4h.citizenhub.data.Sample;
+import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
@@ -123,7 +126,7 @@ public class MainActivity extends FragmentActivity {
 
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf((int) event.values[0]));
-                    saveMeasurementLocally();
+                    saveStepsMeasurementLocally();
                 }
             }
 
@@ -139,7 +142,7 @@ public class MainActivity extends FragmentActivity {
                     heartRateText.setText(String.valueOf((int) event.values[0]));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
                     lastHeartRate = System.currentTimeMillis();
-                    saveMeasurementLocally();
+                    saveHeartRateMeasurementLocally((int) event.values[0]);
                 }
             }
 
@@ -228,8 +231,18 @@ public class MainActivity extends FragmentActivity {
         return sharedPreferences.getInt("lastStepCounter", 0);
     }
 
-    private void saveMeasurementLocally(){
-        //TODO
+    private void saveStepsMeasurementLocally(){
+        //TODO change null for device
+        Sample sample = new Sample(null, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
+        sampleRepository.create(sample, sampleId -> {
+        });
+    }
+
+    private void saveHeartRateMeasurementLocally(int value){
+        //TODO change null for device
+        Sample sample = new Sample(null, new HeartRateMeasurement(value));
+        sampleRepository.create(sample, sampleId -> {
+        });
     }
 
     public void startService(int sensors) {
