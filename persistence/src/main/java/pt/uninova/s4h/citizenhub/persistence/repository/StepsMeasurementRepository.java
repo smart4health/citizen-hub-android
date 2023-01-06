@@ -43,7 +43,7 @@ public class StepsMeasurementRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectLastDay(localDate)));
     }
 
-    public void readLastSevenDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate, days)));
+    public void readSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 }

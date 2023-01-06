@@ -42,8 +42,8 @@ public class CaloriesMeasurementRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(caloriesMeasurementDao.selectLastDay(localDate)));
     }
 
-    public void readLastSevenDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(caloriesMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate, days)));
+    public void readSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(caloriesMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 
 }

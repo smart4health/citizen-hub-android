@@ -18,8 +18,11 @@ import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
+import pt.uninova.s4h.citizenhub.persistence.repository.CaloriesMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.CaloriesSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.DistanceMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.DistanceSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.StepsMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -153,56 +156,74 @@ public class SummaryDetailActivityFragment extends Fragment {
 
     private void dailySteps() {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_steps), 24);
-        StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
-        stepsSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
+        stepsMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        //StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
+        //stepsSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
     private void weeklySteps() {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_steps), 7);
-        StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
-        stepsSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
+        StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
+        stepsMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
+        //StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
+        //stepsSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
     }
 
     private void monthlySteps() {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_steps), 30);
-        StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
-        stepsSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
+        StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
+        stepsMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
+        //StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
+        //stepsSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
     }
 
     private void dailyDistance() {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_distance), 24);
-        DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
-        distanceSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
+        distanceMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        //DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
+        //distanceSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
     private void weeklyDistance() {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_distance), 7);
-        DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
-        distanceSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
+        DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
+        distanceMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
+        //DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
+        //distanceSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
     }
 
     private void monthlyDistance(){
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_distance), 30);
+        DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
+        distanceMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
         DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
         distanceSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
     }
 
     private void dailyCalories(){
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_calories), 24);
-        CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
-        caloriesSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());
+        caloriesMeasurementRepository.readLastDay(LocalDate.now(), observer);
+        //CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
+        //caloriesSnapshotMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
     private void weeklyCalories(){
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_calories), 7);
-        CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
-        caloriesSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
+        CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());
+        caloriesMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
+        //CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
+        //caloriesSnapshotMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
     }
 
     private void monthlyCalories(){
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_calories), 30);
-        CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
-        caloriesSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
+        CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());
+        caloriesMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
+        //CaloriesSnapshotMeasurementRepository caloriesSnapshotMeasurementRepository = new CaloriesSnapshotMeasurementRepository(getContext());
+        //caloriesSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
     }
 
 }
