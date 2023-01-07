@@ -17,13 +17,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.Wearable;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
@@ -44,6 +50,8 @@ public class MainActivity extends FragmentActivity {
     HeartRateMeasurementRepository heartRateMeasurementRepository;
     SampleRepository sampleRepository;
     SharedPreferences sharedPreferences;
+    Device wearDevice;
+    String nodeIdString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,7 @@ public class MainActivity extends FragmentActivity {
 
         permissionRequest();
         setViews();
+        setDevice();
         setDatabases();
         sensorsManager();
         startListeners();
@@ -232,17 +241,31 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void saveStepsMeasurementLocally(){
-        //TODO change null for device
-        Sample sample = new Sample(null, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
+        Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
         sampleRepository.create(sample, sampleId -> {
         });
     }
 
     private void saveHeartRateMeasurementLocally(int value){
-        //TODO change null for device
-        Sample sample = new Sample(null, new HeartRateMeasurement(value));
+        Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
         sampleRepository.create(sample, sampleId -> {
         });
+    }
+
+    private void sendMeasurementToPhoneApplication(){
+        //TODO, include communication check
+    }
+
+    private void setDevice() {
+        new Thread(() -> {
+            try {
+                Node localNode = Tasks.await(Wearable.getNodeClient(getApplicationContext()).getLocalNode());
+                nodeIdString = localNode.getId();
+                wearDevice = new Device(nodeIdString, "WearOS Device", 2);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void startService(int sensors) {
