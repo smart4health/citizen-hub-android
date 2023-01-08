@@ -122,6 +122,7 @@ public class MainActivity extends FragmentActivity {
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.GONE);
                 int stepCounter = (int) event.values[0];
+                System.out.println(stepCounter);
 
                 if (checkStepsReset(stepCounter)) {
                     sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
@@ -136,6 +137,7 @@ public class MainActivity extends FragmentActivity {
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     stepsText.setText(String.valueOf((int) event.values[0]));
                     saveStepsMeasurementLocally();
+                    sendStepsMeasurementToPhoneApplication();
                 }
             }
 
@@ -148,10 +150,14 @@ public class MainActivity extends FragmentActivity {
             public void onSensorChanged(SensorEvent event) {
                 initializingSensors.setVisibility(View.GONE);
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-                    heartRateText.setText(String.valueOf((int) event.values[0]));
+                    int heartRate = (int) event.values[0];
+                    System.out.println(heartRate);
+
+                    heartRateText.setText(String.valueOf(heartRate));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
                     lastHeartRate = System.currentTimeMillis();
-                    saveHeartRateMeasurementLocally((int) event.values[0]);
+                    saveHeartRateMeasurementLocally(heartRate);
+                    sendHeartRateMeasurementToPhoneApplication(heartRate);
                 }
             }
 
@@ -200,13 +206,17 @@ public class MainActivity extends FragmentActivity {
         Runnable run = new Runnable() {
             @Override
             public void run() {
+                int timeOn = 9*60000;
                 if (firstTime)
                     firstTime = false;
-                else if(sensorsMeasuring)
+                else if(sensorsMeasuring) {
                     stopListeners();
-                else
+                }
+                else {
                     startListeners();
-                handler.postDelayed(this, 5*60000);
+                    timeOn = 60000;
+                }
+                handler.postDelayed(this, timeOn);
             }
         };
         handler.post(run);
@@ -252,7 +262,11 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void sendMeasurementToPhoneApplication(){
+    private void sendStepsMeasurementToPhoneApplication(){
+        //TODO, include communication check
+    }
+
+    private void sendHeartRateMeasurementToPhoneApplication(int heartRate){
         //TODO, include communication check
     }
 
