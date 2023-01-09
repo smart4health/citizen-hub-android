@@ -17,12 +17,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import androidx.core.content.ContextCompat;
@@ -39,6 +41,8 @@ import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurement
 
 public class MainActivity extends FragmentActivity {
 
+    //TODO: still testing
+
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
@@ -52,6 +56,7 @@ public class MainActivity extends FragmentActivity {
     SharedPreferences sharedPreferences;
     Device wearDevice;
     String nodeIdString;
+    String citizenHubPath = "/citizenhub_";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,7 +228,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private boolean checkStepsReset(int steps){
-        //TODO test this and rebooting device (if it keeps counted steps)
         long recordedDate = sharedPreferences.getLong("dayLastStepCounter", 0);
         if (recordedDate == 0) {
             if (steps > 0)
@@ -262,14 +266,6 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void sendStepsMeasurementToPhoneApplication(){
-        //TODO, include communication check
-    }
-
-    private void sendHeartRateMeasurementToPhoneApplication(int heartRate){
-        //TODO, include communication check
-    }
-
     private void setDevice() {
         new Thread(() -> {
             try {
@@ -288,5 +284,45 @@ public class MainActivity extends FragmentActivity {
             serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, sensors));
             ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         }, 10000);
+    }
+
+    private void sendStepsMeasurementToPhoneApplication(){
+        int steps = getLastStepCounter() + getOffsetStepCounter();
+        new SendMessage(citizenHubPath + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+    }
+
+    private void sendHeartRateMeasurementToPhoneApplication(int heartRate){
+        new SendMessage(citizenHubPath + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+    }
+
+    class SendMessage extends Thread {
+        String path;
+        String message;
+
+        SendMessage(String p, String msg) {
+            path = p;
+            message = msg;
+        }
+
+        public void run() {
+            Task<List<Node>> nodeListTask = Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
+            try {
+                Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
+                Node n = Tasks.await(t);
+                nodeIdString = n.getId();
+                System.out.println("Node associated: " + n.getId() + " Message: " + message);
+                List<Node> nodes = Tasks.await(nodeListTask);
+                for (Node node : nodes) {
+                    Task<Integer> sendMessageTask = Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
+                    try {
+                        Tasks.await(sendMessageTask);
+                    } catch (ExecutionException | InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            } catch (ExecutionException | InterruptedException exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 }
