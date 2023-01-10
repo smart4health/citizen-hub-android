@@ -46,10 +46,10 @@ public class MainActivity extends FragmentActivity {
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
     SensorEventListener stepsEventListener, heartRateEventListener;
-    boolean sensorsMeasuring, firstTime = true;
+    boolean sensorsMeasuring = true, firstTime = true;
     long lastHeartRate;
-    TextView heartRateText, stepsText, initializingSensors, sensorsAreMeasuring;
-    ImageView heartRateIcon, citizenHubIcon;
+    TextView heartRateText, stepsText, sensorsAreMeasuring;
+    ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     HeartRateMeasurementRepository heartRateMeasurementRepository;
     SampleRepository sampleRepository;
@@ -97,13 +97,34 @@ public class MainActivity extends FragmentActivity {
     private void setViews(){
         heartRateText = findViewById(R.id.textViewHeartRateValue);
         stepsText = findViewById(R.id.textViewStepsValue);
-        initializingSensors = findViewById(R.id.textViewInitializing);
         sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
-        sensorsAreMeasuring.setVisibility(View.GONE);
+        sensorsAreMeasuring.setText("");
         heartRateIcon = findViewById(R.id.imageIconHeartRate);
+        stepsIcon = findViewById(R.id.imageIconSteps);
         citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
+        citizenHubNameLogo = findViewById(R.id.imageViewNameLogo);
 
+        setIconClickListeners();
+    }
+
+    private void setIconClickListeners(){
         citizenHubIcon.setOnClickListener(view -> {
+            System.out.println("tapped" + " " + sensorsMeasuring);
+            if (!sensorsMeasuring)
+                startListeners();
+        });
+        citizenHubNameLogo.setOnClickListener(view -> {
+            System.out.println("tapped" + " " + sensorsMeasuring);
+            if (!sensorsMeasuring)
+                startListeners();
+        });
+        heartRateIcon.setOnClickListener(view -> {
+            System.out.println("tapped" + " " + sensorsMeasuring);
+            if (!sensorsMeasuring)
+                startListeners();
+        });
+        stepsIcon.setOnClickListener(view -> {
+            System.out.println("tapped" + " " + sensorsMeasuring);
             if (!sensorsMeasuring)
                 startListeners();
         });
@@ -125,7 +146,7 @@ public class MainActivity extends FragmentActivity {
         stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                initializingSensors.setVisibility(View.GONE);
+                sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
                 int stepCounter = (int) event.values[0];
                 System.out.println(stepCounter);
 
@@ -153,7 +174,7 @@ public class MainActivity extends FragmentActivity {
         heartRateEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                initializingSensors.setVisibility(View.GONE);
+                sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     int heartRate = (int) event.values[0];
                     System.out.println(heartRate);
@@ -176,7 +197,8 @@ public class MainActivity extends FragmentActivity {
 
         startService(2);
         sensorsAreMeasuring.setVisibility(View.VISIBLE);
-        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+        sensorsAreMeasuring.setText(getString(R.string.main_activity_initializing_sensors));
+        System.out.println("Started Listeners.");
     }
 
     private void stopListeners(){
@@ -187,6 +209,7 @@ public class MainActivity extends FragmentActivity {
         startService(0);
         sensorsAreMeasuring.setVisibility(View.VISIBLE);
         sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+        System.out.println("Stopped Listeners.");
     }
 
     private void startTimerLastHeartRate(){
@@ -211,16 +234,16 @@ public class MainActivity extends FragmentActivity {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                int timeOn = 9*60000;
+                System.out.println("Listeners Handling");
+                int timeOn = 30000; //TODO change back to 60000
                 if (firstTime)
                     firstTime = false;
                 else if(sensorsMeasuring) {
                     stopListeners();
+                    timeOn = 40000; //TODO change back to 9 * 60000
                 }
-                else {
+                else
                     startListeners();
-                    timeOn = 60000;
-                }
                 handler.postDelayed(this, timeOn);
             }
         };

@@ -88,23 +88,13 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/imageViewNameLogo"
             android:layout_width="140dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:contentDescription="@string/main_activity_content_description_name_logo"
             android:src="@drawable/img_citizen_hub_logo_dark_name" />
-
-        <TextView
-            android:id="@+id/textViewInitializing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/primus_regular"
-            android:gravity="center"
-            android:text="@string/main_activity_initializing_sensors"
-            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/textViewSensorsMeasuring"
