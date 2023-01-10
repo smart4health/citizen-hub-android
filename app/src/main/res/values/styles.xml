@@ -68,7 +68,12 @@
         <item name="android:textColor">@color/colorS4HDarkBlue</item>
     </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar" />
+
+    <style name="Widget.MyApp.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="backgroundTint">@color/colorS4HGreen</item>
+    </style>
+
 
     <!--style name="ReportDetailTitle">
         <item name="android:layout_width">114.520dp</item>
@@ -659,4 +664,6 @@
         <item name="android:textSize">10sp</item>
         <item name="android:duplicateParentState">true</item>
     </style>
+
+
 </resources>
