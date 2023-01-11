@@ -28,15 +28,10 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
-import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
-
 import pt.uninova.s4h.citizenhub.report.Group;
 import pt.uninova.s4h.citizenhub.report.Item;
 import pt.uninova.s4h.citizenhub.report.MeasurementTypeLocalizedResource;
-import pt.uninova.s4h.citizenhub.report.PDFDailyReport;
-import pt.uninova.s4h.citizenhub.report.PDFWeeklyAndMonthlyReport;
 import pt.uninova.s4h.citizenhub.report.Report;
-import pt.uninova.s4h.citizenhub.report.ReportGenerator;
 import pt.uninova.s4h.citizenhub.ui.accounts.AccountsViewModel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -120,22 +115,22 @@ public class ReportDetailFragment extends Fragment {
                             }
                         };
 
-                        ReportRepository reportRepository = new ReportRepository(requireContext());
-                        DailyReportGenerator dailyReportGenerator = new DailyReportGenerator(requireContext());
-
-                        Observer<Report> observerWorkTimeReport = workTimeReport -> {
-                            Observer<Report> observerNotWorkTimeReport = notWorkTimeReport -> {
-                                if (workTimeReport.getGroups().size() > 0 || notWorkTimeReport.getGroups().size() > 0) {
-                                    DailyReportGeneratorPDFV2 dailyReportGeneratorPDF = new DailyReportGeneratorPDFV2(getContext());
-                                    dailyReportGeneratorPDF.generateCompleteReport(workTimeReport, notWorkTimeReport, getResources(), model.getCurrentDate(), measurementKindLocalization, observer);
-                                    //dailyReportGeneratorPDF.generateNotWorkTimeReportPDF(observer, getResources(), new ReportRepository(getContext()), model.getCurrentDate(), measurementKindLocalization);
-                                    //dailyReportGeneratorPDF.generateWorkTimeReportPDF(observer, getResources(), new ReportRepository(getContext()), model.getCurrentDate(), measurementKindLocalization);
-                                }
-                            };
-                            dailyReportGenerator.generateNotWorkTimeReport(reportRepository, model.getCurrentDate(), true, observerNotWorkTimeReport);
-                        };
-                        dailyReportGenerator.generateWorkTimeReport(reportRepository, model.getCurrentDate(), true, observerWorkTimeReport);
-                        return true;
+//                        ReportRepository reportRepository = new ReportRepository(requireContext());
+//                        DailyReportGenerator dailyReportGenerator = new DailyReportGenerator(requireContext());
+//
+//                        Observer<Report> observerWorkTimeReport = workTimeReport -> {
+//                            Observer<Report> observerNotWorkTimeReport = notWorkTimeReport -> {
+//                                if (workTimeReport.getGroups().size() > 0 || notWorkTimeReport.getGroups().size() > 0) {
+//                                    DailyReportGeneratorPDFV2 dailyReportGeneratorPDF = new DailyReportGeneratorPDFV2(getContext());
+//                                    dailyReportGeneratorPDF.generateCompleteReport(workTimeReport, notWorkTimeReport, getResources(), model.getCurrentDate(), measurementKindLocalization, observer);
+//                                    //dailyReportGeneratorPDF.generateNotWorkTimeReportPDF(observer, getResources(), new ReportRepository(getContext()), model.getCurrentDate(), measurementKindLocalization);
+//                                    //dailyReportGeneratorPDF.generateWorkTimeReportPDF(observer, getResources(), new ReportRepository(getContext()), model.getCurrentDate(), measurementKindLocalization);
+//                                }
+//                            };
+//                            dailyReportGenerator.generateNotWorkTimeReport(reportRepository, model.getCurrentDate(), true, observerNotWorkTimeReport);
+//                        };
+//                        dailyReportGenerator.generateWorkTimeReport(reportRepository, model.getCurrentDate(), true, observerWorkTimeReport);
+//                        return true;
                     }
 
                     return false;
