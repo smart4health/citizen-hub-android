@@ -10,4 +10,5 @@
     <string name="main_activity_content_description_app_icon">Citizen Hub Logo</string>
     <string name="notification_content_title">"Citizen Wear is Active"</string>
     <string name="notification_sensors_measuring">"%d sensors measuring"</string>
+    <string name="citizen_hub_path">"/citizenhub_"</string>
 </resources>

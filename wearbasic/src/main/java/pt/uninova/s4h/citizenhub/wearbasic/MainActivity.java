@@ -56,7 +56,6 @@ public class MainActivity extends FragmentActivity {
     SharedPreferences sharedPreferences;
     Device wearDevice;
     String nodeIdString;
-    String citizenHubPath = "/citizenhub_";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,12 +142,14 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void startListeners() {
+        System.out.println("Starting Listeners.");
         stepsEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
                 int stepCounter = (int) event.values[0];
-                System.out.println(stepCounter);
+                System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
 
                 if (checkStepsReset(stepCounter)) {
                     sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
@@ -177,7 +178,7 @@ public class MainActivity extends FragmentActivity {
                 sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     int heartRate = (int) event.values[0];
-                    System.out.println(heartRate);
+                    System.out.println("Heart Rate Measurement: " + heartRate);
 
                     heartRateText.setText(String.valueOf(heartRate));
                     heartRateIcon.setImageResource(R.drawable.ic_heart);
@@ -202,6 +203,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void stopListeners(){
+        System.out.println("Stopping Listeners.");
         sensorManager.unregisterListener(heartRateEventListener);
         sensorManager.unregisterListener(stepsEventListener);
         sensorsMeasuring = false;
@@ -220,7 +222,7 @@ public class MainActivity extends FragmentActivity {
                 long currentTime = System.currentTimeMillis();
                 if(currentTime > (lastHeartRate + 5*60000))
                 {
-                    heartRateText.setText("--");
+                    heartRateText.setText(getString(R.string.main_activity_no_measurement));
                     heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
                 }
                 handler.postDelayed(this, 5*60000);
@@ -251,7 +253,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private boolean checkStepsReset(int steps){
-        long recordedDate = sharedPreferences.getLong("dayLastStepCounter", 0);
+        long recordedDate = getDayLastStepCounter();
         if (recordedDate == 0) {
             if (steps > 0)
                 sharedPreferences.edit().putInt("offsetStepCounter", -steps).apply();
@@ -276,6 +278,8 @@ public class MainActivity extends FragmentActivity {
     private int getLastStepCounter() {
         return sharedPreferences.getInt("lastStepCounter", 0);
     }
+
+    private long getDayLastStepCounter(){return sharedPreferences.getLong("dayLastStepCounter", 0)}
 
     private void saveStepsMeasurementLocally(){
         Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
@@ -311,11 +315,11 @@ public class MainActivity extends FragmentActivity {
 
     private void sendStepsMeasurementToPhoneApplication(){
         int steps = getLastStepCounter() + getOffsetStepCounter();
-        new SendMessage(citizenHubPath + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
     }
 
     private void sendHeartRateMeasurementToPhoneApplication(int heartRate){
-        new SendMessage(citizenHubPath + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
     }
 
     class SendMessage extends Thread {
