@@ -72,6 +72,12 @@
 
     <style name="Widget.MyApp.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="backgroundTint">@color/colorS4HGreen</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_gravity">bottom|right</item>
+        <item name="android:contentDescription">fab</item>
+
     </style>
 
 
