@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity {
         setDevice();
         setDatabases();
         sensorsManager();
-        startListeners();
+        startListeners(true, true);
 
         startTimerLastHeartRate();
         listenersHandling();
@@ -141,57 +141,62 @@ public class MainActivity extends FragmentActivity {
         stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
     }
 
-    public void startListeners() {
-        System.out.println("Starting Listeners.");
-        stepsEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                int stepCounter = (int) event.values[0];
-                System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
+    public void startListeners(boolean heartRate, boolean steps) {
+        if (heartRate){
+            System.out.println("Starting HR Listener.");
+            heartRateEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+                    if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
+                        int heartRate = (int) event.values[0];
+                        System.out.println("Heart Rate Measurement: " + heartRate);
 
-                if (checkStepsReset(stepCounter)) {
-                    sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
-                    sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
+                        heartRateText.setText(String.valueOf(heartRate));
+                        heartRateIcon.setImageResource(R.drawable.ic_heart);
+                        lastHeartRate = System.currentTimeMillis();
+                        saveHeartRateMeasurementLocally(heartRate);
+                        sendHeartRateMeasurementToPhoneApplication(heartRate);
+                    }
                 }
 
-                if (stepCounter < getLastStepCounter())
-                    sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
-                sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
-                sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
-
-                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                    stepsText.setText(String.valueOf((int) event.values[0]));
-                    saveStepsMeasurementLocally();
-                    sendStepsMeasurementToPhoneApplication();
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
                 }
-            }
+            };
+        }
+        if (steps){
+            System.out.println("Starting Steps Listener.");
+            stepsEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+                    int stepCounter = (int) event.values[0];
+                    System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };
-        heartRateEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-                    int heartRate = (int) event.values[0];
-                    System.out.println("Heart Rate Measurement: " + heartRate);
+                    if (checkStepsReset(stepCounter)) {
+                        sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
+                        sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
+                    }
 
-                    heartRateText.setText(String.valueOf(heartRate));
-                    heartRateIcon.setImageResource(R.drawable.ic_heart);
-                    lastHeartRate = System.currentTimeMillis();
-                    saveHeartRateMeasurementLocally(heartRate);
-                    sendHeartRateMeasurementToPhoneApplication(heartRate);
+                    if (stepCounter < getLastStepCounter())
+                        sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
+                    sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
+                    sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
+
+                    if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+                        stepsText.setText(String.valueOf((int) event.values[0]));
+                        saveStepsMeasurementLocally();
+                        sendStepsMeasurementToPhoneApplication();
+                    }
                 }
-            }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+                }
+            };
+        }
         sensorManager.registerListener(heartRateEventListener, heartSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorsMeasuring = true;
@@ -202,16 +207,23 @@ public class MainActivity extends FragmentActivity {
         System.out.println("Started Listeners.");
     }
 
-    private void stopListeners(){
+    private void stopListeners(boolean heartRate, boolean steps){
         System.out.println("Stopping Listeners.");
-        sensorManager.unregisterListener(heartRateEventListener);
-        sensorManager.unregisterListener(stepsEventListener);
+        int numberOfSensors = 2;
+        if (heartRate){
+            sensorManager.unregisterListener(heartRateEventListener);
+            System.out.println("Stopped Heart Rate Listener.");
+            numberOfSensors--;
+        }
+        if (steps){
+            sensorManager.unregisterListener(stepsEventListener);
+            System.out.println("Stopped Steps Listener.");
+            numberOfSensors--;
+        }
         sensorsMeasuring = false;
-
-        startService(0);
+        startService(numberOfSensors);
         sensorsAreMeasuring.setVisibility(View.VISIBLE);
         sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
-        System.out.println("Stopped Listeners.");
     }
 
     private void startTimerLastHeartRate(){
@@ -237,15 +249,15 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void run() {
                 System.out.println("Listeners Handling");
-                int timeOn = 30000; //TODO change back to 60000
+                int timeOn = 60000;
                 if (firstTime)
                     firstTime = false;
                 else if(sensorsMeasuring) {
                     stopListeners();
-                    timeOn = 40000; //TODO change back to 9 * 60000
+                    timeOn = 60000; //TODO change back to 9 * 60000
                 }
                 else
-                    startListeners();
+                    startListeners(true, false);
                 handler.postDelayed(this, timeOn);
             }
         };
@@ -279,7 +291,7 @@ public class MainActivity extends FragmentActivity {
         return sharedPreferences.getInt("lastStepCounter", 0);
     }
 
-    private long getDayLastStepCounter(){return sharedPreferences.getLong("dayLastStepCounter", 0)}
+    private long getDayLastStepCounter(){return sharedPreferences.getLong("dayLastStepCounter", 0); }
 
     private void saveStepsMeasurementLocally(){
         Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
