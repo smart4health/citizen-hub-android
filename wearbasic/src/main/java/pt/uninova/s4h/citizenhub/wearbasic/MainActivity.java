@@ -110,22 +110,22 @@ public class MainActivity extends FragmentActivity {
         citizenHubIcon.setOnClickListener(view -> {
             System.out.println("tapped" + " " + sensorsMeasuring);
             if (!sensorsMeasuring)
-                startListeners();
+                startListeners(true, false);
         });
         citizenHubNameLogo.setOnClickListener(view -> {
             System.out.println("tapped" + " " + sensorsMeasuring);
             if (!sensorsMeasuring)
-                startListeners();
+                startListeners(true, false);
         });
         heartRateIcon.setOnClickListener(view -> {
             System.out.println("tapped" + " " + sensorsMeasuring);
             if (!sensorsMeasuring)
-                startListeners();
+                startListeners(true, false);
         });
         stepsIcon.setOnClickListener(view -> {
             System.out.println("tapped" + " " + sensorsMeasuring);
             if (!sensorsMeasuring)
-                startListeners();
+                startListeners(true, false);
         });
     }
 
@@ -253,7 +253,7 @@ public class MainActivity extends FragmentActivity {
                 if (firstTime)
                     firstTime = false;
                 else if(sensorsMeasuring) {
-                    stopListeners();
+                    stopListeners(true, false);
                     timeOn = 60000; //TODO change back to 9 * 60000
                 }
                 else
