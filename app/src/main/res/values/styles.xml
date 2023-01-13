@@ -71,7 +71,10 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar" />
 
     <style name="Widget.MyApp.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
-        <item name="backgroundTint">@color/colorS4HGreen</item>
+        <item name="backgroundTint">@color/colorS4HLightBlue</item>
+        <item name="android:fontFamily">@font/neo_sans_pro_bold</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">16dp</item>
