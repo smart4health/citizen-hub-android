@@ -170,23 +170,24 @@ public class MainActivity extends FragmentActivity {
             stepsEventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                    int stepCounter = (int) event.values[0];
-                    System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
-
-                    if (checkStepsReset(stepCounter)) {
-                        sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
-                        sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
-                    }
-
-                    if (stepCounter < getLastStepCounter())
-                        sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
-                    sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
-                    sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
-
                     if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                        stepsText.setText(String.valueOf((int) event.values[0]));
+                        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+                        int stepCounter = (int) event.values[0];
+                        System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
+
+                        if (checkStepsReset(stepCounter)) {
+                            sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
+                            sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
+                        }
+
+                        if (stepCounter < getLastStepCounter())
+                            sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
+                        sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
+                        sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
+
+                        int steps = getLastStepCounter() + getOffsetStepCounter();
+                        stepsText.setText(String.valueOf(steps));
                         saveStepsMeasurementLocally();
                         sendStepsMeasurementToPhoneApplication();
                     }
