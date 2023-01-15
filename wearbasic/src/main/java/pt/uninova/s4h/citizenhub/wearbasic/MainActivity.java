@@ -41,7 +41,7 @@ import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurement
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: still testing
+    //TODO: still testing -> day change, missing -> communication with phone
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
@@ -173,8 +173,10 @@ public class MainActivity extends FragmentActivity {
                     if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                         sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
                         int stepCounter = (int) event.values[0];
-                        System.out.println("Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter());
+                        int steps = getLastStepCounter() + getOffsetStepCounter();
+                        System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
+                                + " | Steps to show: " + steps);
 
                         if (checkStepsReset(stepCounter)) {
                             sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
@@ -186,7 +188,10 @@ public class MainActivity extends FragmentActivity {
                         sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
                         sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
 
-                        int steps = getLastStepCounter() + getOffsetStepCounter();
+                        steps = getLastStepCounter() + getOffsetStepCounter();
+                        System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
+                                + " | Steps to show: " + steps);
                         stepsText.setText(String.valueOf(steps));
                         saveStepsMeasurementLocally();
                         sendStepsMeasurementToPhoneApplication();
@@ -205,11 +210,9 @@ public class MainActivity extends FragmentActivity {
         startService(2);
         sensorsAreMeasuring.setVisibility(View.VISIBLE);
         sensorsAreMeasuring.setText(getString(R.string.main_activity_initializing_sensors));
-        System.out.println("Started Listeners.");
     }
 
     private void stopListeners(boolean heartRate, boolean steps){
-        System.out.println("Stopping Listeners.");
         int numberOfSensors = 2;
         if (heartRate){
             sensorManager.unregisterListener(heartRateEventListener);
