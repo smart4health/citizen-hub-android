@@ -17,18 +17,25 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
 import pt.uninova.s4h.citizenhub.R;
 
 public class AccountsFragment extends Fragment {
 
     private AccountsViewModel viewModel;
-
+    private ExtendedFloatingActionButton addButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.accounts_fragment, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(AccountsViewModel.class);
-
+        addButton = view.findViewById(R.id.addButton);
+        if (viewModel.hasSmart4HealthAccount() && viewModel.hasSmartBearAccount()) {
+            addButton.setVisibility(View.GONE);
+        } else {
+            addButton.setVisibility(View.VISIBLE);
+        }
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
