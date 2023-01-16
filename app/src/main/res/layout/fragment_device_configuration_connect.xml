@@ -15,7 +15,7 @@
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/button_connect"
                     style="@style/Widget.MyApp.ExtendedFloatingActionButton"
-                    android:text="Search"
+                    android:text="@string/fragment_device_connect_button"
                     android:theme="@style/AppTheme"
                     android:visibility="visible"
                     app:iconTint="@color/colorS4HWhite"
