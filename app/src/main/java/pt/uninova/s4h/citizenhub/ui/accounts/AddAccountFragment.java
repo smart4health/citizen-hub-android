@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.work.WorkManager;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
 import care.data4life.sdk.Data4LifeClient;
 import care.data4life.sdk.lang.D4LException;
 import care.data4life.sdk.listener.ResultListener;
@@ -22,6 +24,7 @@ import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.work.WorkOrchestrator;
 
 public class AddAccountFragment extends Fragment {
+    private ExtendedFloatingActionButton addButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,7 +34,8 @@ public class AddAccountFragment extends Fragment {
 
         View smart4HealthCard = view.findViewById(R.id.card_smart4health);
         View smartBearCard = view.findViewById(R.id.card_smartbear);
-
+        addButton = view.findViewById(R.id.addButton);
+        addButton.setVisibility(View.GONE);
         smart4HealthCard.setVisibility(!viewModel.hasSmart4HealthAccount() ? View.VISIBLE : View.GONE);
         smartBearCard.setVisibility(!viewModel.hasSmartBearAccount() ? View.VISIBLE : View.GONE);
 

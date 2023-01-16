@@ -31,6 +31,12 @@ public class AccountsFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(AccountsViewModel.class);
         addButton = view.findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(requireView()).navigate(AccountsFragmentDirections.actionAccountsFragmentToAddAccountFragment());
+            }
+        });
         if (viewModel.hasSmart4HealthAccount() && viewModel.hasSmartBearAccount()) {
             addButton.setVisibility(View.GONE);
         } else {
@@ -64,11 +70,12 @@ public class AccountsFragment extends Fragment {
 
         smart4HealthCard.setOnClickListener((View v) -> {
             NavController controller = Navigation.findNavController(requireView());
-
+            addButton.setVisibility(View.GONE);
             controller.navigate(AccountsFragmentDirections.actionAccountsFragmentToSmart4healthAccountFragment());
         });
 
         smartBearCard.setOnClickListener((View v) -> {
+            addButton.setVisibility(View.GONE);
             Navigation.findNavController(requireView()).navigate(AccountsFragmentDirections.actionAccountsFragmentToSmartBearAccountFragment());
         });
 
