@@ -41,7 +41,9 @@ import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurement
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: still testing -> day change, missing -> communication with phone
+    //TODO: still testing -> day change, missing -> communication with phone (use TAGS (check examples) -> samples)
+    //TODO listeners -> workers (3 servers: steps | HR | Sync with phone)
+    //TODO: experiment with DataClient to send data to phone
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
@@ -157,6 +159,8 @@ public class MainActivity extends FragmentActivity {
                         lastHeartRate = System.currentTimeMillis();
                         saveHeartRateMeasurementLocally(heartRate);
                         sendHeartRateMeasurementToPhoneApplication(heartRate);
+
+                        //TODO for each minute HR -> array -> avg value.
                     }
                 }
 
