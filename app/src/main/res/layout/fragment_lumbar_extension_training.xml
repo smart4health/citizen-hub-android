@@ -7,43 +7,55 @@
     android:orientation="vertical"
     android:padding="40dp">
 
-    <ImageView
-        android:id="@+id/citizen_hub_logo_with_text"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/DeviceConfiguration.LinearLayout">
+
+        <ImageView
+            android:id="@+id/citizen_hub_logo_with_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/citizen_hub_logo_with_text"
+            app:srcCompat="@drawable/logo_citizen_hub_no_text" />
+
+        <TextView
+            android:id="@+id/medex_fragment_text_view"
+            style="@style/AppTheme.Summary.Item.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/medex_fragment_explanation_textview" />
+
+        <TextView
+            android:id="@+id/medex_fragment_explanation_textview2"
+            style="@style/AppTheme.Summary.Item.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingHorizontal="20dp"
+            android:text="@string/medex_fragment_explanation2"
+            android:textSize="6pt"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="2"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/citizen_hub_logo_with_text"
-        app:srcCompat="@drawable/logo_citizen_hub_no_text" />
+        android:gravity="bottom|center"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/medex_fragment_text_view"
-        style="@style/AppTheme.Summary.Item.TextView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/medex_fragment_explanation_textview" />
-
-    <Button
-        android:id="@+id/medex_fragment_search_button"
-        style="@style/Widget.Citizen.Button"
-        android:layout_gravity="center"
-        android:background="@android:color/transparent"
-        android:text="@string/fragment_medex_button_search"
-        android:textAllCaps="false" />
-
-    <TextView
-        android:id="@+id/medex_fragment_explanation_textview2"
-        style="@style/AppTheme.Summary.Item.TextView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:paddingHorizontal="20dp"
-        android:text="@string/medex_fragment_explanation2"
-        android:textSize="6pt"
-        android:visibility="invisible" />
-
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/medex_fragment_search_button"
+            style="@style/Widget.MyApp.ExtendedFloatingActionButton"
+            android:text="Search"
+            android:theme="@style/AppTheme"
+            android:visibility="visible"
+            app:iconTint="@color/colorS4HWhite"
+            app:icon="@drawable/ic_baseline_add_24" />
+    </RelativeLayout>
 </LinearLayout>
