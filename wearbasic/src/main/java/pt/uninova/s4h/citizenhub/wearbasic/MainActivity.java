@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +43,11 @@ import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurement
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: still testing -> day change, missing -> communication with phone (use TAGS (check examples) -> samples)
-    //TODO listeners -> workers (3 servers: steps | HR | Sync with phone)
+    //TODO: still testing -> day change
+    //TODO listeners -> workers (3 workers: steps | HR | Sync with phone)
     //TODO: experiment with DataClient to send data to phone
+    //TODO: remake communication with phone (use TAGS (check examples) -> samples)
+    //TODO: remake phone communication with watch
 
     SensorManager sensorManager;
     Sensor stepsCounterSensor, heartSensor;
@@ -58,6 +62,7 @@ public class MainActivity extends FragmentActivity {
     SharedPreferences sharedPreferences;
     Device wearDevice;
     String nodeIdString;
+    ArrayList<Integer> currentHRmeasurements = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,10 +162,7 @@ public class MainActivity extends FragmentActivity {
                         heartRateText.setText(String.valueOf(heartRate));
                         heartRateIcon.setImageResource(R.drawable.ic_heart);
                         lastHeartRate = System.currentTimeMillis();
-                        saveHeartRateMeasurementLocally(heartRate);
-                        sendHeartRateMeasurementToPhoneApplication(heartRate);
-
-                        //TODO for each minute HR -> array -> avg value.
+                        currentHRmeasurements.add(heartRate);
                     }
                 }
 
@@ -222,6 +224,10 @@ public class MainActivity extends FragmentActivity {
             sensorManager.unregisterListener(heartRateEventListener);
             System.out.println("Stopped Heart Rate Listener.");
             numberOfSensors--;
+            System.out.println("Storing and sending Heart Rate values.");
+            saveHeartRateMeasurementLocally(currentHRmeasurements);
+            sendHeartRateMeasurementToPhoneApplication(currentHRmeasurements);
+            currentHRmeasurements.clear();
         }
         if (steps){
             sensorManager.unregisterListener(stepsEventListener);
@@ -307,8 +313,15 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void saveHeartRateMeasurementLocally(int value){
-        Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
+    private void saveHeartRateMeasurementLocally(ArrayList<Integer> measurements){
+        int total = 0, avg = 0;
+        for(int i = 0; i < measurements.size(); i++)
+        {
+            total += measurements.get(i);
+            avg = total / measurements.size();
+            System.out.println("The Average HR is: " + avg);
+        }
+        Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
         sampleRepository.create(sample, sampleId -> {
         });
     }
@@ -338,8 +351,15 @@ public class MainActivity extends FragmentActivity {
         new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
     }
 
-    private void sendHeartRateMeasurementToPhoneApplication(int heartRate){
-        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+    private void sendHeartRateMeasurementToPhoneApplication(ArrayList<Integer> measurements){
+        int total = 0, avg = 0;
+        for(int i = 0; i < measurements.size(); i++)
+        {
+            total += measurements.get(i);
+            avg = total / measurements.size();
+            System.out.println("The Average HR is: " + avg);
+        }
+        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, avg + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
     }
 
     class SendMessage extends Thread {
