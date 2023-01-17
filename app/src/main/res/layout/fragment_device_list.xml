@@ -87,7 +87,7 @@
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/searchButton"
             style="@style/Widget.MyApp.ExtendedFloatingActionButton"
-            android:text="Search"
+            android:text="@string/search_label"
             android:theme="@style/AppTheme"
             android:visibility="visible"
             app:iconTint="@color/colorS4HWhite"

@@ -12,7 +12,7 @@
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_connect"
         style="@style/Widget.MyApp.ExtendedFloatingActionButton"
-        android:text="@string/fragment_device_connect_button"
+        android:text="@string/connect_label"
         android:theme="@style/AppTheme"
         android:visibility="visible"
         app:icon="@drawable/ic_baseline_add_24"

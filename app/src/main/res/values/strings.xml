@@ -77,7 +77,6 @@
     <string name="fragment_configuration_text_view_connect">Connect</string>
     <string name="fragment_configuration_text_view_name">%1$s</string>
     <string name="fragment_configuration_text_view_update">Update</string>
-    <string name="fragment_device_connect_button">Connect</string>
     <string name="fragment_device_add_info_text">Info</string>
     <string name="fragment_device_add_label">Add Device</string>
     <string name="fragment_device_configuration_add_label">About Smart4Health</string>
@@ -628,5 +627,7 @@
     <!---->
 
     <string name="smart4health_information_to_send">Reported data</string>
+    <string name="connect_label">Connect</string>
+    <string name="search_label">Search</string>
 
 </resources>
