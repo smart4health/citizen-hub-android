@@ -198,8 +198,8 @@ public class SummaryDetailActivityFragment extends Fragment {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setBarChartData(barChart, data, getString(R.string.summary_detail_activity_distance), 30);
         DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
         distanceMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
-        DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
-        distanceSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
+        //DistanceSnapshotMeasurementRepository distanceSnapshotMeasurementRepository = new DistanceSnapshotMeasurementRepository(getContext());
+        //distanceSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
     }
 
     private void dailyCalories(){
