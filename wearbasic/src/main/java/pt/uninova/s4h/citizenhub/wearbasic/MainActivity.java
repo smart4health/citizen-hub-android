@@ -1,8 +1,10 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -32,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
@@ -76,6 +79,7 @@ public class MainActivity extends FragmentActivity {
         setViews();
         setDevice();
         setDatabases();
+        setCommunication();
         sensorsManager();
         startListeners(true, true);
 
@@ -140,6 +144,12 @@ public class MainActivity extends FragmentActivity {
         sampleRepository = new SampleRepository(getApplication());
         heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
         stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
+    }
+
+    private void setCommunication(){
+        IntentFilter newFilter = new IntentFilter(Intent.ACTION_SEND);
+        Receiver messageReceiver = new Receiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
     }
 
     private void sensorsManager() {
@@ -315,12 +325,14 @@ public class MainActivity extends FragmentActivity {
 
     private void saveHeartRateMeasurementLocally(ArrayList<Integer> measurements){
         int total = 0, avg = 0;
+        System.out.println("Measured values:");
         for(int i = 0; i < measurements.size(); i++)
         {
             total += measurements.get(i);
             avg = total / measurements.size();
-            System.out.println("The Average HR is: " + avg);
+            System.out.println(measurements.get(i));
         }
+        System.out.println("The Average HR is: " + avg);
         Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
         sampleRepository.create(sample, sampleId -> {
         });
@@ -349,6 +361,26 @@ public class MainActivity extends FragmentActivity {
     private void sendStepsMeasurementToPhoneApplication(){
         int steps = getLastStepCounter() + getOffsetStepCounter();
         new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+    }
+
+    public static class Receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Got message from phone.");
+            if (intent.hasExtra("WearOSHeartRateProtocol")) {
+                System.out.println("Got message WearOSHeartRateProtocol.");
+            }
+            if (intent.hasExtra("WearOSStepsProtocol")) {
+                System.out.println("Got message WearOSStepsProtocol.");
+            }
+            if (intent.hasExtra("WearOSAgent")) {
+                System.out.println("Got message WearOSAgent.");
+            }
+            if (intent.hasExtra("WearOSConnected"))
+            {
+                System.out.println("Got message WearOSConnected.");
+            }
+        }
     }
 
     private void sendHeartRateMeasurementToPhoneApplication(ArrayList<Integer> measurements){
