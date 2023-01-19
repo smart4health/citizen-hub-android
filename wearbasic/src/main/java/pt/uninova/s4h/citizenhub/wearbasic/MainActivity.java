@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity {
     SharedPreferences sharedPreferences;
     Device wearDevice;
     String nodeIdString;
-    ArrayList<Integer> currentHRmeasurements = new ArrayList<>();
+    ArrayList<Integer> currentHRMeasurements = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,6 @@ public class MainActivity extends FragmentActivity {
         setViews();
         setDevice();
         setDatabases();
-        setCommunication();
         sensorsManager();
         startListeners(true, true);
 
@@ -146,12 +145,6 @@ public class MainActivity extends FragmentActivity {
         stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
     }
 
-    private void setCommunication(){
-        IntentFilter newFilter = new IntentFilter(Intent.ACTION_SEND);
-        Receiver messageReceiver = new Receiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, newFilter);
-    }
-
     private void sensorsManager() {
         sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -172,7 +165,7 @@ public class MainActivity extends FragmentActivity {
                         heartRateText.setText(String.valueOf(heartRate));
                         heartRateIcon.setImageResource(R.drawable.ic_heart);
                         lastHeartRate = System.currentTimeMillis();
-                        currentHRmeasurements.add(heartRate);
+                        currentHRMeasurements.add(heartRate);
                     }
                 }
 
@@ -235,9 +228,9 @@ public class MainActivity extends FragmentActivity {
             System.out.println("Stopped Heart Rate Listener.");
             numberOfSensors--;
             System.out.println("Storing and sending Heart Rate values.");
-            saveHeartRateMeasurementLocally(currentHRmeasurements);
-            sendHeartRateMeasurementToPhoneApplication(currentHRmeasurements);
-            currentHRmeasurements.clear();
+            saveHeartRateMeasurementLocally(currentHRMeasurements);
+            sendHeartRateMeasurementToPhoneApplication(currentHRMeasurements);
+            currentHRMeasurements.clear();
         }
         if (steps){
             sensorManager.unregisterListener(stepsEventListener);
