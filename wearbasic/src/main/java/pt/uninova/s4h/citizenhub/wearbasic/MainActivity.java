@@ -332,10 +332,12 @@ public class MainActivity extends FragmentActivity {
             avg = total / measurements.size();
             System.out.println(measurements.get(i));
         }
-        System.out.println("The Average HR is: " + avg);
-        Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
-        sampleRepository.create(sample, sampleId -> {
-        });
+        if (avg > 0) {
+            System.out.println("The Average HR is: " + avg);
+            Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
+            sampleRepository.create(sample, sampleId -> {
+            });
+        }
     }
 
     private void setDevice() {
@@ -389,9 +391,13 @@ public class MainActivity extends FragmentActivity {
         {
             total += measurements.get(i);
             avg = total / measurements.size();
-            System.out.println("The Average HR is: " + avg);
+
         }
-        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, avg + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+        if (avg > 0)
+        {
+            System.out.println("The Average HR is: " + avg);
+            new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, avg + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+        }
     }
 
     class SendMessage extends Thread {
