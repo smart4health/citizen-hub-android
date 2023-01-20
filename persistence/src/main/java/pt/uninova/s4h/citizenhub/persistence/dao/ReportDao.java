@@ -4,11 +4,14 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
+import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 
 @Dao
@@ -366,7 +369,7 @@ public interface ReportDao {
             + " INNER JOIN tag ON lumbar_extension_training_measurement.sample_id = tag.sample_id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND tag.label = 1 ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
+    List<Map<ReportUtil, SampleRecord>> getWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
 
     @Query("SELECT duration AS lumbarExtensionDuration, score AS lumbarExtensionScore, repetitions AS lumbarExtensionRepetitions, "
             + " weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
