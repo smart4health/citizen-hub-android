@@ -675,5 +675,17 @@
         <item name="android:duplicateParentState">true</item>
     </style>
 
+    <style name="ScrollViewWithFab">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginBottom">70dp</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadeScrollbars">false</item>
+        <item name="android:scrollbarAlwaysDrawVerticalTrack">false</item>
+        <item name="android:scrollbarFadeDuration">0</item>
+        <item name="android:scrollbarThumbVertical">@color/colorS4HDarkBlue</item>
+        <item name="android:scrollbarSize">6dp</item>
+    </style>
 
 </resources>
