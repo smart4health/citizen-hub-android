@@ -92,7 +92,6 @@
             android:text="@string/search_label"
             android:theme="@style/AppTheme"
             android:visibility="visible"
-            app:iconTint="@color/colorS4HWhite"
             app:icon="@drawable/ic_baseline_add_24" />
     </RelativeLayout>
 </RelativeLayout>
