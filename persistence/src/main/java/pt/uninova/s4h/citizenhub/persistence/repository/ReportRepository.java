@@ -4,12 +4,12 @@ import android.content.Context;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import pt.uninova.s4h.citizenhub.data.Tag;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.ReportDao;
-import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.BloodPressureSample;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSample;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -46,11 +46,11 @@ public class ReportRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getBloodPressure(localDate, localDate.plusDays(1))));
     }
 
-    public void getWorkTimeBloodPressure(LocalDate localDate, Observer<List<ReportUtil>> observer) {
+    public void getWorkTimeBloodPressure(LocalDate localDate, Observer<List<BloodPressureSample>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getWorkTimeBloodPressure(localDate, localDate.plusDays(1))));
     }
 
-    public void getNotWorkTimeBloodPressure(LocalDate localDate, Observer<List<ReportUtil>> observer) {
+    public void getNotWorkTimeBloodPressure(LocalDate localDate, Observer<List<BloodPressureSample>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getNotWorkTimeBloodPressure(localDate, localDate.plusDays(1))));
     }
 
@@ -70,11 +70,11 @@ public class ReportRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getLumbarExtensionTraining(localDate, localDate.plusDays(1))));
     }
 
-    public void getWorkTimeLumbarExtensionTraining(LocalDate localDate, Observer<List<Map<ReportUtil, SampleRecord>>> observer) {
+    public void getWorkTimeLumbarExtensionTraining(LocalDate localDate, Observer<List<LumbarExtensionTrainingSample>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getWorkTimeLumbarExtensionTraining(localDate, localDate.plusDays(1))));
     }
 
-    public void getNotWorkTimeLumbarExtensionTraining(LocalDate localDate, Observer<List<ReportUtil>> observer) {
+    public void getNotWorkTimeLumbarExtensionTraining(LocalDate localDate, Observer<List<LumbarExtensionTrainingSample>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(reportDao.getNotWorkTimeLumbarExtensionTraining(localDate, localDate.plusDays(1))));
     }
 

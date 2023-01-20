@@ -4,14 +4,12 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-
 
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
-import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.BloodPressureSample;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSample;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 
 @Dao
@@ -329,7 +327,7 @@ public interface ReportDao {
             + " INNER JOIN tag ON blood_pressure_measurement.sample_id = tag.sample_id "
             + "WHERE sample.timestamp >= :from AND sample.timestamp < :to AND tag.label = 1 ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getWorkTimeBloodPressure(LocalDate from, LocalDate to);
+    List<BloodPressureSample> getWorkTimeBloodPressure(LocalDate from, LocalDate to);
 
     @Query("SELECT diastolic, systolic, mean_arterial_pressure AS meanArterialPressure, sample.timestamp AS timestamp, "
             + " pulse_rate_measurement.value AS pulseRate FROM blood_pressure_measurement "
@@ -339,7 +337,7 @@ public interface ReportDao {
             + " AND NOT EXISTS "
             + "(SELECT tag.label FROM tag WHERE tag.sample_id = blood_pressure_measurement.sample_id AND tag.label = 1) ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getNotWorkTimeBloodPressure(LocalDate from, LocalDate to);
+    List<BloodPressureSample> getNotWorkTimeBloodPressure(LocalDate from, LocalDate to);
 
     @Query("SELECT MAX(value) AS calories FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
     @TypeConverters(EpochTypeConverter.class)
@@ -353,23 +351,21 @@ public interface ReportDao {
     @TypeConverters(EpochTypeConverter.class)
     List<ReportUtil> getHeartRate(LocalDate from, LocalDate to);
 
-    @Query("SELECT duration AS lumbarExtensionDuration, score AS lumbarExtensionScore, repetitions AS lumbarExtensionRepetitions, "
-            + " weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
+    @Query("SELECT duration, score, repetitions, weight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
             + " FROM lumbar_extension_training_measurement INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id "
             + " LEFT JOIN calories_measurement ON sample.id = calories_measurement.sample_id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
     List<ReportUtil> getLumbarExtensionTraining(LocalDate from, LocalDate to);
 
-    @Query("SELECT duration AS lumbarExtensionDuration, score AS lumbarExtensionScore, repetitions AS lumbarExtensionRepetitions, "
-            + " weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
+    @Query("SELECT duration, score, repetitions, weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
             + " FROM lumbar_extension_training_measurement "
             + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id "
             + " LEFT JOIN calories_measurement ON lumbar_extension_training_measurement.sample_id = calories_measurement.sample_id "
             + " INNER JOIN tag ON lumbar_extension_training_measurement.sample_id = tag.sample_id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND tag.label = 1 ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
-    List<Map<ReportUtil, SampleRecord>> getWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
+    List<LumbarExtensionTrainingSample> getWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
 
     @Query("SELECT duration AS lumbarExtensionDuration, score AS lumbarExtensionScore, repetitions AS lumbarExtensionRepetitions, "
             + " weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
@@ -380,7 +376,7 @@ public interface ReportDao {
             + " (SELECT * FROM tag WHERE tag.sample_id = lumbar_extension_training_measurement.sample_id "
             + " AND tag.label = 1) ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getNotWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
+    List<LumbarExtensionTrainingSample> getNotWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
 
     @Query("SELECT posture_measurement.classification AS postureClassification, SUM(posture_measurement.duration) AS postureDuration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification")
     @TypeConverters(EpochTypeConverter.class)
