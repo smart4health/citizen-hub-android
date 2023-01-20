@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -24,8 +23,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +33,8 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
@@ -43,29 +43,31 @@ import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.wearbasic.workers.StepsWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: still testing -> day change
-    //TODO listeners -> workers (3 workers: steps | HR | Sync with phone)
+    //TODO - doing - listeners -> workers (3 workers: steps | HR | Sync with phone)
+
     //TODO: experiment with DataClient to send data to phone
     //TODO: remake communication with phone (use TAGS (check examples) -> samples)
     //TODO: remake phone communication with watch
+    //TODO: still testing -> day change
 
-    SensorManager sensorManager;
-    Sensor stepsCounterSensor, heartSensor;
-    SensorEventListener stepsEventListener, heartRateEventListener;
-    boolean sensorsMeasuring = true, firstTime = true;
-    long lastHeartRate;
-    TextView heartRateText, stepsText, sensorsAreMeasuring;
-    ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
-    StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
-    HeartRateMeasurementRepository heartRateMeasurementRepository;
-    SampleRepository sampleRepository;
-    SharedPreferences sharedPreferences;
-    Device wearDevice;
-    String nodeIdString;
-    ArrayList<Integer> currentHRMeasurements = new ArrayList<>();
+    private SensorManager sensorManager;
+    private Sensor stepsCounterSensor, heartSensor;
+    private SensorEventListener stepsEventListener, heartRateEventListener;
+    private boolean sensorsMeasuring = true, firstTime = true;
+    private long lastHeartRate;
+    private TextView heartRateText, stepsText, sensorsAreMeasuring;
+    private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
+    public StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
+    public HeartRateMeasurementRepository heartRateMeasurementRepository;
+    private SampleRepository sampleRepository;
+    private SharedPreferences sharedPreferences;
+    private  Device wearDevice;
+    private String nodeIdString;
+    public ArrayList<Integer> currentHRMeasurements = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class MainActivity extends FragmentActivity {
         setDatabases();
         sensorsManager();
         startListeners(true, true);
+        startWorkers();
 
         startTimerLastHeartRate();
         listenersHandling();
@@ -101,6 +104,13 @@ public class MainActivity extends FragmentActivity {
                 requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 22);
             }
         }
+    }
+
+    private void startWorkers(){
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(stepsRequest);
     }
 
     private void setViews(){
@@ -221,6 +231,7 @@ public class MainActivity extends FragmentActivity {
         sensorsAreMeasuring.setText(getString(R.string.main_activity_initializing_sensors));
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void stopListeners(boolean heartRate, boolean steps){
         int numberOfSensors = 2;
         if (heartRate){
@@ -271,7 +282,7 @@ public class MainActivity extends FragmentActivity {
                     firstTime = false;
                 else if(sensorsMeasuring) {
                     stopListeners(true, false);
-                    timeOn = 60000; //TODO change back to 9 * 60000
+                    timeOn = 9 * 60000;
                 }
                 else
                     startListeners(true, false);
