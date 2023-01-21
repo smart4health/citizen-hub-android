@@ -43,11 +43,13 @@ import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.wearbasic.workers.HeartRateWorker;
 import pt.uninova.s4h.citizenhub.wearbasic.workers.StepsWorker;
+import pt.uninova.s4h.citizenhub.wearbasic.workers.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO - doing - listeners -> workers (3 workers: steps | HR | Sync with phone)
+    //TODO - doing - listeners -> workers (change logic to work classes)
 
     //TODO: experiment with DataClient to send data to phone
     //TODO: remake communication with phone (use TAGS (check examples) -> samples)
@@ -111,6 +113,12 @@ public class MainActivity extends FragmentActivity {
         PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
                 .build();
         workManager.enqueue(stepsRequest);
+        PeriodicWorkRequest heartRateRequest = new PeriodicWorkRequest.Builder(HeartRateWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(heartRateRequest);
+        PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(syncRequest);
     }
 
     private void setViews(){
