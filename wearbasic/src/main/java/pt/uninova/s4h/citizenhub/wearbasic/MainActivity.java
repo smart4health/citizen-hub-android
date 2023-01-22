@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
@@ -49,7 +50,7 @@ import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurement
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: remake communication with phone (use TAGS (check examples) -> samples)
+    //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
@@ -367,26 +368,6 @@ public class MainActivity extends FragmentActivity {
     private void sendStepsMeasurementToPhoneApplication(){
         int steps = getLastStepCounter() + getOffsetStepCounter();
         new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-    }
-
-    public static class Receiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            System.out.println("Got message from phone.");
-            if (intent.hasExtra("WearOSHeartRateProtocol")) {
-                System.out.println("Got message WearOSHeartRateProtocol.");
-            }
-            if (intent.hasExtra("WearOSStepsProtocol")) {
-                System.out.println("Got message WearOSStepsProtocol.");
-            }
-            if (intent.hasExtra("WearOSAgent")) {
-                System.out.println("Got message WearOSAgent.");
-            }
-            if (intent.hasExtra("WearOSConnected"))
-            {
-                System.out.println("Got message WearOSConnected.");
-            }
-        }
     }
 
     private void sendHeartRateMeasurementToPhoneApplication(ArrayList<Integer> measurements){
