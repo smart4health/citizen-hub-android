@@ -1,4 +1,4 @@
-package pt.uninova.s4h.citizenhub.wearbasic.workers;
+package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.content.Context;
 
@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-public class StepsWorker extends Worker {
-    public StepsWorker(
+public class SyncWorker extends Worker {
+    public SyncWorker(
             @NonNull Context appContext,
             @NonNull WorkerParameters workerParams) {
         super(appContext, workerParams);
@@ -17,12 +17,12 @@ public class StepsWorker extends Worker {
     @Override
     public Result doWork() {
         try{
-            System.out.println("Steps Worker is doing work.");
+            System.out.println("Sync Worker is doing work.");
             return Result.success();
         }
         catch (Throwable throwable)
         {
-            System.out.println("Steps Worker failed to do work.");
+            System.out.println("Sync Worker failed to do work.");
             return Result.failure();
         }
     }
