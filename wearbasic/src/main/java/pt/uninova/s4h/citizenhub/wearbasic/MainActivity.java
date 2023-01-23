@@ -1,7 +1,6 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,24 +32,29 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
-import pt.uninova.s4h.citizenhub.data.Measurement;
-import pt.uninova.s4h.citizenhub.data.PostureMeasurement;
-import pt.uninova.s4h.citizenhub.data.PostureValue;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.wearbasic.service.ForegroundService;
+import pt.uninova.s4h.citizenhub.wearbasic.work.HeartRateWorker;
+import pt.uninova.s4h.citizenhub.wearbasic.work.StepsWorker;
+import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: remake communication with phone (use TAGS? for synchronization)
+    //TODO: user observers (LiveData) for implementing HR & Steps Listeners
+    //TODO: remake communication with phone (use TAGS? for synchronization
+    //if (workTimeRangeConverter.isWorkTime(LocalDateTime.ofInstant(sample.getTimestamp(), ZoneId.systemDefault()))) {
+    //    tagRepository.create(sampleId, Tag.LABEL_CONTEXT_WORK);
+    //}
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
@@ -88,6 +92,8 @@ public class MainActivity extends FragmentActivity {
 
         startTimerLastHeartRate();
         listenersHandling();
+
+        tests();
     }
 
     @Override
@@ -107,8 +113,25 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void tests(){
+        //get from DB HR & steps to display
+
+        stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
+            if (value != null)
+                listenSteps.postValue(String.valueOf(value.intValue()));
+            else
+                listenSteps.postValue("0");
+        });
+    }
+
     private void startWorkers(){
         WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(stepsRequest);
+        PeriodicWorkRequest heartRateRequest = new PeriodicWorkRequest.Builder(HeartRateWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(heartRateRequest);
         PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
                 .build();
         workManager.enqueue(syncRequest);

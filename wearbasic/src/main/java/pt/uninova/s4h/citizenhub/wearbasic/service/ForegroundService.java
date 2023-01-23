@@ -1,4 +1,4 @@
-package pt.uninova.s4h.citizenhub.wearbasic;
+package pt.uninova.s4h.citizenhub.wearbasic.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.wear.ongoing.OngoingActivity;
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.wearbasic.MainActivity;
 
 public class ForegroundService extends Service {
 

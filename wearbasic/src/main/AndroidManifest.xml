@@ -36,7 +36,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <service
-            android:name=".wearbasic.ForegroundService"
+            android:name=".wearbasic.service.ForegroundService"
             android:enabled="true"
             android:exported="true" />
     </application>
