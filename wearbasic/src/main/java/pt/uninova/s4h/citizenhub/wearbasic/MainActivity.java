@@ -23,6 +23,8 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
@@ -40,9 +41,11 @@ import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
+import pt.uninova.s4h.citizenhub.data.Tag;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.TagRepository;
 import pt.uninova.s4h.citizenhub.wearbasic.service.ForegroundService;
 import pt.uninova.s4h.citizenhub.wearbasic.work.HeartRateWorker;
 import pt.uninova.s4h.citizenhub.wearbasic.work.StepsWorker;
@@ -50,11 +53,9 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: user observers (LiveData) for implementing HR & Steps Listeners
-    //TODO: remake communication with phone (use TAGS? for synchronization
-    //if (workTimeRangeConverter.isWorkTime(LocalDateTime.ofInstant(sample.getTimestamp(), ZoneId.systemDefault()))) {
-    //    tagRepository.create(sampleId, Tag.LABEL_CONTEXT_WORK);
-    //}
+    //TODO: remake communication with phone (use TAGS? for synchronization)
+
+    //TODO: user observers (LiveData) for implementing HR & Steps Listeners in Workers
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
@@ -68,6 +69,7 @@ public class MainActivity extends FragmentActivity {
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     public HeartRateMeasurementRepository heartRateMeasurementRepository;
+    public TagRepository tagRepository;
     private SampleRepository sampleRepository;
     private SharedPreferences sharedPreferences;
     private  Device wearDevice;
@@ -92,8 +94,6 @@ public class MainActivity extends FragmentActivity {
 
         startTimerLastHeartRate();
         listenersHandling();
-
-        tests();
     }
 
     @Override
@@ -111,17 +111,6 @@ public class MainActivity extends FragmentActivity {
                 requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 22);
             }
         }
-    }
-
-    private void tests(){
-        //get from DB HR & steps to display
-
-        stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
-            if (value != null)
-                listenSteps.postValue(String.valueOf(value.intValue()));
-            else
-                listenSteps.postValue("0");
-        });
     }
 
     private void startWorkers(){
@@ -177,6 +166,7 @@ public class MainActivity extends FragmentActivity {
         sampleRepository = new SampleRepository(getApplication());
         heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
         stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
+        tagRepository = new TagRepository(getApplication());
     }
 
     private void sensorsManager() {
@@ -345,9 +335,10 @@ public class MainActivity extends FragmentActivity {
 
     private long getDayLastStepCounter(){return sharedPreferences.getLong("dayLastStepCounter", 0); }
 
-    private void saveStepsMeasurementLocally(){
+    private void saveStepsMeasurementLocally() {
         Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
         sampleRepository.create(sample, sampleId -> {
+            tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
         });
     }
 
@@ -364,6 +355,7 @@ public class MainActivity extends FragmentActivity {
             System.out.println("The Average HR is: " + avg);
             Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
             sampleRepository.create(sample, sampleId -> {
+                tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
             });
         }
     }
