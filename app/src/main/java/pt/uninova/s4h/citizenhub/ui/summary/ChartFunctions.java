@@ -2,14 +2,12 @@ package pt.uninova.s4h.citizenhub.ui.summary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 
 import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -37,13 +35,24 @@ import java.util.Locale;
 import java.util.Objects;
 
 import pt.uninova.s4h.citizenhub.R;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailBloodPressureUtil;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailHeartRateUtil;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyCaloriesPanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyDistancePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyHeartRatePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyPosturePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyStepsPanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyCaloriesPanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 public class ChartFunctions {
 
     private final Context context;
+    private Double[] genericArray;
     private final LocalDate localDate;
 
     public ChartFunctions(Context context, LocalDate localDate) {
@@ -52,30 +61,107 @@ public class ChartFunctions {
     }
 
     // This section has functions used to parse different utils to a more generic one used to pass the data to the charts //
-    public List<SummaryDetailUtil> parseBloodPressureUtil(List<SummaryDetailBloodPressureUtil> bloodPressureUtils){
-        List<SummaryDetailUtil> utils = new ArrayList<>();
-        for (SummaryDetailBloodPressureUtil data : bloodPressureUtils){
-            SummaryDetailUtil util = new SummaryDetailUtil();
-            util.setValue1(data.getSystolic());
-            util.setValue2(data.getDiastolic());
-            util.setValue3(data.getMean());
-            util.setTime(data.getTime());
-            utils.add(util);
+    public TwoDimensionalChartData parseBloodPressureUtil(List<HourlyBloodPressurePanel> hourlyBloodPressurePanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 3);
+        for (HourlyBloodPressurePanel data : hourlyBloodPressurePanels){
+            twoDimensionalChartData.set(data.getHourOfDay(), 0, data.getSystolic());
+            twoDimensionalChartData.set(data.getHourOfDay(), 1, data.getDiastolic());
+            twoDimensionalChartData.set(data.getHourOfDay(), 2, data.getMean());
         }
-        return utils;
+        return twoDimensionalChartData;
     }
 
-    public List<SummaryDetailUtil> parseHeartRateUtil(List<SummaryDetailHeartRateUtil> heartRateUtils){
-        List<SummaryDetailUtil> utils = new ArrayList<>();
-        for (SummaryDetailHeartRateUtil data : heartRateUtils){
-            SummaryDetailUtil util = new SummaryDetailUtil();
-            util.setValue1(data.getAverage());
-            util.setValue2(data.getMaximum());
-            util.setValue3(data.getMinimum());
-            util.setTime(data.getTime());
-            utils.add(util);
+    public TwoDimensionalChartData parseBloodPressureUtil(List<DailyBloodPressurePanel> dailyBloodPressurePanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 3);
+        for (DailyBloodPressurePanel data : dailyBloodPressurePanels){
+            twoDimensionalChartData.set(data.getDay(), 0, data.getSystolic());
+            twoDimensionalChartData.set(data.getDay(), 1, data.getDiastolic());
+            twoDimensionalChartData.set(data.getDay(), 2, data.getMean());
         }
-        return utils;
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parseCaloriesUtil(List<HourlyCaloriesPanel> hourlyCaloriesPanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
+        for (HourlyCaloriesPanel dailyCaloriesPanel : hourlyCaloriesPanels){
+            twoDimensionalChartData.set(dailyCaloriesPanel.getHourOfDay(), 0, dailyCaloriesPanel.getCalories());
+        }
+        return twoDimensionalChartData;
+    }
+    public TwoDimensionalChartData parseCaloriesUtil(List<DailyCaloriesPanel> dailyCaloriesPanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
+        for (DailyCaloriesPanel dailyCaloriesPanel : dailyCaloriesPanels){
+            twoDimensionalChartData.set(dailyCaloriesPanel.getDay(), 0, dailyCaloriesPanel.getCalories());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parseDistanceUtil(List<HourlyDistancePanel> hourlyDistancePanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
+        for (HourlyDistancePanel hourlyDistancePanel : hourlyDistancePanels){
+            twoDimensionalChartData.set(hourlyDistancePanel.getHourOfDay(), 0, hourlyDistancePanel.getDistance());
+        }
+        return twoDimensionalChartData;
+    }
+    public TwoDimensionalChartData parseDistanceUtil(List<DailyDistancePanel> dailyDistancePanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
+        for (DailyDistancePanel dailyCaloriesPanel : dailyDistancePanels){
+            twoDimensionalChartData.set(dailyCaloriesPanel.getDay(), 0, dailyCaloriesPanel.getDistance());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parseHeartRateUtil(List<HourlyHeartRatePanel> hourlyHeartRatePanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 3);
+        for (HourlyHeartRatePanel data : hourlyHeartRatePanels){
+            twoDimensionalChartData.set(data.getHourOfDay(), 0, data.getAverage());
+            twoDimensionalChartData.set(data.getHourOfDay(), 1, data.getMaximum());
+            twoDimensionalChartData.set(data.getHourOfDay(), 2, data.getMinimum());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parseHeartRateUtil(List<DailyHeartRatePanel> dailyHeartRatePanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 3);
+        for (DailyHeartRatePanel data : dailyHeartRatePanels){
+            twoDimensionalChartData.set(data.getDay(), 0, data.getAverage());
+            twoDimensionalChartData.set(data.getDay(), 1, data.getMaximum());
+            twoDimensionalChartData.set(data.getDay(), 2, data.getMinimum());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parseStepsUtil(List<HourlyStepsPanel> hourlyStepsPanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
+        for (HourlyStepsPanel hourlyStepsPanel : hourlyStepsPanels){
+            twoDimensionalChartData.set(hourlyStepsPanel.getHourOfDay(), 0, hourlyStepsPanel.getSteps());
+        }
+        return twoDimensionalChartData;
+    }
+    public TwoDimensionalChartData parseStepsUtil(List<DailyStepsPanel> dailyStepsPanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
+        for (DailyStepsPanel dailyStepsPanel : dailyStepsPanels){
+            twoDimensionalChartData.set(dailyStepsPanel.getDay(), 0, dailyStepsPanel.getSteps());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parsePostureUtil(List<HourlyPosturePanel> hourlyPosturePanels){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 2);
+        for (HourlyPosturePanel data : hourlyPosturePanels) {
+            twoDimensionalChartData.set(data.getHourOfDay(), 0, data.getCorrectPosture());
+            twoDimensionalChartData.set(data.getHourOfDay(), 1, data.getIncorrectPosture());
+        }
+        return twoDimensionalChartData;
+    }
+
+    public TwoDimensionalChartData parsePostureUtil(List<DailyPosturePanel> dailyPosturePanels, int days){
+        TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 2);
+        for (DailyPosturePanel data : dailyPosturePanels) {
+            twoDimensionalChartData.set(data.getDay(), 0, data.getCorrectPosture());
+            twoDimensionalChartData.set(data.getDay(), 1, data.getIncorrectPosture());
+        }
+        return twoDimensionalChartData;
     }
     //********************************************************************************************************************//
 
@@ -167,25 +253,17 @@ public class ChartFunctions {
     * barChart (BarChart) - a barChart
     * label (String) - the label of the information to be displayed
     * days (int) - represents the number of days to add to the chart. If it is 24, it equivalent to one day */
-    public void setBarChartData(BarChart barChart, List<SummaryDetailUtil> list, String label, int days) {
+    public void setBarChartData(BarChart barChart, TwoDimensionalChartData twoDimensionalChartData, String label, int days) {
         List<BarEntry> entries = new ArrayList<>();
-        int currentTime = 0;
 
-        for (SummaryDetailUtil data : list) {
-            while (currentTime < data.getTime()) {
-                entries.add(new BarEntry(currentTime, 0));
-                currentTime++;
+        for (int y = 0; y < twoDimensionalChartData.getY(); y++) {
+            for (int x = 0; x < twoDimensionalChartData.getX(); x++) {
+                entries.add(new BarEntry((float) x, (float) twoDimensionalChartData.get(x, y)));
             }
-            entries.add(new BarEntry(data.getTime(), data.getValue1()));
-            currentTime++;
         }
 
-        while (currentTime < days) {
-            entries.add(new BarEntry(currentTime, 0));
-            currentTime++;
-        }
         if(days == 24)
-            entries.add(new BarEntry(currentTime, 0));
+            entries.add(new BarEntry(24, 0));
 
         BarDataSet barDataSet = new BarDataSet(entries, label);
         barDataSet.setColor(ContextCompat.getColor(context, R.color.colorS4HLightBlue));
@@ -236,34 +314,19 @@ public class ChartFunctions {
         barChart.invalidate();
     }
 
-    public void setLineChartData(LineChart lineChart, List<SummaryDetailUtil> list, String[] label, int days) {
-        List<Entry> entries1 = new ArrayList<>();
-        List<Entry> entries2 = new ArrayList<>();
-        List<Entry> entries3 = new ArrayList<>();
-        float time;
-
-        for (SummaryDetailUtil data : list) {
-            time = data.getTime();
-            System.out.println(time);
-            entries1.add(new BarEntry(time, data.getValue1()));
-            if (data.getValue2() != null)
-                entries2.add(new BarEntry(time, data.getValue2()));
-            if (data.getValue3() != null)
-                entries3.add(new BarEntry(time, data.getValue3()));
-        }
-
-        //Só para debug
-        //entries1.add(new BarEntry(max - 1, 66));
-        LineDataSet lineDataSet1 = getLineDataSet(entries1, label[0], 0);
-        LineDataSet lineDataSet2 = getLineDataSet(entries2, label[1], 1);
-        LineDataSet lineDataSet3 = getLineDataSet(entries3, label[2], 2);
-
+    public void setLineChartData(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] label, int days) {
         ArrayList<ILineDataSet> dataSet = new ArrayList<>();
-        dataSet.add(lineDataSet1);
-        if (lineDataSet2 != null)
-            dataSet.add(lineDataSet2);
-        if (lineDataSet3 != null)
-            dataSet.add(lineDataSet3);
+
+        for (int y = 0; y < twoDimensionalChartData.getY(); y++) {
+            List<Entry> entries = new ArrayList<>();
+            for (int x = 0; x < twoDimensionalChartData.getX(); x++){
+                if (twoDimensionalChartData.get(x, y) == 0)
+                    continue;
+                entries.add(new BarEntry((float) x, (float) twoDimensionalChartData.get(x, y)));
+            }
+            LineDataSet lineDataSet = getLineDataSet(entries, label[y], y);
+            dataSet.add(lineDataSet);
+        }
 
         LineData lineData = new LineData(dataSet);
         lineData.setValueFormatter(new ChartValueFormatter());
@@ -301,39 +364,28 @@ public class ChartFunctions {
         return lineDataSet;
     }
 
-    public void setAreaChart(LineChart lineChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int days){
-        float[] values1 = new float[days];
-        float[] values2 = new float[days];
-
-        for (SummaryDetailUtil data : list1) {
-            values1[Math.round(data.getTime())] = data.getValue1();
-        }
-
-        for (SummaryDetailUtil data : list2) {
-            values2[Math.round(data.getTime())] = data.getValue1() + values1[Math.round(data.getTime())];
-        }
-
+    public void setAreaChart(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, int days){
         int currentTime = 0;
-        float total;
+        double total;
         List<Entry> entries1 = new ArrayList<>();
         List<Entry> entries2 = new ArrayList<>();
 
         while(currentTime < days){
-            total = values2[currentTime] + values1[currentTime];
+            total = twoDimensionalChartData.get(currentTime, 0) + twoDimensionalChartData.get(currentTime, 1);
             if(days == 24) {
                 if (total > 3600000) {
-                    values1[currentTime] = values1[currentTime] * 3600000 / total;
-                    values2[currentTime] = values2[currentTime] * 3600000 / total;
+                    twoDimensionalChartData.set(currentTime, 0, twoDimensionalChartData.get(currentTime, 0) * 3600000 / total);
+                    twoDimensionalChartData.set(currentTime, 1, twoDimensionalChartData.get(currentTime, 1) * 3600000 / total);
                 }
-                entries1.add(new BarEntry(currentTime, values1[currentTime] * 100 / 3600000));
-                entries2.add(new BarEntry(currentTime, values2[currentTime] * 100 / 3600000));
+                entries1.add(new BarEntry(currentTime, (float) (twoDimensionalChartData.get(currentTime, 0) * 100 / 3600000)));
+                entries2.add(new BarEntry(currentTime, (float) (twoDimensionalChartData.get(currentTime, 1) * 100 / 3600000)));
             } else {
                 if (total > 86400000) {
-                    values1[currentTime] = values1[currentTime] * 86400000 / total;
-                    values2[currentTime] = values2[currentTime] * 86400000 / total;
+                    twoDimensionalChartData.set(currentTime, 0, twoDimensionalChartData.get(currentTime, 0) * 86400000 / total);
+                    twoDimensionalChartData.set(currentTime, 1, twoDimensionalChartData.get(currentTime, 1) * 86400000 / total);
                 }
-                entries1.add(new BarEntry(currentTime, values1[currentTime] * 100 / 86400000));
-                entries2.add(new BarEntry(currentTime, values2[currentTime] * 100 / 86400000));
+                entries1.add(new BarEntry(currentTime, (float) (twoDimensionalChartData.get(currentTime, 0) * 100 / 86400000)));
+                entries2.add(new BarEntry(currentTime, (float) (twoDimensionalChartData.get(currentTime, 1) * 100 / 86400000)));
             }
             currentTime++;
         }
@@ -364,13 +416,17 @@ public class ChartFunctions {
         return lineDataSet;
     }
 
-    public void setPieChart(PieChart pieChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2){
+    public void setPieChart(PieChart pieChart, TwoDimensionalChartData twoDimensionalChartData){
         int value1 = 0;
         int value2 = 0;
-        for (SummaryDetailUtil data : list1)
-            value1 += data.getValue1();
-        for (SummaryDetailUtil data : list2)
-            value2 += data.getValue1();
+
+        int pos = 0;
+        while(pos < 24)
+        {
+            value1 += twoDimensionalChartData.get(pos, 0);
+            value2 += twoDimensionalChartData.get(pos, 1);
+            pos++;
+        }
 
         List<PieEntry> pieEntries = new ArrayList<>();
         pieEntries.add(new PieEntry(value1, secondsToString(value1 / 1000)));
