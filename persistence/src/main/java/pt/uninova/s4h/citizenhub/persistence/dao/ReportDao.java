@@ -15,35 +15,6 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 @Dao
 public interface ReportDao {
 
-    @Query("SELECT dailyCalories.calories, dailyDistance.distance, "
-            + " heartRate.maxHeartRate, heartRate.minHeartRate, heartRate.avgHeartRate, "
-            + " correctPosture.correctPostureDuration, wrongPosture.wrongPostureDuration, "
-            + " dailySteps.steps"
-            + " FROM "
-            + " (SELECT MAX(value) AS calories "
-            + " FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) dailyCalories, "
-            + " (SELECT MAX(value) AS distance "
-            + " FROM distance_snapshot_measurement INNER JOIN sample ON distance_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) dailyDistance, "
-            + " (SELECT MAX(value) AS maxHeartRate, MIN(value) AS minHeartRate, AVG(value) AS avgHeartRate "
-            + " FROM heart_rate_measurement INNER JOIN sample ON heart_rate_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) heartRate, "
-            /*+ " (SELECT classification AS classification, SUM(duration) AS dailyPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification) posture, "*/
-            + " (SELECT classification AS classification, SUM(duration) AS correctPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 1) correctPosture, "
-            + "(SELECT classification AS classification, SUM(duration) AS wrongPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 2) wrongPosture, "
-            + "(SELECT MAX(value) AS steps "
-            + " FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) dailySteps")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getSimpleDailyRecords(LocalDate from, LocalDate to);
-
     @Query("WITH sample_window(id) AS (SELECT id FROM sample WHERE timestamp >= :from AND timestamp < :to), "
             + " sample_tag (id) AS (SELECT sample_window.id FROM sample_window INNER JOIN tag ON sample_window.id = tag.sample_id WHERE tag.label = :tag), "
             + " calories (value) "
@@ -314,12 +285,6 @@ public interface ReportDao {
     @TypeConverters(EpochTypeConverter.class)
     ReportUtil getWeeklyOrMonthlyNotWorkTimeSimpleRecords(LocalDate from, LocalDate to, int days);
 
-    @Query("SELECT diastolic, systolic, mean_arterial_pressure AS meanArterialPressure, sample.timestamp AS timestamp "
-            + " FROM blood_pressure_measurement INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to ORDER BY timestamp")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getBloodPressure(LocalDate from, LocalDate to);
-
     @Query("SELECT diastolic, systolic, mean_arterial_pressure AS meanArterialPressure, sample.timestamp AS timestamp, "
             + " pulse_rate_measurement.value AS pulseRate FROM blood_pressure_measurement "
             + " INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id "
@@ -338,25 +303,6 @@ public interface ReportDao {
             + "(SELECT tag.label FROM tag WHERE tag.sample_id = blood_pressure_measurement.sample_id AND tag.label = 1) ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
     List<BloodPressureSample> getNotWorkTimeBloodPressure(LocalDate from, LocalDate to);
-
-    @Query("SELECT MAX(value) AS calories FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getCalories(LocalDate from, LocalDate to);
-
-    @Query("SELECT MAX(value) AS distance FROM distance_snapshot_measurement INNER JOIN sample ON distance_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getDistance(LocalDate from, LocalDate to);
-
-    @Query("SELECT AVG(heart_rate_measurement.value) AS avgHeartRate, MAX(heart_rate_measurement.value) AS maxHeartRate, MIN(heart_rate_measurement.value) AS minHeartRate FROM heart_rate_measurement INNER JOIN sample ON heart_rate_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getHeartRate(LocalDate from, LocalDate to);
-
-    @Query("SELECT duration, score, repetitions, weight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
-            + " FROM lumbar_extension_training_measurement INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id "
-            + " LEFT JOIN calories_measurement ON sample.id = calories_measurement.sample_id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to ORDER BY timestamp")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getLumbarExtensionTraining(LocalDate from, LocalDate to);
 
     @Query("SELECT duration, score, repetitions, weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
             + " FROM lumbar_extension_training_measurement "
@@ -377,14 +323,6 @@ public interface ReportDao {
             + " AND tag.label = 1) ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
     List<LumbarExtensionTrainingSample> getNotWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
-
-    @Query("SELECT posture_measurement.classification AS postureClassification, SUM(posture_measurement.duration) AS postureDuration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getPosture(LocalDate from, LocalDate to);
-
-    @Query("SELECT MAX(value) AS steps FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
-    @TypeConverters(EpochTypeConverter.class)
-    List<ReportUtil> getSteps(LocalDate from, LocalDate to);
 
     @Query("SELECT MAX(value) AS calories, sample.id AS id FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to ")
     @TypeConverters(EpochTypeConverter.class)
