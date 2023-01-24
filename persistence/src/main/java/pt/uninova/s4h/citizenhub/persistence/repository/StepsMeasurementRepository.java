@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.StepsMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsMeasurementRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyStepsPanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
@@ -39,11 +41,11 @@ public class StepsMeasurementRepository {
         return stepsMeasurementDao.getStepsAllTypes(localDate, localDate.plusDays(1));
     }
 
-    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+    public void readLastDay(LocalDate localDate, Observer<List<HourlyStepsPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectLastDay(localDate)));
     }
 
-    public void readSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+    public void readSeveralDays(LocalDate localDate, int days, Observer<List<DailyStepsPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 }

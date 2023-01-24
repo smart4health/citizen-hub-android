@@ -10,6 +10,8 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.CaloriesMeasurementRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyCaloriesPanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyCaloriesPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
@@ -42,9 +44,9 @@ public interface CaloriesMeasurementDao {
             + " UNION ALL SELECT ((sample.timestamp - :localDate) / 3600000) % 24 AS hour, SUM(calories_measurement.value) AS value "
             + " FROM calories_measurement INNER JOIN sample ON calories_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000 GROUP BY hour) "
-            + " SELECT SUM(value) AS value1, hour AS time FROM agg GROUP BY hour")
+            + " SELECT SUM(value) AS calories, hour AS hourOfDay FROM agg GROUP BY hour")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastDay(LocalDate localDate);
+    List<HourlyCaloriesPanel> selectLastDay(LocalDate localDate);
 
     @Query(value = "WITH agg AS (SELECT ((sample.timestamp - :from) / 86400000) % :days AS days, MAX(calories_snapshot_measurement.value) AS value "
             + " FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id "
@@ -52,7 +54,7 @@ public interface CaloriesMeasurementDao {
             + " UNION ALL SELECT ((sample.timestamp - :from) / 86400000) % :days AS days, SUM(calories_measurement.value) AS value "
             + " FROM calories_measurement INNER JOIN sample ON calories_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY days) "
-            + " SELECT SUM(value) AS value1, days AS time FROM agg GROUP BY days")
+            + " SELECT SUM(value) AS calories, days AS day FROM agg GROUP BY days")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectSeveralDays(LocalDate from, LocalDate to, int days);
+    List<DailyCaloriesPanel> selectSeveralDays(LocalDate from, LocalDate to, int days);
 }

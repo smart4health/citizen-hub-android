@@ -10,6 +10,8 @@ import androidx.room.Query;
 import androidx.room.TypeConverters;
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceMeasurementRecord;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyDistancePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
@@ -42,9 +44,9 @@ public interface DistanceMeasurementDao {
             + " UNION ALL SELECT ((sample.timestamp - :localDate) / 3600000) % 24 AS hour, SUM(distance_measurement.value) AS value "
             + " FROM distance_measurement INNER JOIN sample ON distance_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000 GROUP BY hour) "
-            + " SELECT SUM(value) AS value1, hour AS time FROM agg GROUP BY hour")
+            + " SELECT SUM(value) AS distance, hour AS hourOfDay FROM agg GROUP BY hour")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastDay(LocalDate localDate);
+    List<HourlyDistancePanel> selectLastDay(LocalDate localDate);
 
     @Query(value = "WITH agg AS (SELECT ((sample.timestamp - :from) / 86400000) % :days AS days, MAX(distance_snapshot_measurement.value) AS value "
             + " FROM distance_snapshot_measurement INNER JOIN sample ON distance_snapshot_measurement.sample_id = sample.id "
@@ -52,8 +54,8 @@ public interface DistanceMeasurementDao {
             + " UNION ALL SELECT ((sample.timestamp - :from) / 86400000) % :days AS days, SUM(distance_measurement.value) AS value "
             + " FROM distance_measurement INNER JOIN sample ON distance_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY days) "
-            + " SELECT SUM(value) AS value1, days AS time FROM agg GROUP BY days")
+            + " SELECT SUM(value) AS distance, days AS day FROM agg GROUP BY days")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectSeveralDays(LocalDate from, LocalDate to, int days);
+    List<DailyDistancePanel> selectSeveralDays(LocalDate from, LocalDate to, int days);
 
 }
