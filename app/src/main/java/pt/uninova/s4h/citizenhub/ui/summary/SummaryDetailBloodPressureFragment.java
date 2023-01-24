@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailBloodPressureUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.BloodPressureMeasurementRepository;
@@ -88,24 +90,24 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
     }
 
     private void dailyBloodPressure() {
-        Observer<List<SummaryDetailBloodPressureUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(data), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 24);
+        Observer<List<HourlyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 24);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
     private void weeklyBloodPressure() {
-        Observer<List<SummaryDetailBloodPressureUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(data), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 7);
+        Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 7), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 7);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
     }
 
     private void monthlyBloodPressure() {
-        Observer<List<SummaryDetailBloodPressureUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(data), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 30);
+        Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 30), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 30);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
     }
 
-    private void dailyPulseRate(){
+    /*private void dailyPulseRate(){
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 24);
         PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
         pulseRateMeasurementRepository.readLastDay(LocalDate.now(), observer);
@@ -121,6 +123,6 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
         Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 30);
         PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
         pulseRateMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
-    }
+    }*/
 
 }

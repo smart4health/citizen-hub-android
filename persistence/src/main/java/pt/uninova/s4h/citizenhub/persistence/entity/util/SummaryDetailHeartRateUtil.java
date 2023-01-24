@@ -3,11 +3,8 @@ package pt.uninova.s4h.citizenhub.persistence.entity.util;
 public class SummaryDetailHeartRateUtil {
 
     private Double maximum;
-
     private Double minimum;
-
     private Double average;
-
     private Double time;
 
     public Double getMaximum(){
