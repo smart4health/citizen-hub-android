@@ -12,7 +12,6 @@ import pt.uninova.s4h.citizenhub.persistence.dao.PostureMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.PostureMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyPosturePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosture;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.PostureClassificationSum;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;

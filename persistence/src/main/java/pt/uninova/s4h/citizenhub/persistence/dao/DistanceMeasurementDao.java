@@ -12,7 +12,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyDistancePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
 public interface DistanceMeasurementDao {

@@ -12,8 +12,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.HeartRateMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailHeartRateUtil;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.AggregateSummary;
 
 @Dao

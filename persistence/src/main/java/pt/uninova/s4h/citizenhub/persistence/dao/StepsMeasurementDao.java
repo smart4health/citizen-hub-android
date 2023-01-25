@@ -13,7 +13,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyStepsPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 
 @Dao

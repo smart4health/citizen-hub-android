@@ -15,18 +15,14 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.tabs.TabLayout;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import pt.uninova.s4h.citizenhub.R;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.LumbarExtensionTrainingRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -64,22 +60,22 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
                     System.out.println("Duration");
                     lineChart.highlightValue(null);
                     textView.setText(getString(R.string.summary_detail_lumbar_extension_duration));
-                    getDuration();
+                    //getDuration();
                 } else if(pos == 1) {
                     System.out.println("Score");
                     lineChart.highlightValue(null);
                     textView.setText(getString(R.string.summary_detail_lumbar_extension_score));
-                    getScore();
+                    //getScore();
                 } else if(pos == 2) {
                     System.out.println("Repetitions");
                     lineChart.highlightValue(null);
                     textView.setText(getString(R.string.summary_detail_lumbar_extension_repetitions));
-                    getRepetitions();
+                    //getRepetitions();
                 } else if(pos == 3) {
                     System.out.println("Weight");
                     lineChart.highlightValue(null);
                     textView.setText(getString(R.string.summary_detail_lumbar_extension_weight));
-                    getWeight();
+                    //getWeight();
                 }
             }
 
@@ -96,10 +92,10 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
 
         chartFunctions.setupLineChart(lineChart, model.getChartViewMarker());
         lineChart.getXAxis().resetAxisMaximum();
-        getRepetitions();
+        //getRepetitions();
     }
 
-    private void getDuration(){
+    /*private void getDuration(){
         Observer<List<SummaryDetailUtil>> observer = data -> setLineChartData(data, getString(R.string.summary_detail_lumbar_extension_duration));
         LumbarExtensionTrainingRepository lumbarExtensionTrainingRepository = new LumbarExtensionTrainingRepository(getContext());
         lumbarExtensionTrainingRepository.selectDuration(observer);
@@ -148,6 +144,6 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         lineData.setValueFormatter(new ChartValueFormatter());
         lineChart.setData(lineData);
         lineChart.invalidate();
-    }
+    }*/
 
 }

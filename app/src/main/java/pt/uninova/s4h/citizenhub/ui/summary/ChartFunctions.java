@@ -47,12 +47,10 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 public class ChartFunctions {
 
     private final Context context;
-    private Double[] genericArray;
     private final LocalDate localDate;
 
     public ChartFunctions(Context context, LocalDate localDate) {
@@ -280,7 +278,7 @@ public class ChartFunctions {
         barChart.invalidate();
     }
 
-    private void setStackedBar(BarChart barChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int max){
+    /*private void setStackedBar(BarChart barChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int max){
         float[] values1 = new float[max];
         float[] values2 = new float[max];
 
@@ -312,7 +310,7 @@ public class ChartFunctions {
         barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
         //barChart.groupBars(0.2f, 0.25f, 0.05f);
         barChart.invalidate();
-    }
+    }*/
 
     public void setLineChartData(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] label, int days) {
         ArrayList<ILineDataSet> dataSet = new ArrayList<>();

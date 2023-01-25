@@ -11,7 +11,6 @@ import java.util.List;
 
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.PulseRateMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
 public interface PulseRateMeasurementDao {
@@ -30,7 +29,7 @@ public interface PulseRateMeasurementDao {
     @TypeConverters(EpochTypeConverter.class)
     LiveData<Double> selectAverageLiveData(LocalDate from, LocalDate to);
 
-    @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :localDate - 3600000) / 3600000) % 24 AS hour, pulse_rate_measurement.value AS value " +
+    /*@Query(value = "WITH agg AS(SELECT ((sample.timestamp - :localDate - 3600000) / 3600000) % 24 AS hour, pulse_rate_measurement.value AS value " +
             " FROM pulse_rate_measurement INNER JOIN sample ON pulse_rate_measurement.sample_id = sample.id " +
             " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000) " +
             " SELECT value AS value, hour AS time FROM agg GROUP BY hour ")
@@ -49,6 +48,6 @@ public interface PulseRateMeasurementDao {
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to + 86400000) "
             + " SELECT value AS value, day AS time FROM agg GROUP BY day")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastThirtyDays(LocalDate from, LocalDate to);
+    List<SummaryDetailUtil> selectLastThirtyDays(LocalDate from, LocalDate to);*/
 
 }

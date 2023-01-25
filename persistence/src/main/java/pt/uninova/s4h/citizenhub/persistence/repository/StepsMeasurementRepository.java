@@ -11,7 +11,6 @@ import pt.uninova.s4h.citizenhub.persistence.dao.StepsMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyStepsPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 

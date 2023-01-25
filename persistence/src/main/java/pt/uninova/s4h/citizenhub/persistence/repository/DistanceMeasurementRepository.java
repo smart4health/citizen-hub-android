@@ -11,7 +11,6 @@ import pt.uninova.s4h.citizenhub.persistence.dao.DistanceMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyDistancePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class DistanceMeasurementRepository {

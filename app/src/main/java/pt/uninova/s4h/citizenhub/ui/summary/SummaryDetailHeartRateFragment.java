@@ -19,7 +19,6 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailHeartRateUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 

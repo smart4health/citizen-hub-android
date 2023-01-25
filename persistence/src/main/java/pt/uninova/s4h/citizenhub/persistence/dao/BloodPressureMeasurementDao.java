@@ -13,8 +13,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.BloodPressureMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailBloodPressureUtil;
 
 @Dao
 public interface BloodPressureMeasurementDao {

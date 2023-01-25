@@ -12,7 +12,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.CaloriesMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyCaloriesPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyCaloriesPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
 public interface CaloriesMeasurementDao {

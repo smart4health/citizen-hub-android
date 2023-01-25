@@ -11,7 +11,6 @@ import pt.uninova.s4h.citizenhub.persistence.dao.CaloriesMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.CaloriesMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyCaloriesPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyCaloriesPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class CaloriesMeasurementRepository {

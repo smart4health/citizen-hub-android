@@ -19,10 +19,7 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailBloodPressureUtil;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.BloodPressureMeasurementRepository;
-import pt.uninova.s4h.citizenhub.persistence.repository.PulseRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class SummaryDetailBloodPressureFragment extends Fragment {
