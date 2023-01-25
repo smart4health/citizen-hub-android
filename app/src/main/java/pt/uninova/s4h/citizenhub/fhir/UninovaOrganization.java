@@ -1,0 +1,37 @@
+package pt.uninova.s4h.citizenhub.fhir;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import care.data4life.fhir.r4.model.Address;
+import care.data4life.fhir.r4.model.CodeSystemContactPointSystem;
+import care.data4life.fhir.r4.model.CodeableConcept;
+import care.data4life.fhir.r4.model.Coding;
+import care.data4life.fhir.r4.model.ContactPoint;
+import care.data4life.fhir.r4.model.Organization;
+
+public class UninovaOrganization extends Organization {
+
+    public UninovaOrganization() {
+        final Address address = new Address();
+
+        address.city = "Caparica";
+        address.line = Collections.singletonList("Faculdade de Ciências e Tecnologia");
+        address.postalCode = "2829-516";
+
+        final ContactPoint phone = new ContactPoint();
+
+        phone.system = CodeSystemContactPointSystem.PHONE;
+        phone.value = "(+351) 212 948 527";
+
+        final ContactPoint url = new ContactPoint();
+
+        url.system = CodeSystemContactPointSystem.URL;
+        url.value = "https://www.uninova.pt/";
+
+        this.address = Collections.singletonList(address);
+        this.name = "UNINOVA - Instituto de Desenvolvimento de Novas Tecnologias";
+        this.telecom = Arrays.asList(phone, url);
+        this.type = Collections.singletonList(new EducationalInstituteCodeableConcept());
+    }
+}
