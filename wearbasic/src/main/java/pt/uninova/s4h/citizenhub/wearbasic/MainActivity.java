@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
@@ -54,8 +55,9 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: remake communication with phone (use TAGS? for synchronization)
-
+    //TODO: keep main activity listeners for user feedback, only save from workers
     //TODO: user observers (LiveData) for implementing HR & Steps Listeners in Workers
+
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
@@ -91,6 +93,7 @@ public class MainActivity extends FragmentActivity {
         sensorsManager();
         startListeners(true, true);
         startWorkers();
+        setObservers();
 
         startTimerLastHeartRate();
         listenersHandling();
@@ -124,6 +127,11 @@ public class MainActivity extends FragmentActivity {
         PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
                 .build();
         workManager.enqueue(syncRequest);
+    }
+
+    private void setObservers(){
+        HeartRateWorker.heartRate.observeForever(s -> System.out.println("Value from HeartRate worker: " + s));
+        StepsWorker.steps.observeForever(s -> System.out.println("Value from Steps worker: " + s));
     }
 
     private void setViews(){
@@ -177,26 +185,7 @@ public class MainActivity extends FragmentActivity {
 
     public void startListeners(boolean heartRate, boolean steps) {
         if (heartRate){
-            System.out.println("Starting HR Listener.");
-            heartRateEventListener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent event) {
-                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                    if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-                        int heartRate = (int) event.values[0];
-                        System.out.println("Heart Rate Measurement: " + heartRate);
 
-                        heartRateText.setText(String.valueOf(heartRate));
-                        heartRateIcon.setImageResource(R.drawable.ic_heart);
-                        lastHeartRate = System.currentTimeMillis();
-                        currentHRMeasurements.add(heartRate);
-                    }
-                }
-
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
-                }
-            };
         }
         if (steps){
             System.out.println("Starting Steps Listener.");
@@ -285,18 +274,19 @@ public class MainActivity extends FragmentActivity {
         handler.post(run);
     }
 
-    private void listenersHandling(){
+    private void workersHandling(){
         Handler handler = new Handler();
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Listeners Handling");
+                System.out.println("Workers Handling");
+
                 int timeOn = 60000;
                 if (firstTime)
                     firstTime = false;
                 else if(sensorsMeasuring) {
                     stopListeners(true, false);
-                    timeOn = 9 * 60000;
+                    timeOn = 60000; //TODO change back to 9 * 60000
                 }
                 else
                     startListeners(true, false);
@@ -338,7 +328,7 @@ public class MainActivity extends FragmentActivity {
     private void saveStepsMeasurementLocally() {
         Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
         sampleRepository.create(sample, sampleId -> {
-            tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
+            //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
         });
     }
 
@@ -355,7 +345,7 @@ public class MainActivity extends FragmentActivity {
             System.out.println("The Average HR is: " + avg);
             Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
             sampleRepository.create(sample, sampleId -> {
-                tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
+                //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
             });
         }
     }
