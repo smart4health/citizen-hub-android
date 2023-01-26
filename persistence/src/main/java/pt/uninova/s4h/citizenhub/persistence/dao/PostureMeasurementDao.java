@@ -43,20 +43,20 @@ public interface PostureMeasurementDao {
     @Query("WITH agg AS (SELECT ((sample.timestamp - :localDate) / 3600000) % 24 AS hour, posture_measurement.classification AS classification, "
             + " SUM(posture_measurement.duration) AS duration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000 GROUP BY classification, hour) "
-            + " SELECT agg.hour AS hour, "
+            + " SELECT agg.hour AS hourOfDay, "
             + " COALESCE((SELECT IFNULL(duration, 0) FROM agg AS aggi WHERE classification = 1 AND aggi.hour = agg.hour), 0) AS correctPosture, "
             + " COALESCE((SELECT IFNULL(duration, 0) FROM agg AS aggi WHERE classification = 2 AND aggi.hour = agg.hour), 0) AS incorrectPosture "
-            + " FROM agg GROUP BY agg.hour;")
+            + " FROM agg GROUP BY hourOfDay;")
     @TypeConverters({EpochTypeConverter.class, DurationTypeConverter.class})
     List<HourlyPosturePanel> selectLastDayPosture(LocalDate localDate);
 
     @Query("WITH agg AS (SELECT ((sample.timestamp - :from) / 86400000) % :days AS hour, posture_measurement.classification AS classification, "
             + " SUM(posture_measurement.duration) AS duration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification, hour) "
-            + " SELECT agg.hour AS hour, "
+            + " SELECT agg.hour AS day, "
             + " COALESCE((SELECT IFNULL(duration, 0) FROM agg AS aggi WHERE classification = 1 AND aggi.hour = agg.hour), 0) AS correctPosture, "
             + " COALESCE((SELECT IFNULL(duration, 0) FROM agg AS aggi WHERE classification = 2 AND aggi.hour = agg.hour), 0) AS incorrectPosture "
-            + " FROM agg GROUP BY agg.hour;")
+            + " FROM agg GROUP BY day;")
     @TypeConverters({EpochTypeConverter.class, DurationTypeConverter.class})
     List<DailyPosturePanel> selectSeveralDaysPosture(LocalDate from, LocalDate to, int days);
 

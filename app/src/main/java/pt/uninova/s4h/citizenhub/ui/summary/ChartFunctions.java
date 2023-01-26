@@ -146,9 +146,9 @@ public class ChartFunctions {
 
     public TwoDimensionalChartData parsePostureUtil(List<HourlyPosturePanel> hourlyPosturePanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 2);
-        for (HourlyPosturePanel data : hourlyPosturePanels) {
-            twoDimensionalChartData.set(data.getHourOfDay(), 0, data.getCorrectPosture());
-            twoDimensionalChartData.set(data.getHourOfDay(), 1, data.getIncorrectPosture());
+        for (HourlyPosturePanel hourlyPosturePanel : hourlyPosturePanels) {
+            twoDimensionalChartData.set(hourlyPosturePanel.getHourOfDay(), 0, hourlyPosturePanel.getCorrectPosture());
+            twoDimensionalChartData.set(hourlyPosturePanel.getHourOfDay(), 1, hourlyPosturePanel.getIncorrectPosture());
         }
         return twoDimensionalChartData;
     }
@@ -221,7 +221,6 @@ public class ChartFunctions {
         int i = 0;
         Calendar cal = Calendar.getInstance();
         cal.setTime(Date.from(localDate.minusDays(days - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        System.out.println(cal.getTime());
         if (days == 24) {
             while(i <= days) {
                 labels[i] = String.valueOf(i);
@@ -241,7 +240,7 @@ public class ChartFunctions {
                 i++;
             }
         }
-        System.out.println(Arrays.toString(labels));
+        //System.out.println(Arrays.toString(labels));
         return labels;
     }
     // This sections has functions used to input data into the different charts //
