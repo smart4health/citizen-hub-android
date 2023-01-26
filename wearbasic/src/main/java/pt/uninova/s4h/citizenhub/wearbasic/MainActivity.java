@@ -23,9 +23,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +31,6 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
@@ -42,7 +38,6 @@ import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
-import pt.uninova.s4h.citizenhub.data.Tag;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
@@ -55,18 +50,18 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: remake communication with phone (use TAGS? for synchronization)
-    //TODO: keep main activity listeners for user feedback, only save from workers
-    //TODO: user observers (LiveData) for implementing HR & Steps Listeners in Workers
+    //TODO: implement steps worker
+    //confirm service runs with data from observer (number of sensors)
+    //implement quick reading when user taps the screen
 
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
 
     private SensorManager sensorManager;
-    private Sensor stepsCounterSensor, heartSensor;
-    private SensorEventListener stepsEventListener, heartRateEventListener;
-    private boolean sensorsMeasuring = true, firstTime = true;
-    private long lastHeartRate;
+    private Sensor stepsCounterSensor;
+    private SensorEventListener stepsEventListener;
+    private boolean sensorsMeasuring = true;
     private TextView heartRateText, stepsText, sensorsAreMeasuring;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
@@ -74,9 +69,9 @@ public class MainActivity extends FragmentActivity {
     public TagRepository tagRepository;
     private SampleRepository sampleRepository;
     private SharedPreferences sharedPreferences;
-    private  Device wearDevice;
+    private Device wearDevice;
     private String nodeIdString;
-    public ArrayList<Integer> currentHRMeasurements = new ArrayList<>();
+    private int activeSensors = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +89,6 @@ public class MainActivity extends FragmentActivity {
         startListeners(true, true);
         startWorkers();
         setObservers();
-
-        startTimerLastHeartRate();
-        listenersHandling();
     }
 
     @Override
@@ -130,7 +122,21 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void setObservers(){
-        HeartRateWorker.heartRate.observeForever(s -> System.out.println("Value from HeartRate worker: " + s));
+        HeartRateWorker.heartRateInstant.observeForever(s -> {
+            startService(++activeSensors);
+            System.out.println("Value from Instant HeartRate worker: " + s);
+            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+            heartRateIcon.setImageResource(R.drawable.ic_heart);
+            heartRateText.setText(String.valueOf(s));
+        });
+        HeartRateWorker.heartRateToSave.observeForever(s -> {
+            startService(--activeSensors);
+            System.out.println("Value from Average HeartRate worker: " + s);
+            saveHeartRateMeasurementLocally(s);
+            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+            heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
+            checkStepsReset(s);
+        });
         StepsWorker.steps.observeForever(s -> System.out.println("Value from Steps worker: " + s));
     }
 
@@ -179,121 +185,52 @@ public class MainActivity extends FragmentActivity {
 
     private void sensorsManager() {
         sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
-        heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
         stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
     }
 
     public void startListeners(boolean heartRate, boolean steps) {
-        if (heartRate){
+        System.out.println("Starting Steps Listener.");
+        stepsEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+                    int stepCounter = (int) event.values[0];
+                    int steps = getLastStepCounter() + getOffsetStepCounter();
+                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
+                            + " | Steps to show: " + steps);
 
-        }
-        if (steps){
-            System.out.println("Starting Steps Listener.");
-            stepsEventListener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent event) {
-                    if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                        int stepCounter = (int) event.values[0];
-                        int steps = getLastStepCounter() + getOffsetStepCounter();
-                        System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                                + " | Steps to show: " + steps);
-
-                        if (checkStepsReset(stepCounter)) {
-                            sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
-                            sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
-                        }
-
-                        if (stepCounter < getLastStepCounter())
-                            sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
-                        sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
-                        sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
-
-                        steps = getLastStepCounter() + getOffsetStepCounter();
-                        System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                                + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                                + " | Steps to show: " + steps);
-                        stepsText.setText(String.valueOf(steps));
-                        saveStepsMeasurementLocally();
-                        sendStepsMeasurementToPhoneApplication();
+                    if (checkStepsReset(stepCounter)) {
+                        sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
+                        sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
                     }
-                }
 
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
+                    if (stepCounter < getLastStepCounter())
+                        sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
+                    sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
+                    sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
+
+                    steps = getLastStepCounter() + getOffsetStepCounter();
+                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
+                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
+                            + " | Steps to show: " + steps);
+                    stepsText.setText(String.valueOf(steps));
+                    saveStepsMeasurementLocally();
+                    sendStepsMeasurementToPhoneApplication();
                 }
-            };
-        }
-        sensorManager.registerListener(heartRateEventListener, heartSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+
         sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
         sensorsMeasuring = true;
 
         startService(2);
         sensorsAreMeasuring.setVisibility(View.VISIBLE);
         sensorsAreMeasuring.setText(getString(R.string.main_activity_initializing_sensors));
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void stopListeners(boolean heartRate, boolean steps){
-        int numberOfSensors = 2;
-        if (heartRate){
-            sensorManager.unregisterListener(heartRateEventListener);
-            System.out.println("Stopped Heart Rate Listener.");
-            numberOfSensors--;
-            System.out.println("Storing and sending Heart Rate values.");
-            saveHeartRateMeasurementLocally(currentHRMeasurements);
-            sendHeartRateMeasurementToPhoneApplication(currentHRMeasurements);
-            currentHRMeasurements.clear();
-        }
-        if (steps){
-            sensorManager.unregisterListener(stepsEventListener);
-            System.out.println("Stopped Steps Listener.");
-            numberOfSensors--;
-        }
-        sensorsMeasuring = false;
-        startService(numberOfSensors);
-        sensorsAreMeasuring.setVisibility(View.VISIBLE);
-        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
-    }
-
-    private void startTimerLastHeartRate(){
-        Handler handler = new Handler();
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                long currentTime = System.currentTimeMillis();
-                if(currentTime > (lastHeartRate + 5*60000))
-                {
-                    heartRateText.setText(getString(R.string.main_activity_no_measurement));
-                    heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
-                }
-                handler.postDelayed(this, 5*60000);
-            }
-        };
-        handler.post(run);
-    }
-
-    private void workersHandling(){
-        Handler handler = new Handler();
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Workers Handling");
-
-                int timeOn = 60000;
-                if (firstTime)
-                    firstTime = false;
-                else if(sensorsMeasuring) {
-                    stopListeners(true, false);
-                    timeOn = 60000; //TODO change back to 9 * 60000
-                }
-                else
-                    startListeners(true, false);
-                handler.postDelayed(this, timeOn);
-            }
-        };
-        handler.post(run);
     }
 
     private boolean checkStepsReset(int steps){
@@ -332,18 +269,9 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void saveHeartRateMeasurementLocally(ArrayList<Integer> measurements){
-        int total = 0, avg = 0;
-        System.out.println("Measured values:");
-        for(int i = 0; i < measurements.size(); i++)
-        {
-            total += measurements.get(i);
-            avg = total / measurements.size();
-            System.out.println(measurements.get(i));
-        }
-        if (avg > 0) {
-            System.out.println("The Average HR is: " + avg);
-            Sample sample = new Sample(wearDevice, new HeartRateMeasurement(avg));
+    private void saveHeartRateMeasurementLocally(int value){
+        if (value > 0) {
+            Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
             sampleRepository.create(sample, sampleId -> {
                 //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
             });
@@ -375,19 +303,9 @@ public class MainActivity extends FragmentActivity {
         new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
     }
 
-    private void sendHeartRateMeasurementToPhoneApplication(ArrayList<Integer> measurements){
-        int total = 0, avg = 0;
-        for(int i = 0; i < measurements.size(); i++)
-        {
-            total += measurements.get(i);
-            avg = total / measurements.size();
-
-        }
-        if (avg > 0)
-        {
-            System.out.println("The Average HR is: " + avg);
-            new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, avg + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
-        }
+    private void sendHeartRateMeasurementToPhoneApplication(int value){
+        System.out.println("Sending HR value to phone: " + value);
+        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
     }
 
     class SendMessage extends Thread {
