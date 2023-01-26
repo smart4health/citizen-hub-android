@@ -285,7 +285,7 @@ public interface ReportDao {
     @TypeConverters(EpochTypeConverter.class)
     ReportUtil getWeeklyOrMonthlyNotWorkTimeSimpleRecords(LocalDate from, LocalDate to, int days);
 
-    @Query("SELECT diastolic, systolic, mean_arterial_pressure AS meanArterialPressure, sample.timestamp AS timestamp, "
+    @Query("SELECT diastolic, systolic, mean_arterial_pressure AS mean, sample.timestamp AS timestamp, "
             + " pulse_rate_measurement.value AS pulseRate FROM blood_pressure_measurement "
             + " INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id "
             + " LEFT JOIN pulse_rate_measurement ON blood_pressure_measurement.sample_id = pulse_rate_measurement.sample_id "
@@ -294,7 +294,7 @@ public interface ReportDao {
     @TypeConverters(EpochTypeConverter.class)
     List<BloodPressureSample> getWorkTimeBloodPressure(LocalDate from, LocalDate to);
 
-    @Query("SELECT diastolic, systolic, mean_arterial_pressure AS meanArterialPressure, sample.timestamp AS timestamp, "
+    @Query("SELECT diastolic, systolic, mean_arterial_pressure AS mean, sample.timestamp AS timestamp, "
             + " pulse_rate_measurement.value AS pulseRate FROM blood_pressure_measurement "
             + " INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id "
             + " LEFT JOIN pulse_rate_measurement ON blood_pressure_measurement.sample_id = pulse_rate_measurement.sample_id "
