@@ -6,7 +6,6 @@ import java.util.Collections;
 import care.data4life.fhir.r4.model.Address;
 import care.data4life.fhir.r4.model.CodeSystemContactPointSystem;
 import care.data4life.fhir.r4.model.CodeableConcept;
-import care.data4life.fhir.r4.model.Coding;
 import care.data4life.fhir.r4.model.ContactPoint;
 import care.data4life.fhir.r4.model.Organization;
 
@@ -32,6 +31,7 @@ public class UninovaOrganization extends Organization {
         this.address = Collections.singletonList(address);
         this.name = "UNINOVA - Instituto de Desenvolvimento de Novas Tecnologias";
         this.telecom = Arrays.asList(phone, url);
+
         this.type = Collections.singletonList(new EducationalInstituteCodeableConcept());
     }
 }
