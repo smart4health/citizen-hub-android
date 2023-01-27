@@ -1,19 +1,12 @@
 package pt.uninova.s4h.citizenhub.wearbasic;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +16,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.time.Duration;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -50,17 +42,15 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: remake communication with phone (use TAGS? for synchronization)
-    //TODO: implement steps worker
+    //TODO: test steps worker
     //confirm service runs with data from observer (number of sensors)
     //implement quick reading when user taps the screen
+    //implement feedback message (sensors reading or not)
 
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
 
-    private SensorManager sensorManager;
-    private Sensor stepsCounterSensor;
-    private SensorEventListener stepsEventListener;
     private boolean sensorsMeasuring = true;
     private TextView heartRateText, stepsText, sensorsAreMeasuring;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
@@ -68,7 +58,6 @@ public class MainActivity extends FragmentActivity {
     public HeartRateMeasurementRepository heartRateMeasurementRepository;
     public TagRepository tagRepository;
     private SampleRepository sampleRepository;
-    private SharedPreferences sharedPreferences;
     private Device wearDevice;
     private String nodeIdString;
     private int activeSensors = 0;
@@ -79,14 +68,10 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-
         permissionRequest();
         setViews();
         setDevice();
         setDatabases();
-        sensorsManager();
-        startListeners(true, true);
         startWorkers();
         setObservers();
     }
@@ -105,6 +90,52 @@ public class MainActivity extends FragmentActivity {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 22);
             }
+        }
+    }
+
+    private void setViews(){
+        heartRateText = findViewById(R.id.textViewHeartRateValue);
+        stepsText = findViewById(R.id.textViewStepsValue);
+        sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
+        sensorsAreMeasuring.setText("");
+        heartRateIcon = findViewById(R.id.imageIconHeartRate);
+        stepsIcon = findViewById(R.id.imageIconSteps);
+        citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
+        citizenHubNameLogo = findViewById(R.id.imageViewNameLogo);
+    }
+
+    private void setDevice() {
+        new Thread(() -> {
+            try {
+                Node localNode = Tasks.await(Wearable.getNodeClient(getApplicationContext()).getLocalNode());
+                nodeIdString = localNode.getId();
+                wearDevice = new Device(nodeIdString, "WearOS Device", 2);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void setDatabases(){
+        sampleRepository = new SampleRepository(getApplication());
+        heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
+        stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
+        tagRepository = new TagRepository(getApplication());
+    }
+
+    private void saveStepsMeasurementLocally(int steps) {
+        Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, steps));
+        sampleRepository.create(sample, sampleId -> {
+            //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
+        });
+    }
+
+    private void saveHeartRateMeasurementLocally(int value){
+        if (value > 0) {
+            Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
+            sampleRepository.create(sample, sampleId -> {
+                //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
+            });
         }
     }
 
@@ -132,162 +163,24 @@ public class MainActivity extends FragmentActivity {
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(--activeSensors);
             System.out.println("Value from Average HeartRate worker: " + s);
-            saveHeartRateMeasurementLocally(s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+            saveHeartRateMeasurementLocally(s);
+            heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
-            checkStepsReset(s);
         });
-        StepsWorker.steps.observeForever(s -> System.out.println("Value from Steps worker: " + s));
-    }
-
-    private void setViews(){
-        heartRateText = findViewById(R.id.textViewHeartRateValue);
-        stepsText = findViewById(R.id.textViewStepsValue);
-        sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
-        sensorsAreMeasuring.setText("");
-        heartRateIcon = findViewById(R.id.imageIconHeartRate);
-        stepsIcon = findViewById(R.id.imageIconSteps);
-        citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
-        citizenHubNameLogo = findViewById(R.id.imageViewNameLogo);
-
-        setIconClickListeners();
-    }
-
-    private void setIconClickListeners(){
-        citizenHubIcon.setOnClickListener(view -> {
-            System.out.println("tapped" + " " + sensorsMeasuring);
-            if (!sensorsMeasuring)
-                startListeners(true, false);
+        StepsWorker.stepsInstant.observeForever(s -> {
+            startService(++activeSensors);
+            System.out.println("Value from Instant Steps worker: " + s);
+            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+            stepsText.setText(String.valueOf(s));
         });
-        citizenHubNameLogo.setOnClickListener(view -> {
-            System.out.println("tapped" + " " + sensorsMeasuring);
-            if (!sensorsMeasuring)
-                startListeners(true, false);
+        StepsWorker.stepsToSave.observeForever(s -> {
+            startService(--activeSensors);
+            System.out.println("Value from Last Steps worker: " + s);
+            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+            saveStepsMeasurementLocally(s);
+            stepsText.setText(String.valueOf(s));
         });
-        heartRateIcon.setOnClickListener(view -> {
-            System.out.println("tapped" + " " + sensorsMeasuring);
-            if (!sensorsMeasuring)
-                startListeners(true, false);
-        });
-        stepsIcon.setOnClickListener(view -> {
-            System.out.println("tapped" + " " + sensorsMeasuring);
-            if (!sensorsMeasuring)
-                startListeners(true, false);
-        });
-    }
-
-    private void setDatabases(){
-        sampleRepository = new SampleRepository(getApplication());
-        heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
-        stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getApplication());
-        tagRepository = new TagRepository(getApplication());
-    }
-
-    private void sensorsManager() {
-        sensorManager = ((SensorManager) getSystemService(Context.SENSOR_SERVICE));
-        stepsCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-    }
-
-    public void startListeners(boolean heartRate, boolean steps) {
-        System.out.println("Starting Steps Listener.");
-        stepsEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                    sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-                    int stepCounter = (int) event.values[0];
-                    int steps = getLastStepCounter() + getOffsetStepCounter();
-                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                            + " | Steps to show: " + steps);
-
-                    if (checkStepsReset(stepCounter)) {
-                        sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
-                        sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
-                    }
-
-                    if (stepCounter < getLastStepCounter())
-                        sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
-                    sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
-                    sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
-
-                    steps = getLastStepCounter() + getOffsetStepCounter();
-                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                            + " | Steps to show: " + steps);
-                    stepsText.setText(String.valueOf(steps));
-                    saveStepsMeasurementLocally();
-                    sendStepsMeasurementToPhoneApplication();
-                }
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };
-
-        sensorManager.registerListener(stepsEventListener, stepsCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        sensorsMeasuring = true;
-
-        startService(2);
-        sensorsAreMeasuring.setVisibility(View.VISIBLE);
-        sensorsAreMeasuring.setText(getString(R.string.main_activity_initializing_sensors));
-    }
-
-    private boolean checkStepsReset(int steps){
-        long recordedDate = getDayLastStepCounter();
-        if (recordedDate == 0) {
-            if (steps > 0)
-                sharedPreferences.edit().putInt("offsetStepCounter", -steps).apply();
-            return false;
-        }
-        Date dateRecorded = new Date(recordedDate);
-        Calendar calendarRecordedDate = Calendar.getInstance();
-        calendarRecordedDate.setTime(dateRecorded);
-
-        Date currentDay = new Date();
-        Calendar calendarCurrentDate = Calendar.getInstance();
-        calendarCurrentDate.setTime(currentDay);
-
-        return !(calendarRecordedDate.get(Calendar.DAY_OF_YEAR) == calendarCurrentDate.get(Calendar.DAY_OF_YEAR)
-                && calendarRecordedDate.get(Calendar.YEAR) == calendarCurrentDate.get(Calendar.YEAR));
-    }
-
-    private int getOffsetStepCounter() {
-        return sharedPreferences.getInt("offsetStepCounter", 0);
-    }
-
-    private int getLastStepCounter() {
-        return sharedPreferences.getInt("lastStepCounter", 0);
-    }
-
-    private long getDayLastStepCounter(){return sharedPreferences.getLong("dayLastStepCounter", 0); }
-
-    private void saveStepsMeasurementLocally() {
-        Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, getLastStepCounter() + getOffsetStepCounter()));
-        sampleRepository.create(sample, sampleId -> {
-            //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
-        });
-    }
-
-    private void saveHeartRateMeasurementLocally(int value){
-        if (value > 0) {
-            Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
-            sampleRepository.create(sample, sampleId -> {
-                //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
-            });
-        }
-    }
-
-    private void setDevice() {
-        new Thread(() -> {
-            try {
-                Node localNode = Tasks.await(Wearable.getNodeClient(getApplicationContext()).getLocalNode());
-                nodeIdString = localNode.getId();
-                wearDevice = new Device(nodeIdString, "WearOS Device", 2);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
     public void startService(int sensors) {
@@ -298,8 +191,7 @@ public class MainActivity extends FragmentActivity {
         }, 10000);
     }
 
-    private void sendStepsMeasurementToPhoneApplication(){
-        int steps = getLastStepCounter() + getOffsetStepCounter();
+    private void sendStepsMeasurementToPhoneApplication(int steps){
         new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
     }
 

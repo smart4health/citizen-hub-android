@@ -14,13 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import pt.uninova.s4h.citizenhub.R;
 
 public class HeartRateWorker extends Worker {
 
     public static MutableLiveData<Integer> heartRateToSave = new MutableLiveData<>();
     public static MutableLiveData<Integer> heartRateInstant = new MutableLiveData<>();
-    public static MutableLiveData<String> sensorsAreMeasuring = new MutableLiveData<>();
     private SensorEventListener heartRateEventListener;
     private SensorManager sensorManager;
     private final ArrayList<Integer> currentHRMeasurements = new ArrayList<>();
@@ -50,7 +48,6 @@ public class HeartRateWorker extends Worker {
         heartRateEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
-                sensorsAreMeasuring.postValue(getApplicationContext().getString(R.string.main_activity_sensors_measuring));
                 if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                     int heartRate = (int) event.values[0];
                     currentHRMeasurements.add(heartRate);
@@ -83,6 +80,5 @@ public class HeartRateWorker extends Worker {
             heartRateInstant.postValue(avg);
         }
         currentHRMeasurements.clear();
-        sensorsAreMeasuring.postValue(getApplicationContext().getString(R.string.main_activity_sensors_idle));
     }
 }
