@@ -116,6 +116,7 @@ public class MainActivity extends FragmentActivity {
         }).start();
     }
 
+
     private void setDatabases(){
         sampleRepository = new SampleRepository(getApplication());
         heartRateMeasurementRepository = new HeartRateMeasurementRepository(getApplication());
@@ -189,45 +190,5 @@ public class MainActivity extends FragmentActivity {
             serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, sensors));
             ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         }, 10000);
-    }
-
-    private void sendStepsMeasurementToPhoneApplication(int steps){
-        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-    }
-
-    private void sendHeartRateMeasurementToPhoneApplication(int value){
-        System.out.println("Sending HR value to phone: " + value);
-        new SendMessage(getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
-    }
-
-    class SendMessage extends Thread {
-        String path;
-        String message;
-
-        SendMessage(String p, String msg) {
-            path = p;
-            message = msg;
-        }
-
-        public void run() {
-            Task<List<Node>> nodeListTask = Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-            try {
-                Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
-                Node n = Tasks.await(t);
-                nodeIdString = n.getId();
-                System.out.println("Node associated: " + n.getId() + " Message: " + message);
-                List<Node> nodes = Tasks.await(nodeListTask);
-                for (Node node : nodes) {
-                    Task<Integer> sendMessageTask = Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());
-                    try {
-                        Tasks.await(sendMessageTask);
-                    } catch (ExecutionException | InterruptedException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            } catch (ExecutionException | InterruptedException exception) {
-                exception.printStackTrace();
-            }
-        }
     }
 }
