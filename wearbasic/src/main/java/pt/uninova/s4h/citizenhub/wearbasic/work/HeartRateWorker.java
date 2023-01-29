@@ -77,7 +77,6 @@ public class HeartRateWorker extends Worker {
         }
         if (avg > 0) {
             heartRateToSave.postValue(avg);
-            heartRateInstant.postValue(avg);
         }
         currentHRMeasurements.clear();
     }

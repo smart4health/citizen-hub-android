@@ -10,19 +10,17 @@ import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.time.Duration;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import pt.uninova.s4h.citizenhub.R;
@@ -42,16 +40,10 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: remake communication with phone (use TAGS? for synchronization)
-    //TODO: test steps worker
-    //confirm service runs with data from observer (number of sensors)
-    //implement quick reading when user taps the screen
-    //implement feedback message (sensors reading or not)
-
     //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
 
-    private boolean sensorsMeasuring = true;
     private TextView heartRateText, stepsText, sensorsAreMeasuring;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
@@ -60,7 +52,7 @@ public class MainActivity extends FragmentActivity {
     private SampleRepository sampleRepository;
     private Device wearDevice;
     private String nodeIdString;
-    private int activeSensors = 0;
+    private boolean sensorsMeasuring = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +62,7 @@ public class MainActivity extends FragmentActivity {
 
         permissionRequest();
         setViews();
+        setIconClickListeners();
         setDevice();
         setDatabases();
         startWorkers();
@@ -102,6 +95,29 @@ public class MainActivity extends FragmentActivity {
         stepsIcon = findViewById(R.id.imageIconSteps);
         citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
         citizenHubNameLogo = findViewById(R.id.imageViewNameLogo);
+    }
+
+    private void setIconClickListeners(){
+        citizenHubIcon.setOnClickListener(view -> {
+            System.out.println("tapped icon");
+            if(!sensorsMeasuring)
+                startOneTimeWorkers();
+        });
+        citizenHubNameLogo.setOnClickListener(view -> {
+            System.out.println("tapped icon");
+            if(!sensorsMeasuring)
+                startOneTimeWorkers();
+        });
+        heartRateIcon.setOnClickListener(view -> {
+            System.out.println("tapped icon");
+            if(!sensorsMeasuring)
+                startOneTimeWorkers();
+        });
+        stepsIcon.setOnClickListener(view -> {
+            System.out.println("tapped icon");
+            if(!sensorsMeasuring)
+                startOneTimeWorkers();
+        });
     }
 
     private void setDevice() {
@@ -142,6 +158,22 @@ public class MainActivity extends FragmentActivity {
 
     private void startWorkers(){
         WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        OneTimeWorkRequest stepsRequest = new OneTimeWorkRequest.Builder(StepsWorker.class)
+                .build();
+        workManager.enqueue(stepsRequest);
+        OneTimeWorkRequest heartRateRequest = new OneTimeWorkRequest.Builder(HeartRateWorker.class)
+                .build();
+        workManager.enqueue(heartRateRequest);
+        OneTimeWorkRequest syncRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
+                .build();
+        workManager.enqueue(syncRequest);
+    }
+
+    private void startOneTimeWorkers(){
+        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+        sensorsMeasuring = true;
+
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
         PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
                 .build();
         workManager.enqueue(stepsRequest);
@@ -155,30 +187,34 @@ public class MainActivity extends FragmentActivity {
 
     private void setObservers(){
         HeartRateWorker.heartRateInstant.observeForever(s -> {
-            startService(++activeSensors);
+            startService(2);
             System.out.println("Value from Instant HeartRate worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+            sensorsMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
             heartRateText.setText(String.valueOf(s));
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
-            startService(--activeSensors);
+            startService(0);
             System.out.println("Value from Average HeartRate worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+            sensorsMeasuring = false;
             saveHeartRateMeasurementLocally(s);
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
         });
         StepsWorker.stepsInstant.observeForever(s -> {
-            startService(++activeSensors);
+            startService(2);
             System.out.println("Value from Instant Steps worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
+            sensorsMeasuring = true;
             stepsText.setText(String.valueOf(s));
         });
         StepsWorker.stepsToSave.observeForever(s -> {
-            startService(--activeSensors);
+            startService(0);
             System.out.println("Value from Last Steps worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
+            sensorsMeasuring = false;
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
         });

@@ -91,7 +91,6 @@ public class StepsWorker extends Worker {
 
     private void stopListener(){
         sensorManager.unregisterListener(stepsEventListener);
-        stepsInstant.postValue(getLastStepCounter() + getOffsetStepCounter());
         stepsToSave.postValue(getLastStepCounter() + getOffsetStepCounter());
     }
 
