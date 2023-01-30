@@ -46,8 +46,8 @@ public class MainActivity extends FragmentActivity {
 
     private TextView heartRateText, stepsText, sensorsAreMeasuring;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
-    public StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
-    public HeartRateMeasurementRepository heartRateMeasurementRepository;
+    public static StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
+    public static HeartRateMeasurementRepository heartRateMeasurementRepository;
     public TagRepository tagRepository;
     private SampleRepository sampleRepository;
     private Device wearDevice;

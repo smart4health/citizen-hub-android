@@ -7,15 +7,16 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import pt.uninova.s4h.citizenhub.R;
-import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.wearbasic.MainActivity;
@@ -47,15 +48,23 @@ public class SyncWorker extends Worker {
 
 
     private void sendSteps(){
-        //TODO get steps value from local db
-        int steps = 0;
-        new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+        final LocalDate now = LocalDate.now();
+        //TODO check what was already sent
+        MainActivity.stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
+            if (value != null)
+                new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+        });
     }
 
     private void sendHeartRate(){
-        //TODO get heart rate value from local db
-        int heartRate = 0;
-        new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+        final LocalDate now = LocalDate.now();
+        //TODO check what was already sent
+        //MainActivity.heartRateMeasurementRepository.readAvgLastDay();
+                /*value -> {
+            if (value != null) {
+                new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+            }
+        });*/
     }
 
     class SendMessage extends Thread {
