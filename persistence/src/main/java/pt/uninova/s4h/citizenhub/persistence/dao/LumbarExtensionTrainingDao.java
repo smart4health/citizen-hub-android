@@ -17,6 +17,7 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.DurationTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.LumbarExtensionTrainingMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSummary;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTimestampPanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 
 @Dao
@@ -53,6 +54,11 @@ public interface LumbarExtensionTrainingDao {
     @TypeConverters(EpochTypeConverter.class)
     LiveData<LumbarExtensionTrainingSummary> selectLatestLiveData(LocalDate from, LocalDate to);
 
+    @Query(value = "SELECT duration AS duration, repetitions AS repetitions, score AS score, weight AS weight, sample.timestamp AS timestamp FROM lumbar_extension_training_measurement "
+            + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id "
+            + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000")
+    @TypeConverters(EpochTypeConverter.class)
+    List<LumbarExtensionWithTimestampPanel> selectTrainingSections(LocalDate localDate);
     @Query(value = "SELECT lumbar_extension_training_measurement.duration AS value1, sample.timestamp AS time FROM lumbar_extension_training_measurement "
             + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id ")
     @TypeConverters(EpochTypeConverter.class)
