@@ -33,13 +33,11 @@ public class HeartRateWorker extends Worker {
     @Override
     public Result doWork() {
         try {
-            System.out.println("HeartRate Worker is doing work.");
             startListener();
             return Result.success();
         }
         catch (Throwable throwable)
         {
-            System.out.println("HeartRate Worker failed to do work.");
             return Result.failure();
         }
     }

@@ -99,22 +99,18 @@ public class MainActivity extends FragmentActivity {
 
     private void setIconClickListeners(){
         citizenHubIcon.setOnClickListener(view -> {
-            System.out.println("tapped icon");
             if(!sensorsMeasuring)
                 startOneTimeWorkers();
         });
         citizenHubNameLogo.setOnClickListener(view -> {
-            System.out.println("tapped icon");
             if(!sensorsMeasuring)
                 startOneTimeWorkers();
         });
         heartRateIcon.setOnClickListener(view -> {
-            System.out.println("tapped icon");
             if(!sensorsMeasuring)
                 startOneTimeWorkers();
         });
         stepsIcon.setOnClickListener(view -> {
-            System.out.println("tapped icon");
             if(!sensorsMeasuring)
                 startOneTimeWorkers();
         });
@@ -188,7 +184,6 @@ public class MainActivity extends FragmentActivity {
     private void setObservers(){
         HeartRateWorker.heartRateInstant.observeForever(s -> {
             startService(2);
-            System.out.println("Value from Instant HeartRate worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
@@ -196,7 +191,6 @@ public class MainActivity extends FragmentActivity {
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(0);
-            System.out.println("Value from Average HeartRate worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
             sensorsMeasuring = false;
             saveHeartRateMeasurementLocally(s);
@@ -205,14 +199,12 @@ public class MainActivity extends FragmentActivity {
         });
         StepsWorker.stepsInstant.observeForever(s -> {
             startService(2);
-            System.out.println("Value from Instant Steps worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsMeasuring = true;
             stepsText.setText(String.valueOf(s));
         });
         StepsWorker.stepsToSave.observeForever(s -> {
             startService(0);
-            System.out.println("Value from Last Steps worker: " + s);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
             sensorsMeasuring = false;
             saveStepsMeasurementLocally(s);

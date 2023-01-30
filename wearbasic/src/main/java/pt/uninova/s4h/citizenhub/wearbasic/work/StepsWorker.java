@@ -36,14 +36,12 @@ public class StepsWorker extends Worker {
     @Override
     public Result doWork() {
         try{
-            System.out.println("Steps Worker is doing work.");
             sharedPreferences = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
             startListener();
             return Result.success();
         }
         catch (Throwable throwable)
         {
-            System.out.println("Steps Worker failed to do work.");
             return Result.failure();
         }
     }
@@ -54,25 +52,16 @@ public class StepsWorker extends Worker {
             public void onSensorChanged(SensorEvent event) {
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                     int stepCounter = (int) event.values[0];
-                    int steps = getLastStepCounter() + getOffsetStepCounter();
-                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                            + " | Steps to show: " + steps);
-
                     if (checkStepsReset(stepCounter)) {
                         sharedPreferences.edit().putInt("lastStepCounter", 0).apply();
                         sharedPreferences.edit().putInt("offsetStepCounter", -stepCounter).apply();
                     }
-
                     if (stepCounter < getLastStepCounter())
                         sharedPreferences.edit().putInt("offsetStepCounter", getLastStepCounter() + getOffsetStepCounter()).apply();
                     sharedPreferences.edit().putInt("lastStepCounter", stepCounter).apply();
                     sharedPreferences.edit().putLong("dayLastStepCounter", new Date().getTime()).apply();
 
-                    steps = getLastStepCounter() + getOffsetStepCounter();
-                    System.out.println("Before calculations: Step Counter: " + stepCounter + " | lastStepCounter: " + getLastStepCounter()
-                            + " | offsetStepCounter: " + getOffsetStepCounter() + " | dayLastStepCounter: " + getDayLastStepCounter()
-                            + " | Steps to show: " + steps);
+                    int steps = getLastStepCounter() + getOffsetStepCounter();
                     stepsInstant.postValue(steps);
                 }
             }

@@ -34,14 +34,12 @@ public class SyncWorker extends Worker {
     @Override
     public Result doWork() {
         try{
-            System.out.println("Sync Worker is doing work.");
             sendSteps();
             sendHeartRate();
             return Result.success();
         }
         catch (Throwable throwable)
         {
-            System.out.println("Sync Worker failed to do work.");
             return Result.failure();
         }
     }
@@ -51,14 +49,12 @@ public class SyncWorker extends Worker {
     private void sendSteps(){
         //TODO get steps value from local db
         int steps = 0;
-        System.out.println("Sending Steps value to phone: " + steps);
         new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, steps + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
     }
 
     private void sendHeartRate(){
         //TODO get heart rate value from local db
         int heartRate = 0;
-        System.out.println("Sending HR value to phone: " + heartRate);
         new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, heartRate + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
     }
 
@@ -77,7 +73,6 @@ public class SyncWorker extends Worker {
                 Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
                 Node n = Tasks.await(t);
                 nodeIdString = n.getId();
-                System.out.println("Node associated: " + n.getId() + " Message: " + message);
                 List<Node> nodes = Tasks.await(nodeListTask);
                 for (Node node : nodes) {
                     Task<Integer> sendMessageTask = Wearable.getMessageClient(getApplicationContext()).sendMessage(node.getId(), path, message.getBytes());
