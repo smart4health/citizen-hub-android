@@ -39,13 +39,12 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO activate measurement workers when app is opened
+    //TODO: still testing -> day change
     //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: Use sync worker to sync to phone
-    //TODO: still testing -> day change
     //TODO: remake phone side of communication
 
-    private TextView heartRateText, stepsText, sensorsAreMeasuring;
+    private TextView heartRateText, stepsText, sensorsMeasuringMessage;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public static StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     public static HeartRateMeasurementRepository heartRateMeasurementRepository;
@@ -53,7 +52,7 @@ public class MainActivity extends FragmentActivity {
     private SampleRepository sampleRepository;
     private Device wearDevice;
     private String nodeIdString;
-    private boolean sensorsMeasuring = true;
+    private boolean sensorsAreMeasuring = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!sensorsMeasuring)
+        if(!sensorsAreMeasuring)
             startOneTimeWorkers();
     }
 
@@ -97,8 +96,8 @@ public class MainActivity extends FragmentActivity {
     private void setViews(){
         heartRateText = findViewById(R.id.textViewHeartRateValue);
         stepsText = findViewById(R.id.textViewStepsValue);
-        sensorsAreMeasuring = findViewById(R.id.textViewSensorsMeasuring);
-        sensorsAreMeasuring.setText("");
+        sensorsMeasuringMessage = findViewById(R.id.textViewSensorsMeasuring);
+        sensorsMeasuringMessage.setText("");
         heartRateIcon = findViewById(R.id.imageIconHeartRate);
         stepsIcon = findViewById(R.id.imageIconSteps);
         citizenHubIcon = findViewById(R.id.imageViewCitizenHub);
@@ -107,19 +106,19 @@ public class MainActivity extends FragmentActivity {
 
     private void setIconClickListeners(){
         citizenHubIcon.setOnClickListener(view -> {
-            if(!sensorsMeasuring)
+            if(!sensorsAreMeasuring)
                 startOneTimeWorkers();
         });
         citizenHubNameLogo.setOnClickListener(view -> {
-            if(!sensorsMeasuring)
+            if(!sensorsAreMeasuring)
                 startOneTimeWorkers();
         });
         heartRateIcon.setOnClickListener(view -> {
-            if(!sensorsMeasuring)
+            if(!sensorsAreMeasuring)
                 startOneTimeWorkers();
         });
         stepsIcon.setOnClickListener(view -> {
-            if(!sensorsMeasuring)
+            if(!sensorsAreMeasuring)
                 startOneTimeWorkers();
         });
     }
@@ -188,32 +187,32 @@ public class MainActivity extends FragmentActivity {
 
     private void setObservers(){
         HeartRateWorker.heartRateInstant.observeForever(s -> {
-            if (!sensorsMeasuring)
+            if (!sensorsAreMeasuring)
                 startService(2);
-            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-            sensorsMeasuring = true;
+            sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_measuring));
+            sensorsAreMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
             heartRateText.setText(String.valueOf(s));
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(0);
-            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
-            sensorsMeasuring = false;
+            sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_idle));
+            sensorsAreMeasuring = false;
             saveHeartRateMeasurementLocally(s);
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
         });
         StepsWorker.stepsInstant.observeForever(s -> {
-            if (!sensorsMeasuring)
+            if (!sensorsAreMeasuring)
                 startService(2);
-            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-            sensorsMeasuring = true;
+            sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_measuring));
+            sensorsAreMeasuring = true;
             stepsText.setText(String.valueOf(s));
         });
         StepsWorker.stepsToSave.observeForever(s -> {
             startService(0);
-            sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_idle));
-            sensorsMeasuring = false;
+            sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_idle));
+            sensorsAreMeasuring = false;
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
         });
