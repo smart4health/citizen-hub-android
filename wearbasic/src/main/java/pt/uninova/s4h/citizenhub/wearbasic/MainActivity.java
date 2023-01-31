@@ -39,6 +39,7 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
+    //TODO activate measurement workers when app is opened
     //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
@@ -65,13 +66,20 @@ public class MainActivity extends FragmentActivity {
         setIconClickListeners();
         setDevice();
         setDatabases();
-        startWorkers();
+        startPeriodicWorkers();
         setObservers();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!sensorsMeasuring)
+            startOneTimeWorkers();
     }
 
     public void permissionRequest() {
@@ -152,23 +160,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private void startWorkers(){
-        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
-        OneTimeWorkRequest stepsRequest = new OneTimeWorkRequest.Builder(StepsWorker.class)
-                .build();
-        workManager.enqueue(stepsRequest);
-        OneTimeWorkRequest heartRateRequest = new OneTimeWorkRequest.Builder(HeartRateWorker.class)
-                .build();
-        workManager.enqueue(heartRateRequest);
-        OneTimeWorkRequest syncRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
-                .build();
-        workManager.enqueue(syncRequest);
-    }
-
-    private void startOneTimeWorkers(){
-        sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
-        sensorsMeasuring = true;
-
+    private void startPeriodicWorkers(){
         WorkManager workManager = WorkManager.getInstance(getApplicationContext());
         PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
                 .build();
@@ -177,6 +169,19 @@ public class MainActivity extends FragmentActivity {
                 .build();
         workManager.enqueue(heartRateRequest);
         PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
+                .build();
+        workManager.enqueue(syncRequest);
+    }
+
+    private void startOneTimeWorkers(){
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        OneTimeWorkRequest stepsRequest = new OneTimeWorkRequest.Builder(StepsWorker.class)
+                .build();
+        workManager.enqueue(stepsRequest);
+        OneTimeWorkRequest heartRateRequest = new OneTimeWorkRequest.Builder(HeartRateWorker.class)
+                .build();
+        workManager.enqueue(heartRateRequest);
+        OneTimeWorkRequest syncRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
                 .build();
         workManager.enqueue(syncRequest);
     }
