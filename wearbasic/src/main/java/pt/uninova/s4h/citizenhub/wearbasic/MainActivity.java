@@ -40,6 +40,7 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: still testing -> day change
+    //TODO: change number of sensors to -> sensors are measuring & sensors are idle
     //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: Use sync worker to sync to phone
     //TODO: remake phone side of communication
@@ -67,6 +68,7 @@ public class MainActivity extends FragmentActivity {
         setDatabases();
         startPeriodicWorkers();
         setObservers();
+        startService(2);
     }
 
     @Override
@@ -193,6 +195,7 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
             heartRateText.setText(String.valueOf(s));
+            System.out.println("Got HR Instant: " + s);
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(0);
@@ -201,6 +204,7 @@ public class MainActivity extends FragmentActivity {
             saveHeartRateMeasurementLocally(s);
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
+            System.out.println("Got HR Avg: " + s);
         });
         StepsWorker.stepsInstant.observeForever(s -> {
             if (!sensorsAreMeasuring)
@@ -208,6 +212,7 @@ public class MainActivity extends FragmentActivity {
             sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsAreMeasuring = true;
             stepsText.setText(String.valueOf(s));
+            System.out.println("Got Steps Instant: " + s);
         });
         StepsWorker.stepsToSave.observeForever(s -> {
             startService(0);
@@ -215,6 +220,7 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = false;
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
+            System.out.println("Got Steps to save: " + s);
         });
     }
 
