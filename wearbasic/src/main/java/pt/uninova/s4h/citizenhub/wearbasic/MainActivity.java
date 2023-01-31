@@ -40,9 +40,9 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: remake communication with phone (use TAGS? for synchronization)
-    //TODO: remake phone communication with watch
     //TODO: Use sync worker to sync to phone
     //TODO: still testing -> day change
+    //TODO: remake phone side of communication
 
     private TextView heartRateText, stepsText, sensorsAreMeasuring;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
@@ -183,7 +183,8 @@ public class MainActivity extends FragmentActivity {
 
     private void setObservers(){
         HeartRateWorker.heartRateInstant.observeForever(s -> {
-            startService(2);
+            if (!sensorsMeasuring)
+                startService(2);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
@@ -198,7 +199,8 @@ public class MainActivity extends FragmentActivity {
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
         });
         StepsWorker.stepsInstant.observeForever(s -> {
-            startService(2);
+            if (!sensorsMeasuring)
+                startService(2);
             sensorsAreMeasuring.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsMeasuring = true;
             stepsText.setText(String.valueOf(s));

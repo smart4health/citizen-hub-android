@@ -45,8 +45,6 @@ public class SyncWorker extends Worker {
         }
     }
 
-
-
     private void sendSteps(){
         final LocalDate now = LocalDate.now();
         //TODO check what was already sent
