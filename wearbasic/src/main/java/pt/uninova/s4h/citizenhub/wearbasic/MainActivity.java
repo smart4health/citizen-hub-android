@@ -40,7 +40,6 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 public class MainActivity extends FragmentActivity {
 
     //TODO: still testing -> day change
-    //TODO: change number of sensors to -> sensors are measuring & sensors are idle
     //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: Use sync worker to sync to phone
     //TODO: remake phone side of communication
@@ -227,7 +226,10 @@ public class MainActivity extends FragmentActivity {
     public void startService(int sensors) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
-            serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring, sensors));
+            if (sensors > 0)
+                serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring_active));
+            else
+                serviceIntent.putExtra("inputExtra", getString(R.string.notification_sensors_measuring_idle));
             ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         }, 10000);
     }
