@@ -629,5 +629,6 @@
     <string name="smart4health_information_to_send">Reported data</string>
     <string name="connect_label">Connect</string>
     <string name="search_label">Search</string>
+    <string name="label_work_hours">Work Hours</string>
 
 </resources>
