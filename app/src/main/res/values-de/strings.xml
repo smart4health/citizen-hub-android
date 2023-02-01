@@ -77,7 +77,7 @@
     <string name="fragment_configuration_text_view_connect">Verbinden</string>
     <string name="fragment_configuration_text_view_name">Name: %1$s</string>
     <string name="fragment_configuration_text_view_update">Aktualisieren</string>
-    <string name="fragment_device_connect_button">Gerät hinzufügen</string>
+    <string name="connect_label">Gerät hinzufügen</string>
     <string name="fragment_device_add_info_text">Info</string>
     <string name="fragment_device_add_label">Gerät hinzufügen</string>
     <string name="fragment_device_configuration_add_label">Über Smart4Health</string>

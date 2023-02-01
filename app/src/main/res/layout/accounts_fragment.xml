@@ -124,4 +124,19 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:gravity="bottom|center"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/addButton"
+            style="@style/Widget.MyApp.ExtendedFloatingActionButton"
+            android:text="@string/menu_accounts_fragment_add_title"
+            android:theme="@style/AppTheme"
+            android:visibility="visible"
+            app:iconTint="@color/colorS4HWhite"
+            app:icon="@drawable/ic_baseline_add_24" />
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -79,7 +79,7 @@
     <string name="fragment_configuration_text_view_connect">Ligar</string>
     <string name="fragment_configuration_text_view_name">Nome: %1$s</string>
     <string name="fragment_configuration_text_view_update">"Actualizar "</string>
-    <string name="fragment_device_connect_button">"Adicionar dispositivo "</string>
+    <string name="connect_label">"Adicionar dispositivo "</string>
     <string name="fragment_device_add_info_text">"Informação "</string>
     <string name="fragment_device_add_label">"Adicionar dispositivo "</string>
     <string name="fragment_device_configuration_add_label">"Sobre o Smart4Health "</string>

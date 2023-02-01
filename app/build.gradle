@@ -105,6 +105,8 @@ dependencies {
 
     implementation "androidx.concurrent:concurrent-futures:$concurrent_version"
 
+    implementation 'com.google.android.material:material:1.7.0'
+
     implementation "androidx.fragment:fragment:$fragment_version"
 
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
