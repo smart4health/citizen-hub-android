@@ -17,7 +17,6 @@
             android:orientation="vertical"/>
 
         <TextView
-            android:id="@+id/text_view_information_to_send"
             style="@style/AdvancedConfigurationFragmentCategoryTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,20 +35,20 @@
                 android:layout_weight="0.8"
                 android:orientation="horizontal">
 
-               <TextView
-                    android:id="@+id/calibrationButton"
+                <TextView
                     style="@style/Settings.TextView"
-                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:duplicateParentState="true"
-                    android:text="@string/label_uprightgo2_setting_calibration" />
-               </LinearLayout>
+                    android:gravity="center_vertical"
+                    android:text="@string/fragment_settings_work_days" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/text_view_daily_uploads_description"
+                android:id="@+id/placeholder_workdays"
                 style="@style/AccountSettingsFragment.subTextView"
-                android:text="@string/smart4health_automatic_uploads_description" />
+                android:text="@string/fragment_settings_work_days_title" />
+
         </LinearLayout>
 
     </LinearLayout>
