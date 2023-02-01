@@ -39,7 +39,6 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: still testing -> day change
     //TODO: remake communication with phone (use TAGS? for synchronization)
     //TODO: Use sync worker to sync to phone
     //TODO: remake phone side of communication
