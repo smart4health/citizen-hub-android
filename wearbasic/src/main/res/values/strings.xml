@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Citizen Wear</string>
     <string name="main_activity_no_measurement">--</string>
+    <string name="main_activity_sensors_initializing">Sensors are\ninitializing</string>
     <string name="main_activity_sensors_measuring">Sensors are\nmeasuring</string>
     <string name="main_activity_sensors_idle">Tap icon to measure\nHeart Rate</string>
     <string name="main_activity_content_description_name_logo">Citizen Hub Name Logo</string>
