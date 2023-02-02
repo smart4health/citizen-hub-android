@@ -28,6 +28,7 @@ import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
+import pt.uninova.s4h.citizenhub.data.Tag;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
@@ -39,8 +40,7 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: remake communication with phone (use TAGS? for synchronization)
-    //TODO: Use sync worker to sync to phone
+    //TODO: Use sync worker (with TAG check, label not_sync -> sync) to sync to phone
     //TODO: remake phone side of communication
 
     private TextView heartRateText, stepsText, sensorsMeasuringMessage;
@@ -145,17 +145,13 @@ public class MainActivity extends FragmentActivity {
 
     private void saveStepsMeasurementLocally(int steps) {
         Sample sample = new Sample(wearDevice, new StepsSnapshotMeasurement(StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT, steps));
-        sampleRepository.create(sample, sampleId -> {
-            //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
-        });
+        sampleRepository.create(sample, sampleId -> tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED));
     }
 
     private void saveHeartRateMeasurementLocally(int value){
         if (value > 0) {
             Sample sample = new Sample(wearDevice, new HeartRateMeasurement(value));
-            sampleRepository.create(sample, sampleId -> {
-                //tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED);
-            });
+            sampleRepository.create(sample, sampleId -> tagRepository.create(sampleId, Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED));
         }
     }
 
