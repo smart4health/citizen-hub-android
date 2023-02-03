@@ -19,4 +19,7 @@ public interface TagDao {
 
     @Query("SELECT sample_id FROM tag WHERE label == :label")
     List<Integer> selectBasedOnLabel(Integer label);
+
+    @Query("UPDATE tag SET label = :label WHERE sample_id = :sampleId")
+    void updateLabel(Long sampleId,Integer label);
 }
