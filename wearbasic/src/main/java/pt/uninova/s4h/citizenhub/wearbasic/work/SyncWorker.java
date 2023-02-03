@@ -8,7 +8,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import pt.uninova.s4h.citizenhub.R;
+import pt.uninova.s4h.citizenhub.data.Tag;
 import pt.uninova.s4h.citizenhub.data.HeartRateMeasurement;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.wearbasic.MainActivity;
@@ -46,23 +47,26 @@ public class SyncWorker extends Worker {
 
     private void sendSteps(){
         final LocalDate now = LocalDate.now();
-        //TODO check what was already sent with Tag Repository
-        /*MainActivity.stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
-            if (value != null)
-                new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-        });*/
+
+        MainActivity.tagRepository.selectBasedOnLabel(Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED, values -> {
+            System.out.println("IDs: " + values);
+            for (Integer id : values)
+            {
+                // get steps record by id (make method and query)
+                // send message
+                // update label
+            }
+
+            // if (value != null)
+            // new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+            // tagRepository.updateLabel(sampleId, Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
+        });
     }
 
     private void sendHeartRate(){
         final LocalDate now = LocalDate.now();
-        //TODO check what was already sent with Tag Repository
-        /*MainActivity.heartRateMeasurementRepository.readAvgLastDay(value -> {
-            if (value != null) {
-                new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
-            }
-        }, now);*/
+        //TODO
     }
-
 
     class SendMessage extends Thread {
         String path;

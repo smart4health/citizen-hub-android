@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity {
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public static StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     public static HeartRateMeasurementRepository heartRateMeasurementRepository;
-    public TagRepository tagRepository;
+    public static TagRepository tagRepository;
     private SampleRepository sampleRepository;
     private Device wearDevice;
     private String nodeIdString;
