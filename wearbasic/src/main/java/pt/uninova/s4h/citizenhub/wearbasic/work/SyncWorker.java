@@ -10,7 +10,6 @@ import com.google.android.gms.wearable.Wearable;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
@@ -47,23 +46,23 @@ public class SyncWorker extends Worker {
 
     private void sendSteps(){
         final LocalDate now = LocalDate.now();
-        //TODO check what was already sent
-        MainActivity.stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
+        //TODO check what was already sent with Tag Repository
+        /*MainActivity.stepsSnapshotMeasurementRepository.readMaximumObserved(now, value -> {
             if (value != null)
                 new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-        });
+        });*/
     }
 
     private void sendHeartRate(){
         final LocalDate now = LocalDate.now();
-        //TODO check what was already sent
-        //MainActivity.heartRateMeasurementRepository.readAvgLastDay();
-                /*value -> {
+        //TODO check what was already sent with Tag Repository
+        /*MainActivity.heartRateMeasurementRepository.readAvgLastDay(value -> {
             if (value != null) {
                 new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
             }
-        });*/
+        }, now);*/
     }
+
 
     class SendMessage extends Thread {
         String path;
