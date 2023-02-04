@@ -9,6 +9,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -46,25 +47,21 @@ public class SyncWorker extends Worker {
     }
 
     private void sendSteps(){
-        final LocalDate now = LocalDate.now();
-
         MainActivity.tagRepository.selectBasedOnLabel(Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED, values -> {
             System.out.println("IDs: " + values);
-            for (Integer id : values)
+            for (Integer sampleId : values)
             {
-                // get steps record by id (make method and query)
-                // send message
-                // update label
+                MainActivity.stepsSnapshotMeasurementRepository.selectBasedOnId(Long.valueOf(sampleId), value -> {
+                    //TODO test
+                    if (value != null)
+                        new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+                    MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
+                });
             }
-
-            // if (value != null)
-            // new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-            // tagRepository.updateLabel(sampleId, Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
         });
     }
 
     private void sendHeartRate(){
-        final LocalDate now = LocalDate.now();
         //TODO
     }
 
