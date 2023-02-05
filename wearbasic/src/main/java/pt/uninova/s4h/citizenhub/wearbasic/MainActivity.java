@@ -40,17 +40,17 @@ import pt.uninova.s4h.citizenhub.wearbasic.work.SyncWorker;
 
 public class MainActivity extends FragmentActivity {
 
-    //TODO: Use sync worker (with TAG check, label not_sync -> sync) to sync to phone
-    //TODO: remake phone side of communication
+    //TODO: Finish sync worker (steps done, HR doing)
+    //TODO: remake phone side of communication (message is received and displayed, but timestamp may not be the original, but the current)
 
     private TextView heartRateText, stepsText, sensorsMeasuringMessage;
     private ImageView heartRateIcon, citizenHubIcon, stepsIcon, citizenHubNameLogo;
     public static StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository;
     public static HeartRateMeasurementRepository heartRateMeasurementRepository;
     public static TagRepository tagRepository;
-    private SampleRepository sampleRepository;
+    public static SampleRepository sampleRepository;
     private Device wearDevice;
-    private String nodeIdString;
+    public static String nodeIdString;
     private boolean sensorsAreMeasuring = true;
 
     @Override

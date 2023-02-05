@@ -7,9 +7,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -23,8 +20,6 @@ import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.wearbasic.MainActivity;
 
 public class SyncWorker extends Worker {
-
-    private String nodeIdString;
 
     public SyncWorker(
             @NonNull Context appContext,
@@ -48,14 +43,16 @@ public class SyncWorker extends Worker {
 
     private void sendSteps(){
         MainActivity.tagRepository.selectBasedOnLabel(Tag.LABEL_MEASUREMENT_NOT_SYNCHRONIZED, values -> {
-            System.out.println("IDs: " + values);
             for (Integer sampleId : values)
             {
                 MainActivity.stepsSnapshotMeasurementRepository.selectBasedOnId(Long.valueOf(sampleId), value -> {
-                    //TODO test
-                    if (value != null)
-                        new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + nodeIdString, value + "," + new Date().getTime() + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
-                    MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
+                        if (value != null)
+                        {
+                            MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> {
+                                new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+                                MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
+                            });
+                        }
                 });
             }
         });
@@ -77,12 +74,10 @@ public class SyncWorker extends Worker {
         public void run() {
             Task<List<Node>> nodeListTask = Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
             try {
-                Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
-                Node n = Tasks.await(t);
-                nodeIdString = n.getId();
                 List<Node> nodes = Tasks.await(nodeListTask);
                 for (Node node : nodes) {
                     Task<Integer> sendMessageTask = Wearable.getMessageClient(getApplicationContext()).sendMessage(node.getId(), path, message.getBytes());
+                    System.out.println("Message sent: " + path + " | " + message);
                     try {
                         Tasks.await(sendMessageTask);
                     } catch (ExecutionException | InterruptedException exception) {
