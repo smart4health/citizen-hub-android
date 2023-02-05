@@ -117,4 +117,7 @@ public interface HeartRateMeasurementDao {
     @TypeConverters(EpochTypeConverter.class)
     List<SummaryDetailUtil> selectMinLastThirtyDays(LocalDate from, LocalDate to);
 
+    @Query("SELECT value FROM heart_rate_measurement WHERE sample_id == :sampleId")
+    Integer selectBasedOnId(Long sampleId);
+
 }

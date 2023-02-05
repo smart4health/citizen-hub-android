@@ -88,4 +88,8 @@ public class HeartRateMeasurementRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(heartRateMeasurementDao.selectMinLastThirtyDays(localDate.minusDays(29), localDate)));
     }
 
+    public void selectBasedOnId(Long sampleId, Observer<Integer> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(heartRateMeasurementDao.selectBasedOnId(sampleId)));
+    }
+
 }
