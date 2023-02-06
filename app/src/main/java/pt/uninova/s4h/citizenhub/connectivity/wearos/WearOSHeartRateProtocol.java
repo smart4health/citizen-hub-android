@@ -35,7 +35,7 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
                 final int heartRate = (int) value;
                 Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
                 if(value<wearProtocolDisable){
-                    final Sample sample = new Sample(getAgent().getSource(),
+                    final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
                             new HeartRateMeasurement(heartRate));
                     getSampleDispatcher().dispatch(sample);
 

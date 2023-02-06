@@ -37,7 +37,7 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
                 service.getWearOSMessageService().sendMessage("WearOSConnected","true");
                 if (value < wearProtocolDisable) {
                     final int steps = (int) value;
-                    final Sample sample = new Sample(getAgent().getSource(),
+                    final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
                             new StepsSnapshotMeasurement(SnapshotMeasurement.TYPE_DAY, steps),
                             new DistanceSnapshotMeasurement(SnapshotMeasurement.TYPE_DAY, steps * 0.762),
                             new CaloriesSnapshotMeasurement(SnapshotMeasurement.TYPE_DAY, steps * 0.04));
