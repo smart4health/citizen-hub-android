@@ -97,7 +97,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
 // Add a checkbox list
                 String[] animals = getResources().getStringArray(R.array.workdays);
-                boolean[] checkedItems = {true, false, false, true, false};
+                boolean[] checkedItems = {true, false, false, true, false, true, true};
                 builder.setMultiChoiceItems(animals, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
