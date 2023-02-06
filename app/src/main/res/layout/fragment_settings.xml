@@ -41,6 +41,7 @@
 
 
         <LinearLayout
+            android:id="@+id/layout_start_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -66,7 +67,11 @@
                 android:text="@string/fragment_settings_work_hours_start_message" />
 
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/layout_end_time"
+
+
             android:layout_width="match_parent"
             android:layout_marginVertical="20dp"
             android:layout_height="wrap_content"

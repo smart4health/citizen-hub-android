@@ -14,6 +14,14 @@
         <item name="preferenceTheme">@style/preferences</item>
     </style>
 
+    <style name="DialogTheme" parent="Theme.AppCompat"></style>
+
+    <style name="TimePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Bridge">
+        <item name="colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="Theme.Citizen.AppSettings.Category.Material" parent="Preference.Category.Material">
         <item name="allowDividerAbove">false</item>
         <item name="allowDividerBelow">false</item>
