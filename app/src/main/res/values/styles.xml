@@ -22,6 +22,14 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="AlertDialogThemeWithCheckboxes" parent="@android:style/Theme.Material.Light.Dialog">
+        <item name="colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:fontFamily">@font/neosanspro_regular</item>
+        <item name="android:titleTextAppearance">@font/neo_sans_pro_bold</item>
+
+    </style>
+
     <style name="Theme.Citizen.AppSettings.Category.Material" parent="Preference.Category.Material">
         <item name="allowDividerAbove">false</item>
         <item name="allowDividerBelow">false</item>

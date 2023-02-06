@@ -92,7 +92,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
             @Override
             public void onClick(View view) {
                 // Set up the alert builder
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogThemeWithCheckboxes);
                 builder.setTitle("Choose work days");
 
 // Add a checkbox list
