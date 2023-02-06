@@ -1,34 +1,37 @@
 package pt.uninova.s4h.citizenhub;
 
+import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.preference.MultiSelectListPreference;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import java.time.DayOfWeek;
-import java.time.format.TextStyle;
-import java.util.HashSet;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String KEY_WORK_DAYS = "workDays";
     private static final String KEY_WORK_TIME_START = "workStart";
     private static final String KEY_WORK_TIME_END = "workEnd";
-
+    private LinearLayout startTime;
+    private LinearLayout endTime;
+    private TextView startTimePlaceHolder;
+    private TextView endtimePlaceHolder;
+    private int timePickerTheme;
     private SharedPreferences preferences;
 
     @Override
@@ -38,103 +41,147 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        PreferenceManager.getDefaultSharedPreferences(requireContext());
-//        setPreferencesFromResource(R.xml.settings_fragment, rootKey);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
-
 
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onDisplayPreferenceDialog(Preference preference) {
-        DialogFragment dialogFragment = null;
-        if (preference instanceof TimePreference) {
-            dialogFragment = new TimePreferenceDialogFragmentCompat();
-            Bundle bundle = new Bundle(1);
-            bundle.putString("key", preference.getKey());
-            dialogFragment.setArguments(bundle);
-
-        }
-
-        if (dialogFragment != null) {
-            dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
-        } else {
-            super.onDisplayPreferenceDialog(preference);
-        }
-    }
+//    @Override
+//    public void onDisplayPreferenceDialog(Preference preference) {
+//        DialogFragment dialogFragment = null;
+//        if (preference instanceof TimePreference) {
+//            dialogFragment = new TimePreferenceDialogFragmentCompat();
+//            Bundle bundle = new Bundle(1);
+//            bundle.putString("key", preference.getKey());
+//            dialogFragment.setArguments(bundle);
+//
+//        }
+//
+//        if (dialogFragment != null) {
+//            dialogFragment.setTargetFragment(this, 0);
+//            dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+//        } else {
+//            super.onDisplayPreferenceDialog(preference);
+//        }
+//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updatePreference(KEY_WORK_DAYS);
+
+        startTime = getView().findViewById(R.id.layout_start_time);
+
+        startTimePlaceHolder = getView().findViewById(R.id.placeholder_work_start_time);
+
+        endTime = getView().findViewById(R.id.layout_end_time);
+        endtimePlaceHolder = getView().findViewById(R.id.placeholder_work_end_time);
+
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                int mHour = c.get(Calendar.HOUR_OF_DAY);
+                int mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), R.style.TimePickerTheme,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                startTimePlaceHolder.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, true);
+                timePickerDialog.setTitle("Choose end hour:");
+                timePickerDialog.show();
+            }
+
+        });
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c = Calendar.getInstance();
+                int mHours = c.get(Calendar.HOUR_OF_DAY);
+                int mMinutes = c.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), R.style.TimePickerTheme,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                endtimePlaceHolder.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHours, mMinutes, true);
+                timePickerDialog.setTitle("Choose end time:");
+                timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                timePickerDialog.show();
+            }
+        });
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updatePreference(key);
     }
 
-    private void updatePreference(String key) {
-        if (key.equals(KEY_WORK_DAYS)) {
-            try {
-                Preference preference = findPreference(key);
-
-                if (preference != null) {
-                    List<DayOfWeek> daysOfWeek = getDaysOfWeek((MultiSelectListPreference) preference);
-
-                    if (daysOfWeek.size() > 0) {
-                        Set<String> values = new HashSet<>();
-                        final StringBuilder dayString = new StringBuilder();
-
-                        for (DayOfWeek i : daysOfWeek) {
-                            dayString.append(" ");
-                            dayString.append(i.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.getDefault()));
-                            values.add(String.valueOf(i.getValue()));
-                        }
-
-                        preferences.edit().putStringSet(KEY_WORK_DAYS, values).apply();
-                        preference.setSummary(getString(R.string.fragment_settings_current_work_days_text) + dayString);
-                    } else {
-                        preferences.edit().remove(KEY_WORK_DAYS).apply();
-                        preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
-                    }
-                }
-            } catch (Exception e) {
-                final SharedPreferences.Editor editor = preferences.edit();
-
-                editor.remove(KEY_WORK_DAYS);
-                editor.remove(KEY_WORK_TIME_START);
-                editor.remove(KEY_WORK_TIME_END);
-
-                editor.apply();
-
-                Preference preference = findPreference(KEY_WORK_DAYS);
-                preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
-            }
-        }
-
-
-        WorkTimeRangeConverter workTimeRangeConverter = WorkTimeRangeConverter.getInstance(requireContext());
-        workTimeRangeConverter.refreshTimeVariables(requireContext());
-    }
+//    private void updatePreference(String key) {
+//        if (key.equals(KEY_WORK_DAYS)) {
+//            try {
+//                Preference preference = findPreference(key);
+//
+//                if (preference != null) {
+//                    List<DayOfWeek> daysOfWeek = getDaysOfWeek((MultiSelectListPreference) preference);
+//
+//                    if (daysOfWeek.size() > 0) {
+//                        Set<String> values = new HashSet<>();
+//                        final StringBuilder dayString = new StringBuilder();
+//
+//                        for (DayOfWeek i : daysOfWeek) {
+//                            dayString.append(" ");
+//                            dayString.append(i.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.getDefault()));
+//                            values.add(String.valueOf(i.getValue()));
+//                        }
+//
+//                        preferences.edit().putStringSet(KEY_WORK_DAYS, values).apply();
+//                        preference.setSummary(getString(R.string.fragment_settings_current_work_days_text) + dayString);
+//                    } else {
+//                        preferences.edit().remove(KEY_WORK_DAYS).apply();
+//                        preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
+//                    }
+//                }
+//            } catch (Exception e) {
+//                final SharedPreferences.Editor editor = preferences.edit();
+//
+//                editor.remove(KEY_WORK_DAYS);
+//                editor.remove(KEY_WORK_TIME_START);
+//                editor.remove(KEY_WORK_TIME_END);
+//
+//                editor.apply();
+//
+//                Preference preference = findPreference(KEY_WORK_DAYS);
+//                preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
+//            }
+//        }
+//
+//
+//        WorkTimeRangeConverter workTimeRangeConverter = WorkTimeRangeConverter.getInstance(requireContext());
+//        workTimeRangeConverter.refreshTimeVariables(requireContext());
+//    }
 
 
     public List<DayOfWeek> getDaysOfWeek(MultiSelectListPreference preference) {
