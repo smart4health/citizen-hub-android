@@ -1,6 +1,8 @@
 package pt.uninova.s4h.citizenhub;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,8 +29,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     private static final String KEY_WORK_DAYS = "workDays";
     private static final String KEY_WORK_TIME_START = "workStart";
     private static final String KEY_WORK_TIME_END = "workEnd";
-    private LinearLayout startTime;
-    private LinearLayout endTime;
+    private LinearLayout workDaysLayout;
     private TextView startTimePlaceHolder;
     private TextView endtimePlaceHolder;
     private int timePickerTheme;
@@ -79,13 +80,45 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        startTime = getView().findViewById(R.id.layout_start_time);
+        workDaysLayout = getView().findViewById(R.id.layout_work_days);
+        LinearLayout startTime = getView().findViewById(R.id.layout_start_time);
 
         startTimePlaceHolder = getView().findViewById(R.id.placeholder_work_start_time);
 
-        endTime = getView().findViewById(R.id.layout_end_time);
+        LinearLayout endTime = getView().findViewById(R.id.layout_end_time);
         endtimePlaceHolder = getView().findViewById(R.id.placeholder_work_end_time);
+
+        workDaysLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Set up the alert builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Choose work days");
+
+// Add a checkbox list
+                String[] animals = getResources().getStringArray(R.array.workdays);
+                boolean[] checkedItems = {true, false, false, true, false};
+                builder.setMultiChoiceItems(animals, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        // The user checked or unchecked a box
+                    }
+                });
+
+// Add OK and Cancel buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The user clicked OK
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+
+// Create and show the alert dialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
 
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
