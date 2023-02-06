@@ -129,7 +129,6 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                             }
                         }, mHours, mMinutes, true);
                 timePickerDialog.setTitle("Choose end time:");
-                timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 timePickerDialog.show();
             }
         });
