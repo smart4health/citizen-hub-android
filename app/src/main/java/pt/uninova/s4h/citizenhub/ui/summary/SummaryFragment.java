@@ -134,6 +134,7 @@ public class SummaryFragment extends ServiceFragment {
         model.getHeartRateData().observe(getViewLifecycleOwner(), this::onHeartRateDataUpdate);
         model.getPostureData().observe(getViewLifecycleOwner(), this::onPostureDataUpdate);
         model.hasData().observe(getViewLifecycleOwner(), this::onHasDataUpdate);
+        model.getLumbarExtensionTrainingData().observe(getViewLifecycleOwner(), this::onDailyLumbarExtensionTrainingUpdate);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class SummaryFragment extends ServiceFragment {
 
 ///////////////////////////////////
 
-    private void onDailyLumbarExtensionTrainingUpdate(LumbarExtensionTrainingSummary record) {
+    private void onDailyLumbarExtensionTrainingUpdate(SummaryViewModel.LumbarExtensionTrainingData record) {
         final View view = requireView();
         final CardView lumbarExtensionTrainingCardView = view.findViewById(R.id.lumbarTrainingCardView);
 
@@ -207,7 +208,8 @@ public class SummaryFragment extends ServiceFragment {
 
             lumbarExtensionTrainingDurationTextView.setText(getString(R.string.lumbar_training_duration_value, millisToString(record.getDuration().toMillis())));
             lumbarExtensionTrainingRepetitionsTextView.setText(getString(R.string.lumbar_training_repetitions_value, record.getRepetitions()));
-            lumbarExtensionTrainingWeightTextView.setText(getString(R.string.lumbar_training_weight_value, record.getWeight()));
+            lumbarExtensionTrainingWeightTextView.setText(getString(R.string.lumbar_training_weight_value, record.getTrainingWeight()));
+            updateCardViewVisibility(lumbarExtensionTrainingCardView, true);
         }
     }
 }
