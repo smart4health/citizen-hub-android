@@ -15,15 +15,12 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.preference.MultiSelectListPreference;
 import androidx.preference.PreferenceManager;
 
-import java.time.DayOfWeek;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -105,6 +102,8 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         endtimePlaceHolder = getView().findViewById(R.id.placeholder_work_end_time);
         endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, "Set some time"));
 
+
+        Set<String> finalWorkDaysSet = workDaysSet;
         workDaysLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,10 +113,30 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
 // Add a checkbox list
                 String[] workDays = getResources().getStringArray(R.array.workdays);
-                boolean[] checkedItems = {true, false, false, true, false, true, true};
+                String finalWorkDays = String.valueOf(preferences.getStringSet(KEY_WORK_DAYS, finalWorkDaysSet));
+                int j = 0;
+                boolean[] checkedItems = new boolean[7];
+                for (String day : workDays
+                ) {
+                    System.out.println(day);
+                    System.out.println(finalWorkDays);
+                    System.out.println(Arrays.toString(workDays));
+                    checkedItems[j] = finalWorkDays.contains(day);
+                    System.out.println(Arrays.toString(checkedItems));
+                    j++;
+                }
                 builder.setMultiChoiceItems(workDays, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        workDaysPlaceholder.setText("");
+                        StringJoiner sb = new StringJoiner(", ");
+                        for (int i = 0; i < workDays.length; i++) {
+                            if (checkedItems[i]) {
+                                sb.add(workDays[i]);
+                            }
+                        }
+                        workDaysPlaceholder.setText(sb.toString());
+                        preferences.edit().putStringSet(KEY_WORK_DAYS, Collections.singleton(sb.toString())).apply();
 
                     }
                 });
@@ -241,15 +260,4 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 //        WorkTimeRangeConverter workTimeRangeConverter = WorkTimeRangeConverter.getInstance(requireContext());
 //        workTimeRangeConverter.refreshTimeVariables(requireContext());
 //    }
-
-
-    public List<DayOfWeek> getDaysOfWeek(MultiSelectListPreference preference) {
-        List<DayOfWeek> dayOfWeekList = new LinkedList<>();
-
-        for (String i : preference.getValues()) {
-            dayOfWeekList.add(DayOfWeek.of(Integer.parseInt(i)));
-        }
-
-        return dayOfWeekList;
-    }
 }
