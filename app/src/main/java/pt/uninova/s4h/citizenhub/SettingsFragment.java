@@ -73,6 +73,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
 
         Set<String> finalWorkDaysSet = workDaysSet;
+        Set<String> workDaysTest = new HashSet<>();
         workDaysLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,8 +82,17 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
                 String[] workDays = getResources().getStringArray(R.array.workdays);
                 String finalWorkDays = String.valueOf(preferences.getStringSet(KEY_WORK_DAYS, finalWorkDaysSet));
+                Set<String> workDaysInteger = new HashSet<>();
+                workDaysInteger = preferences.getStringSet(KEY_WORK_DAYS, workDaysInteger);
+
+
                 int j = 0;
                 boolean[] checkedItems = new boolean[7];
+
+                for(int k=1;k<=checkedItems.length;k++){
+                    checkedItems[k]=workDaysInteger.contains(String.valueOf(k));
+                }
+
                 for (String day : workDays
                 ) {
                     checkedItems[j] = finalWorkDays.contains(day);
@@ -96,10 +106,15 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                         for (int i = 0; i < workDays.length; i++) {
                             if (checkedItems[i]) {
                                 sb.add(workDays[i]);
+                                workDaysTest.add(String.valueOf(i));
+                            }
+                            else{
+                                workDaysTest.remove(String.valueOf(i));
                             }
                         }
                         workDaysPlaceholder.setText(sb.toString());
-                        preferences.edit().putStringSet(KEY_WORK_DAYS, Collections.singleton(sb.toString())).apply();
+//                        preferences.edit().putStringSet(KEY_WORK_DAYS, Collections.singleton(sb.toString())).apply();
+                        preferences.edit().putStringSet(KEY_WORK_DAYS, workDaysTest).apply();
 
                     }
                 });
@@ -115,7 +130,9 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                             }
                         }
                         workDaysPlaceholder.setText(sb.toString());
-                        preferences.edit().putStringSet(KEY_WORK_DAYS, Collections.singleton(sb.toString())).apply();
+//                        preferences.edit().putStringSet(KEY_WORK_DAYS, Collections.singleton(sb.toString())).apply();
+                        preferences.edit().putStringSet(KEY_WORK_DAYS, workDaysTest).apply();
+
                     }
 
                 });
