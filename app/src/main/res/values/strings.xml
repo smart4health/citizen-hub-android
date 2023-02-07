@@ -628,5 +628,6 @@
     <!---->
 
     <string name="smart4health_information_to_send">Reported data</string>
+    <string name="service_notification_message">Connected to %d out of %d devices\n</string>
 
 </resources>
