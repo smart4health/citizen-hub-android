@@ -18,6 +18,8 @@
 
     <style name="TimePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Bridge">
         <item name="colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:fontFamily">@font/neosanspro_regular</item>
+        <item name="android:font">@font/neosanspro_regular</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
