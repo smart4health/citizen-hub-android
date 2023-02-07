@@ -54,4 +54,8 @@ public class StepsSnapshotMeasurementRepository {
     public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastThirtyDays(localDate.minusDays(29), localDate)));
     }
+
+    public void readSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
+    }
 }

@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -43,31 +45,36 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.device_configuration_udi_setter_menu, menu);
-        MenuItem clearUdi = menu.findItem(R.id.device_configuration_udi_clear_item);
-        clearUdi.setOnMenuItemClickListener((MenuItem item) -> {
-
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    model.getSelectedDeviceAgent().getSettingsManager().set("udi-serial-number", null);
-                    model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
-                    model.getSelectedDeviceAgent().getSettingsManager().set("udi-device-identifier", null);
-
-                }
-            });
-            Navigation.findNavController(DeviceConfigurationUdiSetterFragment.this.requireView()).navigate(DeviceConfigurationUdiSetterFragmentDirections.actionDeviceConfigurationUdiSetterFragmentToDeviceConfigurationFragment());
-            return true;
-        });
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.fragment_device_configuration_unique_identifier_setter, container, false);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.device_configuration_udi_setter_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.device_configuration_udi_clear_item) {
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            model.getSelectedDeviceAgent().getSettingsManager().set("udi-serial-number", null);
+                            model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
+                            model.getSelectedDeviceAgent().getSettingsManager().set("udi-device-identifier", null);
+
+                        }
+                    });
+                    Navigation.findNavController(DeviceConfigurationUdiSetterFragment.this.requireView()).navigate(DeviceConfigurationUdiSetterFragmentDirections.actionDeviceConfigurationUdiSetterFragmentToDeviceConfigurationFragment());
+                    return true;
+                }
+                return false;
+            }
+        });
         LinearLayout serialNumber = view.findViewById(R.id.layout_serial_number);
         LinearLayout deviceIdentifierLayout = view.findViewById(R.id.layout_device_identifier);
         TextView serialNumberPlaceholder = view.findViewById(R.id.value_placeholder_serial_number);

@@ -33,7 +33,7 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SummaryViewModel.class);
-        chartFunctions = new ChartFunctions(getContext());
+        chartFunctions = new ChartFunctions(getContext(), LocalDate.now());
     }
 
     @Override
@@ -96,13 +96,13 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
     private void weeklyBloodPressure() {
         Observer<List<SummaryDetailBloodPressureUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(data), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 7);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
-        bloodPressureMeasurementRepository.readLastDays(LocalDate.now(), 7, observer);
+        bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
     }
 
     private void monthlyBloodPressure() {
         Observer<List<SummaryDetailBloodPressureUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(data), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 30);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
-        bloodPressureMeasurementRepository.readLastDays(LocalDate.now(), 30, observer);
+        bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
     }
 
     private void dailyPulseRate(){

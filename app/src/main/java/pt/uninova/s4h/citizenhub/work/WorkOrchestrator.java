@@ -29,7 +29,7 @@ public class WorkOrchestrator {
         //workManager.cancelAllWork();
     }
 
-    public void enqueueSmartBearUploader(){
+    public void enqueueSmartBearUploader() {
         addPeriodicWork(SmartBearUploader.class, "smartbearuploader", 12, TimeUnit.HOURS);
     }
 
@@ -37,13 +37,30 @@ public class WorkOrchestrator {
         cancelWork("smartbearuploader");
     }
 
-    public void enqueueSmart4HealthUploader(){
+    public void enqueueSmart4HealthUploader() {
         addPeriodicWork(Smart4HealthPdfUploader.class, "smart4healthuploader", 12, TimeUnit.HOURS);
+    }
+
+    public void enqueueSmart4HealthWeeklyUploader() {
+        addPeriodicWork(Smart4HealthWeeklyPDFUploader.class,"smart4healthweeklyuploader", 24, TimeUnit.HOURS);
+    }
+
+    public void enqueueSmart4HealthMonthlyUploader(){
+        addPeriodicWork(Smart4HealthMonthlyPDFUploader.class,"smart4healthmonthlyuploader", 24, TimeUnit.HOURS);
     }
 
     public void cancelSmart4HealthUploader(){
         cancelWork("smart4healthuploader");
     }
+
+    public void cancelSmart4HealthWeeklyUploader(){
+        cancelWork("smart4healthweeklyuploader");
+    }
+
+    public void cancelSmart4HealthMonthlyUploader(){
+        cancelWork("smart4healthmonthlyuploader");
+    }
+
 
     public void enqueueSmart4HealthUniqueWorkBloodPressure(Context context, long sampleId){
         final WorkManager workManager = WorkManager.getInstance(context);

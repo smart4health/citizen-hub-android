@@ -1,14 +1,20 @@
 package pt.uninova.s4h.citizenhub.service;
 
+import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_BLUETOOTH;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -300,6 +306,11 @@ public class CitizenHubService extends LifecycleService {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+
+        IntentFilter bleFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(bleStateReceiver, bleFilter);
+
+
         initAgentOrchestrator();
         updateNotification(getConnectedDevices());
         initWorkOrchestrator();
@@ -308,15 +319,18 @@ public class CitizenHubService extends LifecycleService {
 
     private void initWorkOrchestrator() {
         workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(this));
+<<<<<<< app/src/main/java/pt/uninova/s4h/citizenhub/service/CitizenHubService.java
         //workOrchestrator.enqueueSmartBearUploader();
 
         //workOrchestrator.enqueueSmart4HealthUploader();
+=======
+>>>>>>> app/src/main/java/pt/uninova/s4h/citizenhub/service/CitizenHubService.java
     }
 
     @Override
     public void onDestroy() {
         orchestrator.clear();
-
+        unregisterReceiver(bleStateReceiver);
         super.onDestroy();
     }
 
@@ -330,5 +344,34 @@ public class CitizenHubService extends LifecycleService {
     public WearOSMessageService getService() {
         return wearOSMessageService;
     }
+
+    private final BroadcastReceiver bleStateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_ON:
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                orchestrator.enableAll(CONNECTION_KIND_BLUETOOTH);
+                            }
+                        }, 5000);   //5 seconds
+                        break;
+                    case BluetoothAdapter.STATE_OFF:
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        break;
+                }
+            }
+        }
+    };
+
 
 }

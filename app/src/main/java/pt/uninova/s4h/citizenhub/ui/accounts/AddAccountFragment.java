@@ -72,6 +72,8 @@ public class AddAccountFragment extends Fragment {
 
                     WorkOrchestrator workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(requireContext()));
                     workOrchestrator.enqueueSmart4HealthUploader();
+                    workOrchestrator.enqueueSmart4HealthWeeklyUploader();
+                    workOrchestrator.enqueueSmart4HealthMonthlyUploader();
                 }
 
             }

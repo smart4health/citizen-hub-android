@@ -17,8 +17,8 @@ import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepo
 import pt.uninova.s4h.citizenhub.persistence.repository.PostureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
-import pt.uninova.s4h.citizenhub.report.DailyReportGenerator;
 import pt.uninova.s4h.citizenhub.report.Report;
+import pt.uninova.s4h.citizenhub.report.ReportGenerator;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class ReportViewModel extends AndroidViewModel {
@@ -54,14 +54,13 @@ public class ReportViewModel extends AndroidViewModel {
     }
 
     public void getWorkTimeReport(Application application, boolean pdf, Observer<Report> observerWorkTimeReport){
-        DailyReportGenerator dailyReportGenerator = new DailyReportGenerator(getApplication().getBaseContext());
-        dailyReportGenerator.generateWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerWorkTimeReport);
-
+        ReportGenerator reportGenerator = new ReportGenerator(getApplication().getBaseContext());
+        reportGenerator.generateWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerWorkTimeReport);
     }
 
     public void getNotWorkTimeReport(Application application, boolean pdf, Observer<Report> observerNotWorkTimeReport){
-        DailyReportGenerator dailyReportGenerator = new DailyReportGenerator(getApplication().getBaseContext());
-        dailyReportGenerator.generateNotWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerNotWorkTimeReport);
+        ReportGenerator reportGenerator = new ReportGenerator(getApplication().getBaseContext());
+        reportGenerator.generateNotWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerNotWorkTimeReport);
 
     }
 

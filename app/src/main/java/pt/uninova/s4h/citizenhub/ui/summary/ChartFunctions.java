@@ -25,8 +25,12 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -40,9 +44,11 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 public class ChartFunctions {
 
     private final Context context;
+    private final LocalDate localDate;
 
-    public ChartFunctions(Context context) {
+    public ChartFunctions(Context context, LocalDate localDate) {
         this.context = context;
+        this.localDate = localDate;
     }
 
     // This section has functions used to parse different utils to a more generic one used to pass the data to the charts //
@@ -74,7 +80,7 @@ public class ChartFunctions {
     //********************************************************************************************************************//
 
     // This section has functions used to define some characteristics of the different charts that cannot done in the layout //
-    public void setupBarChart(BarChart barChart,  ChartMarkerView chartMarkerView) {
+    public void setupBarChart(BarChart barChart, ChartMarkerView chartMarkerView) {
         barChart.setDrawGridBackground(false);
         barChart.setFitBars(true);
         barChart.getDescription().setEnabled(false);
@@ -124,31 +130,34 @@ public class ChartFunctions {
     * max (int) - it represents the maximum of the X axis
     * Return:
     * labels (String) - a string that contains the labels which will be displayed in the charts */
-    public String[] setLabels(int max) {
-        String[] labels = new String[max + 1];
+    public String[] setLabels(int days) {
+        String[] labels = new String[days];
+        if(days == 24)
+            labels = new String[days + 1];
         int i = 0;
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, - max + 1);
-
-        if (max == 24) {
-            while(i <= max) {
+        cal.setTime(Date.from(localDate.minusDays(days - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        System.out.println(cal.getTime());
+        if (days == 24) {
+            while(i <= days) {
                 labels[i] = String.valueOf(i);
                 i++;
             }
-        } else if (max == 7) {
-            while (i < max) {
+        } else if (days == 7) {
+            while (i < days) {
                 labels[i] = Objects.requireNonNull(cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())).substring(0, 3);
                 cal.add(Calendar.DATE, + 1);
                 i++;
             }
-        } else if (max == 30) {
+        } else {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-            while (i < max) {
+            while (i < days) {
                 labels[i] = sdf.format(cal.getTime());
                 cal.add(Calendar.DATE, + 1);
                 i++;
             }
         }
+        System.out.println(Arrays.toString(labels));
         return labels;
     }
     // This sections has functions used to input data into the different charts //
@@ -157,8 +166,8 @@ public class ChartFunctions {
     * list (List<SummaryDetailUtil>) - the data retrieved from the queries
     * barChart (BarChart) - a barChart
     * label (String) - the label of the information to be displayed
-    * max (int) - represents the maximum of the X axis */
-    public void setBarChartData(BarChart barChart, List<SummaryDetailUtil> list, String label, int max) {
+    * days (int) - represents the number of days to add to the chart. If it is 24, it equivalent to one day */
+    public void setBarChartData(BarChart barChart, List<SummaryDetailUtil> list, String label, int days) {
         List<BarEntry> entries = new ArrayList<>();
         int currentTime = 0;
 
@@ -171,11 +180,11 @@ public class ChartFunctions {
             currentTime++;
         }
 
-        while (currentTime < max) {
+        while (currentTime < days) {
             entries.add(new BarEntry(currentTime, 0));
             currentTime++;
         }
-        if(max == 24)
+        if(days == 24)
             entries.add(new BarEntry(currentTime, 0));
 
         BarDataSet barDataSet = new BarDataSet(entries, label);
@@ -188,7 +197,7 @@ public class ChartFunctions {
         BarData barData = new BarData(dataSet);
         barData.setValueFormatter(new ChartValueFormatter());
         barChart.setData(barData);
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
         barChart.getDescription().setText(label);
         barChart.invalidate();
     }
@@ -227,7 +236,7 @@ public class ChartFunctions {
         barChart.invalidate();
     }
 
-    public void setLineChartData(LineChart lineChart, List<SummaryDetailUtil> list, String[] label, int max) {
+    public void setLineChartData(LineChart lineChart, List<SummaryDetailUtil> list, String[] label, int days) {
         List<Entry> entries1 = new ArrayList<>();
         List<Entry> entries2 = new ArrayList<>();
         List<Entry> entries3 = new ArrayList<>();
@@ -235,6 +244,7 @@ public class ChartFunctions {
 
         for (SummaryDetailUtil data : list) {
             time = data.getTime();
+            System.out.println(time);
             entries1.add(new BarEntry(time, data.getValue1()));
             if (data.getValue2() != null)
                 entries2.add(new BarEntry(time, data.getValue2()));
@@ -258,7 +268,7 @@ public class ChartFunctions {
         LineData lineData = new LineData(dataSet);
         lineData.setValueFormatter(new ChartValueFormatter());
         lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
+        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
         lineChart.invalidate();
     }
 
@@ -291,9 +301,9 @@ public class ChartFunctions {
         return lineDataSet;
     }
 
-    public void setAreaChart(LineChart lineChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int max){
-        float[] values1 = new float[max];
-        float[] values2 = new float[max];
+    public void setAreaChart(LineChart lineChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int days){
+        float[] values1 = new float[days];
+        float[] values2 = new float[days];
 
         for (SummaryDetailUtil data : list1) {
             values1[Math.round(data.getTime())] = data.getValue1();
@@ -308,9 +318,9 @@ public class ChartFunctions {
         List<Entry> entries1 = new ArrayList<>();
         List<Entry> entries2 = new ArrayList<>();
 
-        while(currentTime < max){
+        while(currentTime < days){
             total = values2[currentTime] + values1[currentTime];
-            if(max == 24) {
+            if(days == 24) {
                 if (total > 3600000) {
                     values1[currentTime] = values1[currentTime] * 3600000 / total;
                     values2[currentTime] = values2[currentTime] * 3600000 / total;
@@ -338,7 +348,7 @@ public class ChartFunctions {
         lineData.setValueFormatter(new ChartValueFormatter());
 
         lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
+        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
         lineChart.invalidate();
     }
 

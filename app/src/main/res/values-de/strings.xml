@@ -353,6 +353,10 @@
     <string name="lumbar_training_duration_label">Dauer</string>
 
     <!-- Strings used for the report -->
+    <string name="report_title">Citizen Hub Tagesbericht %s</string>
+    <string name="weekly_report_title">Citizen Hub Weekly Report %s</string>
+    <string name="monthly_report_title">Citizen Hub Monthly Report %s</string>
+
     <string name="report_upload">PDF hochladen</string>
 
     <string name="report_footer">Die in diesem Bericht enthaltenen Informationen werden ohne ausdrückliche oder stillschweigende Zusicherungen oder Gewährleistungen bereitgestellt. Wenn Sie spezifische Fragen haben, wenden Sie sich an Ihren Arzt oder einen anderen professionellen Gesundheitsdienstleister.</string>
@@ -395,7 +399,9 @@
 
     <!-- Strings used for the Smart4Health fragment -->
     <string name="smart4health_description">Smart4Health ermöglicht es den Bürgern, ihre eigenen Gesundheitsdaten in der gesamten EU und darüber hinaus zu verwalten und zu überbrücken, um die eigene und gesellschaftliche Gesundheit und das Wohlbefinden zu fördern.</string>
-    <string name="smart4health_automatic_uploads">Automatische Uploads</string>
+    <string name="smart4health_daily_report_uploads">Daily Uploads</string>
+    <string name="smart4health_weekly_report_uploads">Weekly Uploads</string>
+    <string name="smart4health_monthly_report_uploads">Monthly Uploads</string>
     <string name="smart4health_automatic_uploads_description">Wählen Sie diese Option, wenn Sie Ihre täglichen Informationen automatisch auf die Smart4Health-Plattform hochladen möchten.</string>
     <string name="smart4health_information_to_send">In den Berichten enthaltene Informationen:</string>
     <string name="smart4health_information_to_send_description">Die ausgewählten Informationen werden an die Smart4Health-Plattform gesendet.</string>
@@ -470,7 +476,6 @@
     <string name="drawer_smart4health_title">Smart4Health-Plattform</string>
     <string name="measurement_type.29">Haltung</string>
     <string name="breathing_rate_title">Durchschnittliche atemfrequenz</string>
-    <string name="report_title">Citizen Hub Tagesbericht %s</string>
 
     <string name="fragment_location_disabled_button_text">Standorteinstellungen des Geräts</string>
     <string name="fragment_location_not_supported_text_view">Der Standort wird auf diesem Gerät nicht unterstützt</string>

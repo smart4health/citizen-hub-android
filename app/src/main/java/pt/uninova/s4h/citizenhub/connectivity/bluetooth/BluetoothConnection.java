@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import care.data4life.fhir.r4.model.DocumentReference;
 import pt.uninova.s4h.citizenhub.BuildConfig;
 import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
@@ -457,6 +456,17 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     public void removeConnectionStateChangeListener(Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> listener) {
         stateChangedMessageDispatcher.removeObserver(listener);
+    }
+
+    public void reconnect() {
+        if (gatt != null) {
+            gatt.disconnect();
+            gatt.close();
+            gatt = null;
+        }
+
+        runnables.clear();
+        connect();
     }
 
     public void removeDescriptorListener(DescriptorListener listener) {

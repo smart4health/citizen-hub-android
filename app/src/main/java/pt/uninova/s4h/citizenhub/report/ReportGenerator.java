@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import java.text.DecimalFormat;
@@ -16,24 +15,21 @@ import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
-import pt.uninova.s4h.citizenhub.ui.accounts.AccountsViewModel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
-public class DailyReportGenerator {
+public class ReportGenerator {
 
     private final Resources resources;
     private final MeasurementKindLocalization localization;
     private final SharedPreferences preferences;
 
-    public DailyReportGenerator(Context context) {
+    public ReportGenerator(Context context) {
         this.resources = context.getResources();
         this.localization = new MeasurementKindLocalization(context);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     private void groupSimpleRecords(ReportUtil reportUtil, List<Group> groups, boolean pdf) {
-        if (reportUtil == null)
-            return;
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         if(preferences.getBoolean("account.smart4health.report.data.activity", true) || !pdf) {
@@ -212,6 +208,46 @@ public class DailyReportGenerator {
             });
         });
 
+    }
+
+    public void generateWeeklyOrMonthlyWorkTimeReport(ReportRepository reportRepository, LocalDate localDate, int days, boolean pdf, Observer<Report> reportObserver){
+
+        String title;
+
+        if (days == 7) {
+            title = "Weekly Report";
+        }
+        else {
+            title = "Monthly Report";
+        }
+
+        Report report = new Report(() -> title, new LocalDateLocalizedResource(localDate));
+        List<Group> groups = report.getGroups();
+
+        reportRepository.getWeeklyOrMonthlyWorkTimeSimpleRecords(localDate, days, observer -> {
+            groupSimpleRecords(observer, groups, pdf);
+            reportObserver.observe(report);
+        });
+    }
+
+    public void generateWeeklyOrMonthlyNotWorkTimeReport(ReportRepository reportRepository, LocalDate localDate, int days, boolean pdf, Observer<Report> reportObserver){
+
+        String title;
+
+        if (days == 7) {
+            title = "Weekly Report";
+        }
+        else {
+            title = "Monthly Report";
+        }
+
+        Report report = new Report(() -> title, new LocalDateLocalizedResource(localDate));
+        List<Group> groups = report.getGroups();
+
+        reportRepository.getWeeklyOrMonthlyNotWorkTimeSimpleRecords(localDate, days, observer -> {
+            groupSimpleRecords(observer, groups, pdf);
+            reportObserver.observe(report);
+        });
     }
 
 }

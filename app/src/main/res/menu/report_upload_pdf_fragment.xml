@@ -7,4 +7,14 @@
         android:title="@string/report_upload"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/upload_weekly_pdf"
+        android:title="Weekly PDF"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/upload_monthly_pdf"
+        android:title="Monthly PDF"
+        app:showAsAction="never" />
+
 </menu>

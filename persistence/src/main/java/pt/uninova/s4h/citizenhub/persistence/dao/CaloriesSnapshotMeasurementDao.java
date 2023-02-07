@@ -50,4 +50,11 @@ public interface CaloriesSnapshotMeasurementDao {
             + " SELECT MAX(value) AS value1, day AS time FROM agg GROUP BY day")
     @TypeConverters(EpochTypeConverter.class)
     List<SummaryDetailUtil> selectLastThirtyDays(LocalDate from, LocalDate to);
+
+    @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :from) / 86400000) % :days AS day, calories_snapshot_measurement.value AS value "
+            + " FROM calories_snapshot_measurement INNER JOIN sample ON calories_snapshot_measurement.sample_id = sample.id "
+            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) "
+            + " SELECT MAX(value) AS value1, day AS time FROM agg GROUP BY day ")
+    @TypeConverters(EpochTypeConverter.class)
+    List<SummaryDetailUtil> selectLastSevenDays(LocalDate from, LocalDate to, int days);
 }

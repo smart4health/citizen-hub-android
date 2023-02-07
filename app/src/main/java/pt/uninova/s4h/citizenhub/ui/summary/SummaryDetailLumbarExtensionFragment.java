@@ -19,6 +19,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.tabs.TabLayout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,7 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SummaryViewModel.class);
-        chartFunctions = new ChartFunctions(getContext());
+        chartFunctions = new ChartFunctions(getContext(), LocalDate.now());
     }
 
     @Override
@@ -94,6 +95,7 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         });
 
         chartFunctions.setupLineChart(lineChart, model.getChartViewMarker());
+        lineChart.getXAxis().resetAxisMaximum();
         getRepetitions();
     }
 

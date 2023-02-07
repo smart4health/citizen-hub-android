@@ -25,17 +25,48 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch_automatic_upload"
+                android:id="@+id/switch_daily_report_upload"
                 style="@style/AccountSettingsFragment.switchCompatStyle"
                 android:layout_marginVertical="0dp"
-                android:text="@string/smart4health_automatic_uploads"
+                android:text="@string/smart4health_daily_report_uploads"
                 android:thumbTint="@color/thumb_selector"
                 android:trackTint="@color/track_selector" />
 
             <TextView
-                android:id="@+id/text_view_automatic_uploads_description"
+                android:id="@+id/text_view_daily_uploads_description"
                 style="@style/AccountSettingsFragment.subTextView"
                 android:text="@string/smart4health_automatic_uploads_description" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_weekly_report_upload"
+                style="@style/AccountSettingsFragment.switchCompatStyle"
+                android:layout_marginVertical="0dp"
+                android:text="@string/smart4health_weekly_report_uploads"
+                android:thumbTint="@color/thumb_selector"
+                android:trackTint="@color/track_selector" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_monthly_report_upload"
+                style="@style/AccountSettingsFragment.switchCompatStyle"
+                android:layout_marginVertical="0dp"
+                android:text="@string/smart4health_monthly_report_uploads"
+                android:thumbTint="@color/thumb_selector"
+                android:trackTint="@color/track_selector"/>
         </LinearLayout>
 
         <TextView

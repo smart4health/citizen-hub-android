@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -12,7 +13,10 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.Navigation;
 import androidx.work.WorkManager;
 
@@ -27,29 +31,34 @@ public class AdvancedSmartBearAccountGateFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.advanced_smart_bear_account_gate_fragment, container, false);
-
-        setHasOptionsMenu(true);
-
-        return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.advanced_smart_bear_account_gate_fragment, menu);
-
-        menu.findItem(R.id.advanced_smart_bear_account_gate_fragment_menu_confirm).setOnMenuItemClickListener(item -> {
-            final EditText inputCodeEditText = requireView().findViewById(R.id.advanced_smart_bear_account_gate_fragment_input_code);
-
-            if (validate(inputCodeEditText.getText().toString())) {
-                Navigation.findNavController(requireView()).navigate(AdvancedSmartBearAccountGateFragmentDirections.actionAdvancedSmartBearAccountGateFragmentToAdvancedSmartBearAccountFragment());
-                WorkOrchestrator workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(requireContext()));
-                workOrchestrator.enqueueSmartBearUploader();
-            } else {
-                inputCodeEditText.getText().clear();
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.advanced_smart_bear_account_gate_fragment, menu);
             }
 
-            return true;
-        });
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.advanced_smart_bear_account_gate_fragment_menu_confirm) {
+                    final EditText inputCodeEditText = requireView().findViewById(R.id.advanced_smart_bear_account_gate_fragment_input_code);
+
+                    if (validate(inputCodeEditText.getText().toString())) {
+                        Navigation.findNavController(requireView()).navigate(AdvancedSmartBearAccountGateFragmentDirections.actionAdvancedSmartBearAccountGateFragmentToAdvancedSmartBearAccountFragment());
+                        WorkOrchestrator workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(requireContext()));
+                        workOrchestrator.enqueueSmartBearUploader();
+                    } else {
+                        inputCodeEditText.getText().clear();
+                    }
+
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
+
+        return view;
     }
 
     @Override
