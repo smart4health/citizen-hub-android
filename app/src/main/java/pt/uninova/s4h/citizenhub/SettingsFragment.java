@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,35 +43,6 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-//    @Override
-//    public void onDisplayPreferenceDialog(Preference preference) {
-//        DialogFragment dialogFragment = null;
-//        if (preference instanceof TimePreference) {
-//            dialogFragment = new TimePreferenceDialogFragmentCompat();
-//            Bundle bundle = new Bundle(1);
-//            bundle.putString("key", preference.getKey());
-//            dialogFragment.setArguments(bundle);
-//
-//        }
-//
-//        if (dialogFragment != null) {
-//            dialogFragment.setTargetFragment(this, 0);
-//            dialogFragment.show(this.getParentFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
-//        } else {
-//            super.onDisplayPreferenceDialog(preference);
-//        }
-//    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
@@ -91,8 +61,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         if (!workDaysSet.contains("")) {
             workDaysPlaceholder.setText(workDaysSet.toString().replaceAll("[\\[\\]]", ""));
         }
-        //                preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
-//
+
         LinearLayout startTime = getView().findViewById(R.id.layout_start_time);
         startTimePlaceHolder = getView().findViewById(R.id.placeholder_work_start_time);
 
@@ -107,22 +76,16 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         workDaysLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Set up the alert builder
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogThemeWithCheckboxes);
                 builder.setTitle("Choose work days");
 
-// Add a checkbox list
                 String[] workDays = getResources().getStringArray(R.array.workdays);
                 String finalWorkDays = String.valueOf(preferences.getStringSet(KEY_WORK_DAYS, finalWorkDaysSet));
                 int j = 0;
                 boolean[] checkedItems = new boolean[7];
                 for (String day : workDays
                 ) {
-                    System.out.println(day);
-                    System.out.println(finalWorkDays);
-                    System.out.println(Arrays.toString(workDays));
                     checkedItems[j] = finalWorkDays.contains(day);
-                    System.out.println(Arrays.toString(checkedItems));
                     j++;
                 }
                 builder.setMultiChoiceItems(workDays, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
@@ -141,7 +104,6 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                     }
                 });
 
-// Add OK and Cancel buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -214,50 +176,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    }
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
 
-//    private void updatePreference(String key) {
-//        if (key.equals(KEY_WORK_DAYS)) {
-//            try {
-//                Preference preference = findPreference(key);
-//
-//                if (preference != null) {
-//                    List<DayOfWeek> daysOfWeek = getDaysOfWeek((MultiSelectListPreference) preference);
-//
-//                    if (daysOfWeek.size() > 0) {
-//                        Set<String> values = new HashSet<>();
-//                        final StringBuilder dayString = new StringBuilder();
-//
-//                        for (DayOfWeek i : daysOfWeek) {
-//                            dayString.append(" ");
-//                            dayString.append(i.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.getDefault()));
-//                            values.add(String.valueOf(i.getValue()));
-//                        }
-//
-//                        preferences.edit().putStringSet(KEY_WORK_DAYS, values).apply();
-//                        preference.setSummary(getString(R.string.fragment_settings_current_work_days_text) + dayString);
-//                    } else {
-//                        preferences.edit().remove(KEY_WORK_DAYS).apply();
-//                        preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
-//                    }
-//                }
-//            } catch (Exception e) {
-//                final SharedPreferences.Editor editor = preferences.edit();
-//
-//                editor.remove(KEY_WORK_DAYS);
-//                editor.remove(KEY_WORK_TIME_START);
-//                editor.remove(KEY_WORK_TIME_END);
-//
-//                editor.apply();
-//
-//                Preference preference = findPreference(KEY_WORK_DAYS);
-//                preference.setSummary(getString(R.string.fragment_settings_choose_work_days_text));
-//            }
-//        }
-//
-//
-//        WorkTimeRangeConverter workTimeRangeConverter = WorkTimeRangeConverter.getInstance(requireContext());
-//        workTimeRangeConverter.refreshTimeVariables(requireContext());
-//    }
+    }
 }
