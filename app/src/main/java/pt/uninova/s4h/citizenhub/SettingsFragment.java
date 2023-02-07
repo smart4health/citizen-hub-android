@@ -22,6 +22,7 @@ import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 
 
 public class SettingsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -30,6 +31,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     private static final String KEY_WORK_TIME_START = "workStart";
     private static final String KEY_WORK_TIME_END = "workEnd";
     private LinearLayout workDaysLayout;
+    private TextView workDaysPlaceholder;
     private TextView startTimePlaceHolder;
     private TextView endtimePlaceHolder;
     private int timePickerTheme;
@@ -81,6 +83,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         workDaysLayout = getView().findViewById(R.id.layout_work_days);
+        workDaysPlaceholder = getView().findViewById(R.id.placeholder_workdays);
         LinearLayout startTime = getView().findViewById(R.id.layout_start_time);
 
         startTimePlaceHolder = getView().findViewById(R.id.placeholder_work_start_time);
@@ -96,12 +99,12 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                 builder.setTitle("Choose work days");
 
 // Add a checkbox list
-                String[] animals = getResources().getStringArray(R.array.workdays);
+                String[] workDays = getResources().getStringArray(R.array.workdays);
                 boolean[] checkedItems = {true, false, false, true, false, true, true};
-                builder.setMultiChoiceItems(animals, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setMultiChoiceItems(workDays, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        // The user checked or unchecked a box
+
                     }
                 });
 
@@ -109,12 +112,21 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // The user clicked OK
+                        workDaysPlaceholder.setText("");
+                        StringJoiner sb = new StringJoiner(", ");
+                        for (int i = 0; i < workDays.length; i++) {
+                            if (checkedItems[i]) {
+
+
+                                sb.add(workDays[i]);
+                            }
+                        }
+                        workDaysPlaceholder.setText(sb.toString());
                     }
+
                 });
                 builder.setNegativeButton("Cancel", null);
 
-// Create and show the alert dialog
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
@@ -137,7 +149,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
 
-                                startTimePlaceHolder.setText(hourOfDay + ":" + minute);
+                                startTimePlaceHolder.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         }, mHour, mMinute, true);
                 timePickerDialog.setTitle("Choose end hour:");
@@ -158,7 +170,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
 
-                                endtimePlaceHolder.setText(hourOfDay + ":" + minute);
+                                endtimePlaceHolder.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         }, mHours, mMinutes, true);
                 timePickerDialog.setTitle("Choose end time:");
