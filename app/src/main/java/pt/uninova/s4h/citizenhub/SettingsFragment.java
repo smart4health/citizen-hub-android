@@ -65,11 +65,11 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         LinearLayout startTime = getView().findViewById(R.id.layout_start_time);
         startTimePlaceHolder = getView().findViewById(R.id.placeholder_work_start_time);
 
-        startTimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_START, "Set some time"));
+        startTimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_START, getResources().getString(R.string.fragment_settings_work_hours_start_message)));
 
         LinearLayout endTime = getView().findViewById(R.id.layout_end_time);
         endtimePlaceHolder = getView().findViewById(R.id.placeholder_work_end_time);
-        endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, "Set some time"));
+        endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, getResources().getString(R.string.fragment_settings_work_hours_start_message)));
 
 
         Set<String> finalWorkDaysSet = workDaysSet;
@@ -77,7 +77,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogThemeWithCheckboxes);
-                builder.setTitle("Choose work days");
+                builder.setTitle(getResources().getString(R.string.fragment_settings_work_days_title));
 
                 String[] workDays = getResources().getStringArray(R.array.workdays);
                 String finalWorkDays = String.valueOf(preferences.getStringSet(KEY_WORK_DAYS, finalWorkDaysSet));
@@ -104,7 +104,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                     }
                 });
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getString(R.string.label_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         workDaysPlaceholder.setText("");
@@ -119,7 +119,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                     }
 
                 });
-                builder.setNegativeButton("Cancel", null);
+                builder.setNegativeButton(getResources().getString(R.string.label_cancel), null);
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
@@ -146,7 +146,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                                 preferences.edit().putString(KEY_WORK_TIME_START, String.format("%02d:%02d", hourOfDay, minute)).apply();
                             }
                         }, mHour, mMinute, true);
-                timePickerDialog.setTitle("Choose end hour:");
+                timePickerDialog.setTitle(getResources().getString(R.string.fragment_settings_work_hours_start_message));
                 timePickerDialog.show();
             }
 
@@ -169,7 +169,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
                             }
                         }, mHours, mMinutes, true);
-                timePickerDialog.setTitle("Choose end time:");
+                timePickerDialog.setTitle(getResources().getString(R.string.fragment_settings_work_hours_end_message));
                 timePickerDialog.show();
             }
         });

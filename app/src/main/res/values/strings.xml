@@ -630,5 +630,7 @@
     <string name="connect_label">Connect</string>
     <string name="search_label">Search</string>
     <string name="label_work_hours">Work Hours</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">CANCEL</string>
 
 </resources>
