@@ -77,7 +77,7 @@
     <string name="fragment_configuration_text_view_connect">Se connecter</string>
     <string name="fragment_configuration_text_view_name">Nom : %1$s</string>
     <string name="fragment_configuration_text_view_update">Mettre à jour</string>
-    <string name="fragment_device_connect_button">ajouter un appareil</string>
+    <string name="connect_label">ajouter un appareil</string>
     <string name="fragment_device_add_info_text">Information</string>
     <string name="fragment_device_add_label">Ajouter un appareil</string>
     <string name="fragment_device_configuration_add_label">A propos de Smart4Health</string>

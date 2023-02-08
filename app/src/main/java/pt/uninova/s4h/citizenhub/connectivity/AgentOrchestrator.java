@@ -51,6 +51,10 @@ public class AgentOrchestrator {
         return NAMESPACE_GENERATOR;
     }
 
+    private final Observer<StateChangedMessage<Integer, ? extends Agent>> agentStateObserver = value -> {
+        tellOnAgentStateChanged(value.getSource());
+    };
+
     public void add(Device device) {
         add(device, value -> {
         });
@@ -85,6 +89,7 @@ public class AgentOrchestrator {
                 put(device, agent);
                 agent.addSampleObserver(ingester);
                 tellOnAgentAttached(device, agent);
+                agent.addStateObserver(agentStateObserver);
                 observer.observe(agent);
             });
         } else {
@@ -154,6 +159,7 @@ public class AgentOrchestrator {
         final Agent agent = getAgent(device);
 
         if (agent != null) {
+            agent.removeStateObserver(agentStateObserver);
             agent.removeSampleObserver(ingester);
             tellOnAgentRemoved(device, agent);
         }
@@ -164,6 +170,12 @@ public class AgentOrchestrator {
 
     public void removeListener(AgentOrchestratorListener listener) {
         this.listeners.remove(listener);
+    }
+
+    private void tellOnAgentStateChanged(Agent agent) {
+        for (AgentOrchestratorListener i : listeners) {
+            i.onAgentStateChanged(agent);
+        }
     }
 
     private void tellOnAgentAttached(Device device, Agent agent) {
