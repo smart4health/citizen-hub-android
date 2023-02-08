@@ -319,12 +319,6 @@ public class CitizenHubService extends LifecycleService {
 
     private void initWorkOrchestrator() {
         workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(this));
-<<<<<<< app/src/main/java/pt/uninova/s4h/citizenhub/service/CitizenHubService.java
-        //workOrchestrator.enqueueSmartBearUploader();
-
-        //workOrchestrator.enqueueSmart4HealthUploader();
-=======
->>>>>>> app/src/main/java/pt/uninova/s4h/citizenhub/service/CitizenHubService.java
     }
 
     @Override
