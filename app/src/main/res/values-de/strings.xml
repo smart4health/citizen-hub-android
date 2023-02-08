@@ -132,6 +132,9 @@
     <string name="medex_fragment_explanation2">"Wenn Sie kein Medx-Benutzer sind oder diesen Inhalt ausblenden möchten, können Sie dies jederzeit in den Einstellungen ändern. "</string>
 
     <!-- Report Strings -->
+    <string name="report_title">Citizen Hub Tagesbericht %s</string>
+    <string name="weekly_report_title">Citizen Hub Weekly Report %s</string>
+    <string name="monthly_report_title">Citizen Hub Monthly Report %s</string>
     <string name="report_footer">Die in diesem Bericht enthaltenen Informationen werden ohne ausdrückliche oder stillschweigende Zusicherungen oder Gewährleistungen bereitgestellt. Wenn Sie spezifische Fragen haben, wenden Sie sich an Ihren Arzt oder einen anderen professionellen Gesundheitsdienstleister.</string>
     <string name="report_complete_report">Kompletter Bericht</string>
     <string name="report_work_time_report">Arbeitszeit-Bericht</string>
@@ -187,7 +190,9 @@
     <!-- Smart4Health Fragment Strings -->
     <string name="fragment_smart4health_account_fragment_logout_failure_toast">"Abmeldung gescheitert. "</string>
     <string name="smart4health_description">Smart4Health ermöglicht es den Bürgern, ihre eigenen Gesundheitsdaten in der gesamten EU und darüber hinaus zu verwalten und zu überbrücken, um die eigene und gesellschaftliche Gesundheit und das Wohlbefinden zu fördern.</string>
-    <string name="smart4health_automatic_uploads">Automatische Uploads</string>
+    <string name="smart4health_daily_report_uploads">Daily Uploads</string>
+    <string name="smart4health_weekly_report_uploads">Weekly Uploads</string>
+    <string name="smart4health_monthly_report_uploads">Monthly Uploads</string>
     <string name="smart4health_automatic_uploads_description">Wählen Sie diese Option, wenn Sie Ihre täglichen Informationen automatisch auf die Smart4Health-Plattform hochladen möchten.</string>
     <string name="smart4health_information_to_send">In den Berichten enthaltene Informationen:</string>
     <string name="smart4health_information_to_send_description">Die ausgewählten Informationen werden an die Smart4Health-Plattform gesendet.</string>

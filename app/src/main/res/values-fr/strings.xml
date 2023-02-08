@@ -130,6 +130,9 @@
     <string name="medex_fragment_explanation2">"Si vous n\'êtes pas un utilisateur de medx ou si vous voulez masquer ce contenu, vous pouvez toujours le modifier dans les paramètres. "</string>
 
     <!-- Report Strings -->
+    <string name="report_title">Citizen Hub Rapport Journalier %s</string>
+    <string name="weekly_report_title">Citizen Hub Weekly Report %s</string>
+    <string name="monthly_report_title">Citizen Hub Monthly Report %s</string>
     <string name="report_footer">Les informations contenues dans ce rapport sont fournies sans aucune représentation ou garantie, expresse ou implicite. Si vous avez des questions spécifiques, vous devriez consulter votre médecin ou un autre professionnel de la santé.</string>
     <string name="report_complete_report">Rapport Complet</string>
     <string name="report_work_time_report">Rapport de Temps de Travail</string>
@@ -186,8 +189,11 @@
     <string name="fragment_smart4health_account_log_in_title">Connexion</string>
     <string name="fragment_smart4health_account_log_out_title">Se déconnecter</string>
     <string name="fragment_smart4health_account_fragment_logout_failure_toast">"Echec de la déconnexion. "</string>
+
     <string name="smart4health_description">Smart4Health permet aux citoyens de gérer leurs propres données de santé dans l\'Union Européenne et au-delà, en faisant progresser leur bien-être et leur santé ainsi que celle de la société.</string>
-    <string name="smart4health_automatic_uploads">Téléchargements Automatiques</string>
+    <string name="smart4health_daily_report_uploads">Daily Uploads</string>
+    <string name="smart4health_weekly_report_uploads">Weekly Uploads</string>
+    <string name="smart4health_monthly_report_uploads">Monthly Uploads</string>
     <string name="smart4health_automatic_uploads_description">Sélectionnez cette option si vous souhaitez télécharger automatiquement vos informations quotidiennes sur la plateforme Smart4Health.</string>
     <string name="smart4health_information_to_send">Informations incluses dans les rapports:</string>
     <string name="smart4health_information_to_send_description">Les informations sélectionnées seront transmises à la plateforme Smart4Health.</string>

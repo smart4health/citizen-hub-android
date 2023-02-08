@@ -130,6 +130,9 @@
     <string name="medex_fragment_explanation2">Se não for um utilizador da medX ou quiser esconder esta funcionalidade, poderá desligá-la nas configurações</string>
 
     <!-- Report Strings -->
+    <string name="report_title">Citizen Hub Relatório Diário %s</string>
+    <string name="weekly_report_title">Citizen Hub Relatório Semanal %s</string>
+    <string name="monthly_report_title">Citizen Hub Relatório Mensal %s</string>
     <string name="report_footer">As informações incluídas neste relatório são fornecidas sem quaisquer representações ou garantias, expressas ou implícitas. Se tiver alguma dúvida específica, consulte seu médico ou outro profissional de saúde.</string>
     <string name="report_complete_report">Relatório Diário</string>
     <string name="report_work_time_report">Relatório Tempo de Trabalho</string>
@@ -196,7 +199,9 @@
     <string name="fragment_smart4health_account_log_out_title">Terminar sessão</string>
     <string name="fragment_smart4health_account_fragment_logout_failure_toast">"Não foi possível terminar sessão. "</string>
     <string name="smart4health_description">O projeto Smart4Health coloca o cidadão no centro da decisão relativamente à partilha e gestão dos seus dados de saúde, contribuindo para melhorar o seu bem estar e qualidade de vida.</string>
-    <string name="smart4health_automatic_uploads">Envio Automático</string>
+    <string name="smart4health_daily_report_uploads">Upload Diário</string>
+    <string name="smart4health_weekly_report_uploads">Upload Semanal</string>
+    <string name="smart4health_monthly_report_uploads">Upload Mensal</string>
     <string name="smart4health_automatic_uploads_description">Seleccione esta opção se desejar enviar automáticamente relatórios diários para a plataforma Smart4Health.</string>
     <string name="smart4health_information_to_send">Informação incluída nos relatórioes:</string>
     <string name="smart4health_information_to_send_description">A informação seleccionada será enviada para a plataforma Smart4Health.</string>
