@@ -12,21 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.android.material.tabs.TabLayout;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTimestampPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.LumbarExtensionTrainingRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -146,7 +138,7 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         Observer<List<SummaryDetailUtil>> observer = data -> setLineChartData(data, getString(R.string.summary_detail_lumbar_extension_weight));
         LumbarExtensionTrainingRepository lumbarExtensionTrainingRepository = new LumbarExtensionTrainingRepository(getContext());
         lumbarExtensionTrainingRepository.selectWeight(observer);
-    }
+    }*/
 
     private void fillRow(String label, String value, String units){
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_report_rows, null);
@@ -167,7 +159,7 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         tableLayout.addView(v);
     }
 
-    private void setLineChartData(List<SummaryDetailUtil> list, String label){
+    /*private void setLineChartData(List<SummaryDetailUtil> list, String label){
         List<Entry> entries = new ArrayList<>();
         int x = 0;
         if(list.size() == 1)
