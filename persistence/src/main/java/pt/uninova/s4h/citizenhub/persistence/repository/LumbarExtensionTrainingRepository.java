@@ -20,7 +20,6 @@ import pt.uninova.s4h.citizenhub.persistence.entity.LumbarExtensionTrainingMeasu
 import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSummary;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTimestampPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class LumbarExtensionTrainingRepository {
@@ -100,7 +99,7 @@ public class LumbarExtensionTrainingRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectTrainingSections(localDate)));
     }
     
-    public void selectDuration(Observer<List<SummaryDetailUtil>> observer){
+    /*public void selectDuration(Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectDuration()));
     }
 
