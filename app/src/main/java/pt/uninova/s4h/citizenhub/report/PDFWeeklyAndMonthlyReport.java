@@ -26,20 +26,21 @@ import com.github.mikephil.charting.charts.LineChart;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailBloodPressureUtil;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailHeartRateUtil;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyHeartRatePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyPosturePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyStepsPanel;
 import pt.uninova.s4h.citizenhub.persistence.repository.BloodPressureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.PostureMeasurementRepository;
-import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
+import pt.uninova.s4h.citizenhub.persistence.repository.StepsMeasurementRepository;
 import pt.uninova.s4h.citizenhub.ui.summary.ChartFunctions;
+import pt.uninova.s4h.citizenhub.ui.summary.TwoDimensionalChartData;
 import pt.uninova.s4h.citizenhub.ui.summary.VerticalTextView;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -59,11 +60,11 @@ public class PDFWeeklyAndMonthlyReport {
     private final Paint rectFillPaint;
     private final float[] corners;
     private final ChartFunctions chartFunctions;
-    private final List<SummaryDetailUtil> steps = new ArrayList<>();
-    private List<SummaryDetailUtil> bloodPressure = new ArrayList<>();
-    private List<SummaryDetailUtil> heartRate = new ArrayList<>();
-    private final List<SummaryDetailUtil> correctPosture = new ArrayList<>();
-    private final List<SummaryDetailUtil> incorrectPosture = new ArrayList<>();
+    private TwoDimensionalChartData steps = null;
+    private TwoDimensionalChartData bloodPressure = null;
+    private TwoDimensionalChartData heartRate = null;
+
+    private TwoDimensionalChartData posture = null;
 
     public PDFWeeklyAndMonthlyReport(Context context, LocalDate localDate) {
         this.context = context;
@@ -149,24 +150,28 @@ public class PDFWeeklyAndMonthlyReport {
 
     private void fetchChartsInfo(LocalDate localDate, int days) {
 
-        Observer<List<SummaryDetailUtil>> observerSteps = steps::addAll;
-        StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(context);
-        stepsSnapshotMeasurementRepository.readSeveralDays(localDate, days, observerSteps);
+        Observer<List<DailyStepsPanel>> observerSteps = data -> steps = chartFunctions.parseStepsUtil(data, days);
+        StepsMeasurementRepository stepsMeasurementRepository = new StepsMeasurementRepository(context);
+        stepsMeasurementRepository.readSeveralDays(localDate, days, observerSteps);
 
-        Observer<List<SummaryDetailBloodPressureUtil>> observerBloodPressure = data -> bloodPressure = chartFunctions.parseBloodPressureUtil(data);
+        Observer<List<DailyBloodPressurePanel>> observerBloodPressure = data -> {
+            if(data.size() > 0)
+                bloodPressure = chartFunctions.parseBloodPressureUtil(data, days);
+        };
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(context);
         bloodPressureMeasurementRepository.selectSeveralDays(localDate, days, observerBloodPressure);
 
-        Observer<List<SummaryDetailHeartRateUtil>> observerHeartRate = data -> heartRate = chartFunctions.parseHeartRateUtil(data);
+        Observer<List<DailyHeartRatePanel>> observerHeartRate = data -> {
+            if(data.size() > 0)
+                heartRate = chartFunctions.parseHeartRateUtil(data, days);
+        };
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(context);
         heartRateMeasurementRepository.selectSeveralDays(localDate, days, observerHeartRate);
 
-        Observer<List<SummaryDetailUtil>> observerCorrectPosture = correctPosture::addAll;
+        Observer<List<DailyPosturePanel>> observerPosture = data -> posture = chartFunctions.parsePostureUtil(data, days);
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(context);
-        postureMeasurementRepository.readSeveralDaysCorrectPosture(localDate, days, observerCorrectPosture);
+        postureMeasurementRepository.readSeveralDaysPosture(localDate, days, observerPosture);
 
-        Observer<List<SummaryDetailUtil>> observerIncorrectPosture = incorrectPosture::addAll;
-        postureMeasurementRepository.readSeveralDaysIncorrectPosture(localDate, days, observerIncorrectPosture);
     }
 
     public void generateCompleteReport(Report workTime, Report notWorkTime, Resources res, LocalDate date, int days, MeasurementKindLocalization measurementKindLocalization, Observer<byte[]> observerReportPDF) {
@@ -252,7 +257,7 @@ public class PDFWeeklyAndMonthlyReport {
             }
         }
 
-        if (bloodPressure.size() > 0)
+        if (bloodPressure != null)
         {
             if (y + 195 > 842)
             {
@@ -269,7 +274,7 @@ public class PDFWeeklyAndMonthlyReport {
             drawRect(canvas, y, rectHeight);
         }
 
-        if (heartRate.size() > 0)
+        if (heartRate != null)
         {
             if (y + 195 > 842)
             {
@@ -435,7 +440,7 @@ public class PDFWeeklyAndMonthlyReport {
             case Measurement.TYPE_POSTURE:
                 System.out.println("Posture");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_line_chart, null);
-                drawAreaChart(chart, correctPosture, incorrectPosture, new String[]{context.getString(R.string.summary_detail_posture_correct), context.getString(R.string.summary_detail_posture_incorrect)}, context.getString(R.string.summary_detail_posture), days);
+                drawAreaChart(chart, posture, new String[]{context.getString(R.string.summary_detail_posture_correct), context.getString(R.string.summary_detail_posture_incorrect)}, context.getString(R.string.summary_detail_posture), days);
                 break;
             default:
                 chart = null;
@@ -447,17 +452,17 @@ public class PDFWeeklyAndMonthlyReport {
         return y + 170;
     }
 
-    private void drawBarChart(View chart, List<SummaryDetailUtil> data, int days) {
+    private void drawBarChart(View chart, TwoDimensionalChartData twoDimensionalChartData, int days) {
         BarChart barChart = chart.findViewById(R.id.bar_chart);
         barChart.getXAxis().setTextSize(6f);
         barChart.getAxisLeft().setTextSize(6f);
         chartFunctions.setupBarChart(barChart, null);
-        chartFunctions.setBarChartData(barChart, data, context.getString(R.string.summary_detail_activity_steps), days);
+        chartFunctions.setBarChartData(barChart, twoDimensionalChartData, context.getString(R.string.summary_detail_activity_steps), days);
         chart.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }
 
-    private void drawLineChart(View chart, List<SummaryDetailUtil> data, String[] labels, String leftAxisLabel, int days) {
+    private void drawLineChart(View chart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, String leftAxisLabel, int days) {
         LineChart lineChart = chart.findViewById(R.id.line_chart);
         chartFunctions.setupLineChart(lineChart, null);
         lineChart.getXAxis().setAxisMaximum(days - 1);
@@ -465,12 +470,12 @@ public class PDFWeeklyAndMonthlyReport {
         lineChart.getAxisLeft().setTextSize(6f);
         VerticalTextView verticalTextView = chart.findViewById(R.id.text_view_y_axis_label);
         verticalTextView.setText(leftAxisLabel);
-        chartFunctions.setLineChartData(lineChart, data, labels, days);
+        chartFunctions.setLineChartData(lineChart, twoDimensionalChartData, labels, days);
         chart.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }
 
-    private void drawAreaChart(View chart, List<SummaryDetailUtil> data1, List<SummaryDetailUtil> data2, String[] labels, String leftAxisLabel, int days) {
+    private void drawAreaChart(View chart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, String leftAxisLabel, int days) {
         LineChart lineChart = chart.findViewById(R.id.line_chart);
         chartFunctions.setupLineChart(lineChart, null);
         lineChart.getAxisLeft().setAxisMaximum(100);
@@ -479,7 +484,7 @@ public class PDFWeeklyAndMonthlyReport {
         lineChart.getXAxis().setTextSize(6f);
         VerticalTextView verticalTextView = chart.findViewById(R.id.text_view_y_axis_label);
         verticalTextView.setText(leftAxisLabel);
-        chartFunctions.setAreaChart(lineChart, data1, data2, labels, days);
+        chartFunctions.setAreaChart(lineChart, twoDimensionalChartData, labels, days);
         chart.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }

@@ -1,6 +1,5 @@
 package pt.uninova.s4h.citizenhub.persistence.repository;
 
-import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
@@ -9,9 +8,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
-import pt.uninova.s4h.citizenhub.data.Device;
-import pt.uninova.s4h.citizenhub.data.LumbarExtensionTrainingMeasurement;
-import pt.uninova.s4h.citizenhub.data.LumbarExtensionTrainingValue;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
@@ -20,12 +16,10 @@ import pt.uninova.s4h.citizenhub.persistence.dao.DeviceDao;
 import pt.uninova.s4h.citizenhub.persistence.dao.LumbarExtensionTrainingDao;
 import pt.uninova.s4h.citizenhub.persistence.dao.SampleDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.CaloriesMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.DeviceRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.LumbarExtensionTrainingMeasurementRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSummary;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTimestampPanel;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class LumbarExtensionTrainingRepository {
@@ -104,7 +98,8 @@ public class LumbarExtensionTrainingRepository {
     public void selectTrainingSection(LocalDate localDate, Observer<List<LumbarExtensionWithTimestampPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectTrainingSections(localDate)));
     }
-    public void selectDuration(Observer<List<SummaryDetailUtil>> observer){
+    
+    /*public void selectDuration(Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectDuration()));
     }
 
@@ -118,5 +113,5 @@ public class LumbarExtensionTrainingRepository {
 
     public void selectWeight(Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectWeight()));
-    }
+    }*/
 }

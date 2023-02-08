@@ -17,7 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailHeartRateUtil;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyHeartRatePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -82,26 +83,25 @@ public class SummaryDetailHeartRateFragment extends Fragment {
         });
 
         chartFunctions.setupLineChart(lineChart, model.getChartViewMarker());
-
         dailyHeartRate();
     }
 
     private void dailyHeartRate(){
-        Observer<List<SummaryDetailHeartRateUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(data),new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 24);
+        Observer<List<HourlyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate),new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 24);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
         heartRateMeasurementRepository.selectLastDay(LocalDate.now(), observer);
     }
 
     private void weeklyHeartRate(){
-        Observer<List<SummaryDetailHeartRateUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(data), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 7);
+        Observer<List<DailyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate, 7), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 7);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
         heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
     }
 
     private void monthlyHeartRate(){
-        Observer<List<SummaryDetailHeartRateUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(data), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 30);
+        Observer<List<DailyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate, 30), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 30);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
-        heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 29, observer);
+        heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
     }
 
 }

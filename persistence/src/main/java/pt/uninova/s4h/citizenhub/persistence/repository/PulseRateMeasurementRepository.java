@@ -10,7 +10,6 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.PulseRateMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.PulseRateMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class PulseRateMeasurementRepository {
@@ -35,7 +34,7 @@ public class PulseRateMeasurementRepository {
         return pulseRateMeasurementDao.selectAverageLiveData(localDate, localDate.plusDays(1));
     }
 
-    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+    /*public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(pulseRateMeasurementDao.selectLastDay(localDate)));
     }
 
@@ -45,6 +44,6 @@ public class PulseRateMeasurementRepository {
 
     public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(pulseRateMeasurementDao.selectLastThirtyDays(localDate.minusDays(30), localDate)));
-    }
+    }*/
 
 }
