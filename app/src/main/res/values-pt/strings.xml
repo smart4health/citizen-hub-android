@@ -330,7 +330,6 @@
     <string name="lumbar_training_calories_label">Calorias</string>
     <string name="measurement_type.29">Postura</string>
     <string name="breathing_rate_title">Frequência respiratória média</string>
-    <string name="report_title">Citizen Hub Relatório Diário %s</string>
 
     <string name="fragment_location_disabled_button_text">Definições de localização do dispositivo</string>
     <string name="fragment_location_not_supported_text_view">Localização não é suportada neste dispositivo</string>

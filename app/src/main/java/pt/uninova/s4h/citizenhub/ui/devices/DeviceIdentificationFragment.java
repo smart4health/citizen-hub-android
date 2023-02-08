@@ -31,7 +31,6 @@ public class DeviceIdentificationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.fragment_device_configuration_update_test, container, false);
 
         final Device device = model.getSelectedDevice().getValue();

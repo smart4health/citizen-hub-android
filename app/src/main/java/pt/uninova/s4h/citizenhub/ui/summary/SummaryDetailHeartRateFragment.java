@@ -31,7 +31,7 @@ public class SummaryDetailHeartRateFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SummaryViewModel.class);
-        chartFunctions = new ChartFunctions(getContext());
+        chartFunctions = new ChartFunctions(getContext(), LocalDate.now());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class SummaryDetailHeartRateFragment extends Fragment {
     private void monthlyHeartRate(){
         Observer<List<SummaryDetailHeartRateUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(data), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 30);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
-        heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
+        heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 29, observer);
     }
 
 }

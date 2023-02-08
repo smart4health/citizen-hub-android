@@ -35,8 +35,8 @@ public class BloodPressureMeasurementRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.selectLastDay(localDate)));
     }
 
-    public void readLastDays(LocalDate localDate, int days, Observer<List<SummaryDetailBloodPressureUtil>> observer) {
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.selectLastDays(localDate.minusDays(days - 1), localDate, days)));
+    public void selectSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailBloodPressureUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 
     public LiveData<BloodPressureMeasurementRecord> readLatest(LocalDate localDate) {

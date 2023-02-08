@@ -7,12 +7,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import pt.uninova.s4h.citizenhub.connectivity.Agent;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
 import pt.uninova.s4h.citizenhub.connectivity.Protocol;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BaseCharacteristicListener;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
-import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothMeasuringProtocol;
 import pt.uninova.s4h.citizenhub.data.PostureMeasurement;
 import pt.uninova.s4h.citizenhub.data.PostureValue;
@@ -78,19 +78,19 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         }
     };
 
-    private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = value -> {
-        if (value.getNewState() == BluetoothConnectionState.DISCONNECTED) {
+    private final Observer<StateChangedMessage<Integer, ? extends Agent>> agentStateObserver = value -> {
+        System.out.println("STATEEEEEEEE" + value.getNewState() + value.getOldState());
+        if (value.getNewState() != Agent.AGENT_STATE_ENABLED) {
             setState(Protocol.STATE_SUSPENDED);
             push(lastGoodPosture);
             reset();
-        } else if (value.getNewState() == BluetoothConnectionState.READY && value.getOldState() == BluetoothConnectionState.DISCONNECTED) {
+        } else {
             setState(Protocol.STATE_ENABLED);
 
             if (selfUpdatingThread == null) {
                 startSelfUpdatingThread();
             }
-
-            value.getSource().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+            getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
         }
     };
 
@@ -100,6 +100,8 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
 
     public UprightGo2PostureProtocol(BluetoothConnection connection, Dispatcher<Sample> dispatcher, UprightGo2Agent agent) {
         super(ID, connection, dispatcher, agent);
+        getAgent().addStateObserver(agentStateObserver);
+
     }
 
     @Override
@@ -111,7 +113,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         connection.disableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
         connection.removeCharacteristicListener(postureChangedListener);
-        connection.removeConnectionStateChangeListener(connectionStateObserver);
+//        getAgent().removeStateObserver(agentStateObserver);
 
         super.disable();
     }
@@ -123,7 +125,6 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         final BluetoothConnection connection = getConnection();
 
         connection.addCharacteristicListener(postureChangedListener);
-        connection.addConnectionStateChangeListener(connectionStateObserver);
 
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 

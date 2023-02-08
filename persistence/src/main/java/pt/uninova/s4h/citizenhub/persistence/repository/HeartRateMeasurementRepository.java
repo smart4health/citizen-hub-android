@@ -49,7 +49,7 @@ public class HeartRateMeasurementRepository {
     }
 
     public void selectSeveralDays(LocalDate localDate, int days, Observer<List<SummaryDetailHeartRateUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(heartRateMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate, days)));
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(heartRateMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 
     public void readAvgLastDay(Observer<List<SummaryDetailUtil>> observer, LocalDate localDate){

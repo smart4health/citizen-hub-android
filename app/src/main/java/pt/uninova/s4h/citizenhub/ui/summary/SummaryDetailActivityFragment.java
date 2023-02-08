@@ -38,7 +38,7 @@ public class SummaryDetailActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SummaryViewModel.class);
-        chartFunctions = new ChartFunctions(getContext());
+        chartFunctions = new ChartFunctions(getContext(), LocalDate.now());
     }
 
     @Override

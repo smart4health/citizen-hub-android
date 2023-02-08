@@ -321,7 +321,6 @@
     <string name="lumbar_training_calories_label">Kalorien</string>
     <string name="measurement_type.29">Haltung</string>
     <string name="breathing_rate_title">Durchschnittliche atemfrequenz</string>
-    <string name="report_title">Citizen Hub Tagesbericht %s</string>
 
     <string name="fragment_location_disabled_button_text">Standorteinstellungen des Geräts</string>
     <string name="fragment_location_not_supported_text_view">Der Standort wird auf diesem Gerät nicht unterstützt</string>

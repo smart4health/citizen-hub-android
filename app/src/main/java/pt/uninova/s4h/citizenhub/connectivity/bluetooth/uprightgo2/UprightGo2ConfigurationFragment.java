@@ -168,11 +168,11 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
                 }
             }
         });
-        setListeners();
 
     }
 
     private void setListeners() {
+
         disableListeners();
         buttonCalibration.setOnClickListener(view1 -> Navigation.findNavController(requireView()).navigate(pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToUprightGo2CalibrationFragment()));
 
@@ -302,6 +302,13 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     public void onResume() {
         super.onResume();
         agent.addStateObserver(agentStateObserver);
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setListeners();
+
+            }
+        });
         if (agent.getState() != Agent.AGENT_STATE_ENABLED) {
             requireActivity().runOnUiThread(this::disable);
         }
@@ -315,6 +322,7 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
         if (agent != null) {
             agent.removeStateObserver(agentStateObserver);
         }
+        disableListeners();
     }
 
     private void disableListeners() {

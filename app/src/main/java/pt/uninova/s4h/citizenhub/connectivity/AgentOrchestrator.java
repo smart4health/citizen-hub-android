@@ -1,5 +1,7 @@
 package pt.uninova.s4h.citizenhub.connectivity;
 
+import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_BLUETOOTH;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgent;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.util.UUIDv5;
@@ -48,6 +51,10 @@ public class AgentOrchestrator {
         return NAMESPACE_GENERATOR;
     }
 
+    private final Observer<StateChangedMessage<Integer, ? extends Agent>> agentStateObserver = value -> {
+        tellOnAgentStateChanged(value.getSource());
+    };
+
     public void add(Device device) {
         add(device, value -> {
         });
@@ -82,6 +89,7 @@ public class AgentOrchestrator {
                 put(device, agent);
                 agent.addSampleObserver(ingester);
                 tellOnAgentAttached(device, agent);
+                agent.addStateObserver(agentStateObserver);
                 observer.observe(agent);
             });
         } else {
@@ -117,6 +125,24 @@ public class AgentOrchestrator {
         return Collections.unmodifiableSet(new TreeSet<>(agentMap.keySet()));
     }
 
+    public void enableDevice(Device device) {
+        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
+            BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
+            agent.getConnection().reconnect();
+        }
+    }
+
+    public void enableAll(int connectionType) {
+        int connectionKind = connectionType;
+        for (Device device : getDevices()
+        ) {
+            if (device.getConnectionKind() == connectionKind) {
+                BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
+                agent.getConnection().reconnect();
+            }
+        }
+    }
+
     public void identify(Device device, Observer<Agent> observer) {
         final AgentFactory<? extends Agent> factory = agentFactoryMap.get(device.getConnectionKind());
 
@@ -133,8 +159,9 @@ public class AgentOrchestrator {
         final Agent agent = getAgent(device);
 
         if (agent != null) {
+            agent.removeStateObserver(agentStateObserver);
             agent.removeSampleObserver(ingester);
-            tellOnAgentRemoved(device,agent);
+            tellOnAgentRemoved(device, agent);
         }
 
         agentMap.remove(device);
@@ -143,6 +170,12 @@ public class AgentOrchestrator {
 
     public void removeListener(AgentOrchestratorListener listener) {
         this.listeners.remove(listener);
+    }
+
+    private void tellOnAgentStateChanged(Agent agent) {
+        for (AgentOrchestratorListener i : listeners) {
+            i.onAgentStateChanged(agent);
+        }
     }
 
     private void tellOnAgentAttached(Device device, Agent agent) {

@@ -81,4 +81,18 @@ public interface PostureMeasurementDao {
             + " SELECT duration AS value1, day AS time FROM agg")
     List<SummaryDetailUtil> selectLastThirtyDaysIncorrectPosture(LocalDate from, LocalDate to);
 
+    @TypeConverters({EpochTypeConverter.class, DurationTypeConverter.class})
+    @Query("WITH agg AS( SELECT ((sample.timestamp - :from) / 86400000) % :days AS day, posture_measurement.classification AS classification, "
+            + " SUM(posture_measurement.duration) AS duration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
+            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 1 GROUP BY day) "
+            + " SELECT duration AS value1, day AS time FROM agg")
+    List<SummaryDetailUtil> selectSeveralDaysCorrectPosture(LocalDate from, LocalDate to, int days);
+
+    @TypeConverters({EpochTypeConverter.class, DurationTypeConverter.class})
+    @Query("WITH agg AS( SELECT ((sample.timestamp - :from) / 86400000) % :days AS day, posture_measurement.classification AS classification, "
+            + " SUM(posture_measurement.duration) AS duration FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
+            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 2 GROUP BY day) "
+            + " SELECT duration AS value1, day AS time FROM agg")
+    List<SummaryDetailUtil> selectSeveralDaysIncorrectPosture(LocalDate from, LocalDate to, int days);
+
 }

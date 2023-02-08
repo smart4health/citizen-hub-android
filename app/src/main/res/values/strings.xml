@@ -372,7 +372,6 @@
     <string name="measurement_type.27">Position</string>
     <string name="measurement_type.28">Position</string>
     <string name="measurement_type.29">Posture</string>
-    <string name="report_title">Citizen Hub Daily Report %s</string>
 
     <string name="fragment_location_disabled_button_text">Device location settings</string>
     <string name="fragment_location_not_supported_text_view">Location is not supported on this device</string>
@@ -435,5 +434,8 @@
     <!---->
 
     <string name="smart4health_information_to_send">Reported data</string>
+    <string name="connect_label">Connect</string>
+    <string name="search_label">Search</string>
+    <string name="service_notification_message">Connected to %d out of %d devices\n</string>
 
 </resources>

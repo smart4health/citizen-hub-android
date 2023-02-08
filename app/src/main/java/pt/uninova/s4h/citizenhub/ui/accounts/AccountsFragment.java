@@ -2,31 +2,39 @@ package pt.uninova.s4h.citizenhub.ui.accounts;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import pt.uninova.s4h.citizenhub.R;
 
 public class AccountsFragment extends Fragment {
 
     private AccountsViewModel viewModel;
-
+    private ExtendedFloatingActionButton addButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.accounts_fragment, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(AccountsViewModel.class);
-
-        setHasOptionsMenu(true);
+        addButton = view.findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(requireView()).navigate(AccountsFragmentDirections.actionAccountsFragmentToAddAccountFragment());
+            }
+        });
+        if (viewModel.hasSmart4HealthAccount() && viewModel.hasSmartBearAccount()) {
+            addButton.setVisibility(View.GONE);
+        } else {
+            addButton.setVisibility(View.VISIBLE);
+        }
 
         View smart4HealthCard = view.findViewById(R.id.card_smart4health);
         View smartBearCard = view.findViewById(R.id.card_smartbear);
@@ -36,33 +44,15 @@ public class AccountsFragment extends Fragment {
 
         smart4HealthCard.setOnClickListener((View v) -> {
             NavController controller = Navigation.findNavController(requireView());
-
+            addButton.setVisibility(View.GONE);
             controller.navigate(AccountsFragmentDirections.actionAccountsFragmentToSmart4healthAccountFragment());
         });
 
         smartBearCard.setOnClickListener((View v) -> {
+            addButton.setVisibility(View.GONE);
             Navigation.findNavController(requireView()).navigate(AccountsFragmentDirections.actionAccountsFragmentToSmartBearAccountFragment());
         });
 
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.accounts_fragment, menu);
-
-        MenuItem addItem = menu.findItem(R.id.accounts_fragment_menu_add_item);
-
-        addItem.setOnMenuItemClickListener((MenuItem item) -> {
-                    Navigation.findNavController(requireView()).navigate(AccountsFragmentDirections.actionAccountsFragmentToAddAccountFragment());
-
-                    return true;
-                }
-        );
-
-        if (viewModel.hasSmart4HealthAccount() && viewModel.hasSmartBearAccount()) {
-            menu.removeItem(R.id.accounts_fragment_menu_add_item);
-        }
-
     }
 }

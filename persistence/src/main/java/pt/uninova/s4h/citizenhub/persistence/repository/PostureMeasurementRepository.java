@@ -64,4 +64,13 @@ public class PostureMeasurementRepository {
     public void readLastThirtyDaysIncorrectPosture(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(postureMeasurementDao.selectLastThirtyDaysIncorrectPosture(localDate.minusDays(29), localDate)));
     }
+
+    public void readSeveralDaysCorrectPosture(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(postureMeasurementDao.selectSeveralDaysCorrectPosture(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
+    }
+
+    public void readSeveralDaysIncorrectPosture(LocalDate localDate, int days, Observer<List<SummaryDetailUtil>> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(postureMeasurementDao.selectSeveralDaysIncorrectPosture(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
+    }
+
 }

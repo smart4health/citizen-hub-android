@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/DeviceConfiguration.LinearLayout"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:gravity="bottom|center"
     tools:context=".ui.devices.DeviceIdentificationFragment">
 
-        <Button
-            android:id="@+id/button_connect"
-            style="@style/Widget.Citizen.Button"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:text="@string/fragment_device_connect_button" />
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/button_connect"
+        style="@style/Widget.MyApp.ExtendedFloatingActionButton"
+        android:text="@string/connect_label"
+        android:theme="@style/AppTheme"
+        android:visibility="visible"
+        app:icon="@drawable/ic_baseline_add_24"
+        app:iconTint="@color/colorS4HWhite" />
+</RelativeLayout>

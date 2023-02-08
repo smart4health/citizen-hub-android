@@ -5,8 +5,6 @@ import static java.util.Objects.requireNonNull;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -67,24 +63,14 @@ public class DeviceListFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.fragment_device_list, menu);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View result = inflater.inflate(R.layout.fragment_device_list, container, false);
 
         model = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
 
-
         Button searchDevices = result.findViewById(R.id.searchButton);
 
         buildRecycleView(result);
-
-        setHasOptionsMenu(false);
 
         searchDevices.setOnClickListener(view -> Navigation.findNavController(requireView()).navigate(DeviceListFragmentDirections.actionDeviceListFragmentToDeviceConnectionMethodFragment()));
 

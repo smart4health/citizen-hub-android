@@ -41,9 +41,9 @@ public interface BloodPressureMeasurementDao {
     @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :from) / 86400000) % :days AS day, "
             + " blood_pressure_measurement.systolic AS systolic, blood_pressure_measurement.diastolic AS diastolic, blood_pressure_measurement.mean_arterial_pressure AS mean "
             + " FROM blood_pressure_measurement INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to + 86400000) "
+            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to) "
             + " SELECT systolic AS systolic, diastolic AS diastolic, mean AS mean, day AS time FROM agg GROUP BY day")
     @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailBloodPressureUtil> selectLastDays(LocalDate from, LocalDate to, int days);
+    List<SummaryDetailBloodPressureUtil> selectSeveralDays(LocalDate from, LocalDate to, int days);
 
 }
