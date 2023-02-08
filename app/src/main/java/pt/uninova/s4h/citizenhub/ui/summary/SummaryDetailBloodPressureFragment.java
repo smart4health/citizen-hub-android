@@ -104,22 +104,4 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
         bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
     }
 
-    /*private void dailyPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 24);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastDay(LocalDate.now(), observer);
-    }
-
-    private void weeklyPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 7);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
-    }
-
-    private void monthPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 30);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
-    }*/
-
 }

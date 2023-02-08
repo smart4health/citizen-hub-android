@@ -14,7 +14,6 @@ public class MeasurementKindLocalization {
     }
 
     public String localize(int measurementKind) {
-        //System.out.printf(Locale.getDefault(), "measurement_type.%d%n", measurementKind);
         final Resources resources = context.getResources();
 
         final int resourceId = resources.getIdentifier(String.format(Locale.getDefault(), "measurement_type.%d", measurementKind), "string", context.getPackageName());
