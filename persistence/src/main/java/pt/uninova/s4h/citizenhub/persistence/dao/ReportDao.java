@@ -313,8 +313,8 @@ public interface ReportDao {
     @TypeConverters(EpochTypeConverter.class)
     List<LumbarExtensionTrainingSample> getWorkTimeLumbarExtensionTraining(LocalDate from, LocalDate to);
 
-    @Query("SELECT duration AS lumbarExtensionDuration, score AS lumbarExtensionScore, repetitions AS lumbarExtensionRepetitions, "
-            + " weight AS lumbarExtensionWeight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
+    @Query("SELECT duration AS duration, score AS score, repetitions AS repetitions, "
+            + " weight AS weight, sample.timestamp AS timestamp, calories_measurement.value AS calories "
             + " FROM lumbar_extension_training_measurement "
             + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id "
             + " LEFT JOIN calories_measurement ON lumbar_extension_training_measurement.sample_id = calories_measurement.sample_id "
