@@ -112,11 +112,11 @@ public class MainActivity extends FragmentActivity {
         });
         heartRateIcon.setOnClickListener(view -> {
             if(!sensorsAreMeasuring)
-                startOneTimeWorkers();
+                startOneTimeWorkerSteps();
         });
         stepsIcon.setOnClickListener(view -> {
             if(!sensorsAreMeasuring)
-                startOneTimeWorkers();
+                startOneTimeWorkerHeartRate();
         });
     }
 
@@ -178,6 +178,27 @@ public class MainActivity extends FragmentActivity {
         workManager.enqueue(syncRequest);
     }
 
+    private void startOneTimeWorkerSteps(){
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        OneTimeWorkRequest stepsRequest = new OneTimeWorkRequest.Builder(StepsWorker.class)
+                .build();
+        workManager.enqueue(stepsRequest);
+    }
+
+    private void startOneTimeWorkerHeartRate(){
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        OneTimeWorkRequest heartRateRequest = new OneTimeWorkRequest.Builder(HeartRateWorker.class)
+                .build();
+        workManager.enqueue(heartRateRequest);
+    }
+
+    private void startOneTimeWorkerSync(){
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
+        OneTimeWorkRequest syncRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
+                .build();
+        workManager.enqueue(syncRequest);
+    }
+
     private void setObservers(){
         HeartRateWorker.heartRateInstant.observeForever(s -> {
             if (!sensorsAreMeasuring)
@@ -196,6 +217,7 @@ public class MainActivity extends FragmentActivity {
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
             System.out.println("Got HR Avg: " + s);
+            startOneTimeWorkerSync();
         });
         StepsWorker.stepsInstant.observeForever(s -> {
             if (!sensorsAreMeasuring)
@@ -212,6 +234,7 @@ public class MainActivity extends FragmentActivity {
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
             System.out.println("Got Steps to save: " + s);
+            startOneTimeWorkerSync();
         });
     }
 
