@@ -21,7 +21,6 @@ import org.apache.commons.text.WordUtils;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -80,12 +79,12 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, getResources().getString(R.string.fragment_settings_work_hours_start_message)));
 
         Set<String> workDaysTest = new HashSet<>();
+
         if (!workDaysSet.contains("")) {
             enableWorkHours();
             for (int i = 0; i < workDaysSet.size(); i++) {
                 stringsList.set(i, String.valueOf(DayOfWeek.of(i + 1)));
             }
-//                workDaysPlaceholder.setText(workDaysSet.toString().replaceAll("[\\[\\]]", ""));
             workDaysPlaceholder.setText(WordUtils.capitalizeFully(stringsList.toString().replaceAll("[\\[\\]]", "")));
         } else {
             disableWorkHours();
@@ -100,19 +99,11 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                 Set<String> workDaysInteger = new HashSet<>();
                 workDaysInteger = preferences.getStringSet(KEY_WORK_DAYS, workDaysInteger);
 
-
                 int j = 0;
                 boolean[] checkedItems = new boolean[7];
 
                 for (int k = 0; k < checkedItems.length; k++) {
-
-//                    checkedItems[k] = workDaysInteger.contains(String.valueOf(k));
                     checkedItems[k] = workDaysInteger.contains(String.valueOf(k + 1));
-
-                    System.out.println(checkedItems.length);
-                    System.out.println(k);
-                    System.out.println(workDaysInteger);
-                    System.out.println(Arrays.toString(checkedItems) + " CHECKED ITEMS");
                 }
 
                 builder.setMultiChoiceItems(workDays, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
@@ -120,6 +111,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         StringJoiner sb = new StringJoiner(", ");
                         boolean hasWorkDays = false;
+
                         for (int i = 0; i < workDays.length; i++) {
                             if (checkedItems[i]) {
                                 hasWorkDays = true;
@@ -129,8 +121,10 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                                 workDaysTest.remove(String.valueOf(i + 1));
                             }
                         }
+
                         workDaysPlaceholder.setText(sb.toString());
                         preferences.edit().putStringSet(KEY_WORK_DAYS, workDaysTest).apply();
+
                         if (hasWorkDays) {
                             enableWorkHours();
                         } else {
@@ -144,26 +138,32 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                     public void onClick(DialogInterface dialog, int which) {
                         StringJoiner sb = new StringJoiner(", ");
                         boolean hasWorkDays = false;
+
                         for (int i = 0; i < workDays.length; i++) {
                             if (checkedItems[i]) {
                                 sb.add(workDays[i]);
                                 hasWorkDays = true;
                             }
                         }
+
                         if (hasWorkDays) {
                             enableWorkHours();
                             workDaysPlaceholder.setText(sb.toString());
+
                         } else {
                             disableWorkHours();
                         }
+
                         preferences.edit().putStringSet(KEY_WORK_DAYS, workDaysTest).apply();
 
                     }
 
                 });
+
                 builder.setNegativeButton(getResources().getString(R.string.label_cancel), null);
                 AlertDialog dialog = builder.create();
                 dialog.show();
+
             }
         });
 
