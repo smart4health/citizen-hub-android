@@ -330,7 +330,7 @@
     <string name="fragment_smart_bear_account_fragment_advanced_settings_title">Advanced settings</string>
     <string name="fragment_smart_bear_account_fragment_log_out_title">Log out</string>
     <string name="fragment_settings_work_hours_title">Work Hours</string>
-    <string name="fragment_settings_work_days_title">Select your Working Days</string>
+    <string name="fragment_settings_work_days_title">No work days selected</string>
     <string name="fragment_settings_work_start_title">Work Start Time</string>
     <string name="fragment_settings_work_end_title">Work End Time</string>
     <string name="fragment_settings_work_hours_start_message">09:00</string>
