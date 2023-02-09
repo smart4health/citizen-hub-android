@@ -17,9 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import org.apache.commons.text.WordUtils;
+
+import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -54,12 +59,19 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
         super.onViewCreated(view, savedInstanceState);
         workDaysLayout = getView().findViewById(R.id.layout_work_days);
         workDaysPlaceholder = getView().findViewById(R.id.placeholder_workdays);
+        String[] workDays = getResources().getStringArray(R.array.workdays);
 
         Set<String> workDaysSet = new HashSet<>();
         workDaysSet.add("");
         workDaysSet = preferences.getStringSet(KEY_WORK_DAYS, workDaysSet);
+        List<String> stringsList = new ArrayList<>(workDaysSet);
         if (!workDaysSet.contains("")) {
-            workDaysPlaceholder.setText(workDaysSet.toString().replaceAll("[\\[\\]]", ""));
+            for (int i = 0; i < workDaysSet.size(); i++) {
+                stringsList.set(i, String.valueOf(DayOfWeek.of(i + 1)));
+            }
+//                workDaysPlaceholder.setText(workDaysSet.toString().replaceAll("[\\[\\]]", ""));
+            workDaysPlaceholder.setText(WordUtils.capitalizeFully(stringsList.toString().replaceAll("[\\[\\]]", "")));
+
         }
 
         LinearLayout startTime = getView().findViewById(R.id.layout_start_time);
@@ -78,7 +90,6 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogThemeWithCheckboxes);
                 builder.setTitle(getResources().getString(R.string.fragment_settings_work_days_title));
 
-                String[] workDays = getResources().getStringArray(R.array.workdays);
                 Set<String> workDaysInteger = new HashSet<>();
                 workDaysInteger = preferences.getStringSet(KEY_WORK_DAYS, workDaysInteger);
 
@@ -88,7 +99,9 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
                 for (int k = 0; k < checkedItems.length; k++) {
 
-                    checkedItems[k] = workDaysInteger.contains(String.valueOf(k));
+//                    checkedItems[k] = workDaysInteger.contains(String.valueOf(k));
+                    checkedItems[k] = workDaysInteger.contains(String.valueOf(k + 1));
+
                     System.out.println(checkedItems.length);
                     System.out.println(k);
                     System.out.println(workDaysInteger);
@@ -103,10 +116,9 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                         for (int i = 0; i < workDays.length; i++) {
                             if (checkedItems[i]) {
                                 sb.add(workDays[i]);
-                                workDaysTest.add(String.valueOf(i));
-                            }
-                            else{
-                                workDaysTest.remove(String.valueOf(i));
+                                workDaysTest.add(String.valueOf(i + 1));
+                            } else {
+                                workDaysTest.remove(String.valueOf(i + 1));
                             }
                         }
                         workDaysPlaceholder.setText(sb.toString());
