@@ -17,8 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -89,15 +89,20 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
                 int j = 0;
                 boolean[] checkedItems = new boolean[7];
 
-                for(int k=1;k<=checkedItems.length;k++){
-                    checkedItems[k]=workDaysInteger.contains(String.valueOf(k));
+                for (int k = 0; k < checkedItems.length; k++) {
+
+                    checkedItems[k] = workDaysInteger.contains(String.valueOf(k));
+                    System.out.println(checkedItems.length);
+                    System.out.println(k);
+                    System.out.println(workDaysInteger);
+                    System.out.println(Arrays.toString(checkedItems) + " CHECKED ITEMS");
                 }
 
-                for (String day : workDays
-                ) {
-                    checkedItems[j] = finalWorkDays.contains(day);
-                    j++;
-                }
+//                for (String day : workDays
+//                ) {
+//                    checkedItems[j] = finalWorkDays.contains(day);
+//                    j++;
+//                }
                 builder.setMultiChoiceItems(workDays, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
