@@ -333,8 +333,8 @@
     <string name="fragment_settings_work_days_title">Select your Working Days</string>
     <string name="fragment_settings_work_start_title">Work Start Time</string>
     <string name="fragment_settings_work_end_title">Work End Time</string>
-    <string name="fragment_settings_work_hours_start_message">Set some time</string>
-    <string name="fragment_settings_work_hours_end_message">Set some time</string>
+    <string name="fragment_settings_work_hours_start_message">09:00</string>
+    <string name="fragment_settings_work_hours_end_message">17:00</string>
     <string-array name="workdays">
         <item>Monday</item>
         <item>Tuesday</item>
