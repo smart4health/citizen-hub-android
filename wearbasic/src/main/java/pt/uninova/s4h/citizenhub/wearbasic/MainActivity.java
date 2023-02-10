@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -33,6 +34,7 @@ import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepo
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsSnapshotMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.TagRepository;
+import pt.uninova.s4h.citizenhub.wearbasic.message.MessageService;
 import pt.uninova.s4h.citizenhub.wearbasic.service.ForegroundService;
 import pt.uninova.s4h.citizenhub.wearbasic.work.HeartRateWorker;
 import pt.uninova.s4h.citizenhub.wearbasic.work.StepsWorker;
@@ -235,6 +237,9 @@ public class MainActivity extends FragmentActivity {
             stepsText.setText(String.valueOf(s));
             System.out.println("Got Steps to save: " + s);
             startOneTimeWorkerSync();
+        });
+        MessageService.phoneConnected.observeForever(s -> {
+            System.out.println("Got Message from phone: " + s);
         });
     }
 
