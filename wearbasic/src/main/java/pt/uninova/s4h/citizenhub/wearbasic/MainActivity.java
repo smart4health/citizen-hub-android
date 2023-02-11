@@ -238,7 +238,16 @@ public class MainActivity extends FragmentActivity {
             System.out.println("Got Steps to save: " + s);
             startOneTimeWorkerSync();
         });
-        MessageService.phoneConnected.observeForever(s -> {
+        MessageService.connection.observeForever(s -> {
+            System.out.println("Got Message from phone: " + s);
+        });
+        MessageService.heartRate.observeForever(s -> {
+            System.out.println("Got Message from phone: " + s);
+        });
+        MessageService.steps.observeForever(s -> {
+            System.out.println("Got Message from phone: " + s);
+        });
+        MessageService.agent.observeForever(s -> {
             System.out.println("Got Message from phone: " + s);
         });
     }
