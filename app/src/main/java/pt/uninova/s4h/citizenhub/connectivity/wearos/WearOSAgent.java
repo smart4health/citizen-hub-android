@@ -26,6 +26,7 @@ import pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationUniqueIdentifierF
 public class WearOSAgent extends AbstractAgent {
 
     final public static UUID ID = AgentOrchestrator.namespaceGenerator().getUUID("wearos.wear");
+    String agentPath = "agent";
 
     static private final Set<Integer> supportedMeasurementKinds = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             Measurement.TYPE_STEPS_SNAPSHOT,
@@ -50,13 +51,13 @@ public class WearOSAgent extends AbstractAgent {
     @Override
     public void disable() {
         setState(Agent.AGENT_STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage("WearOSAgent", "false");
+        service.getWearOSMessageService().sendMessage(agentPath, "false");
     }
 
     @Override
     public void enable() {
         setState(Agent.AGENT_STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage("WearOSAgent", "true");
+        service.getWearOSMessageService().sendMessage(agentPath, "true");
     }
 
     @Override

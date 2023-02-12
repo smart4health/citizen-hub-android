@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub.connectivity.wearos;
 
-import android.util.Log;
-
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -20,18 +18,18 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
     final public static UUID ID = AgentOrchestrator.namespaceGenerator().getUUID("wearos.wear.heartrate");
     final private static int kind = Measurement.TYPE_HEART_RATE;
     final private static int wearProtocolDisable = 100000, wearProtocolEnable = 100001;
-    final String TAG = "WearOSHeartRateProtocol";
+    String heartRatePath = "heartrate";
+    String connectionPath = "connection";
     CitizenHubService service;
 
     protected WearOSHeartRateProtocol(WearOSConnection connection, Dispatcher<Sample> sampleDispatcher, WearOSAgent agent, CitizenHubService service) {
         super(ID, agent,sampleDispatcher);
-        Log.d(TAG, "Entered");
         this.service = service;
 
         connection.addChannelListener(new BaseChannelListener(kind) {
             @Override
             public void onChange(double value, Date timestamp) {
-                service.getWearOSMessageService().sendMessage("WearOSConnected","true");
+                service.getWearOSMessageService().sendMessage(connectionPath,"true");
                 final int heartRate = (int) value;
                 Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
                 if(value<wearProtocolDisable){
@@ -56,12 +54,12 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage("WearOSHeartRateProtocol","false");
+        service.getWearOSMessageService().sendMessage(heartRatePath,"false");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage("WearOSHeartRateProtocol","true");
+        service.getWearOSMessageService().sendMessage(heartRatePath,"true");
     }
 }

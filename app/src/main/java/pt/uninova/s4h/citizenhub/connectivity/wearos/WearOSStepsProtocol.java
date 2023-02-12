@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub.connectivity.wearos;
 
-import android.util.Log;
-
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -21,20 +19,20 @@ import pt.uninova.s4h.citizenhub.util.messaging.Dispatcher;
 public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
     final public static UUID ID = AgentOrchestrator.namespaceGenerator().getUUID("wearos.wear.steps");
     final private static int kind = Measurement.TYPE_STEPS_SNAPSHOT;
-    private static final String TAG = "WearOSStepsProtocol";
     final private static int wearProtocolDisable = 100000, wearProtocolEnable = 100001;
     CitizenHubService service;
+    String stepsPath = "steps";
+    String connectionPath = "connection";
 
     protected WearOSStepsProtocol(WearOSConnection connection, Dispatcher<Sample> sampleDispatcher, WearOSAgent agent, CitizenHubService service) {
         super(ID, agent, sampleDispatcher);
-        Log.d(TAG, "Entered");
         this.service = service;
 
         connection.addChannelListener(new BaseChannelListener(kind) {
             @Override
             public void onChange(double value, Date timestamp) {
                 Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
-                service.getWearOSMessageService().sendMessage("WearOSConnected","true");
+                service.getWearOSMessageService().sendMessage(connectionPath,"true");
                 if (value < wearProtocolDisable) {
                     final int steps = (int) value;
                     final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
@@ -59,12 +57,12 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage("WearOSStepsProtocol", "false");
+        service.getWearOSMessageService().sendMessage(stepsPath, "false");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage("WearOSStepsProtocol", "true");
+        service.getWearOSMessageService().sendMessage(stepsPath, "true");
     }
 }

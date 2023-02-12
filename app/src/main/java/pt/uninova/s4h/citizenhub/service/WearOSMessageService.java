@@ -1,7 +1,6 @@
 package pt.uninova.s4h.citizenhub.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -23,16 +22,15 @@ import pt.uninova.s4h.citizenhub.connectivity.wearos.WearOSConnection;
 public class WearOSMessageService extends FragmentActivity implements MessageClient.OnMessageReceivedListener {
 
     private String nodeIdString, mobileIDString;
-    private static final String TAG = "WearOSMessageService";
     private final Map<String,WearOSConnection> connectionMap = new HashMap<>();
     String citizenHubPath = "/citizenhub_";
+
     String checkConnectionPath = "checkConnection";
     Context appContext;
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Entered Stop"  );
         Wearable.getMessageClient(appContext).removeListener(this);
     }
 
@@ -70,13 +68,11 @@ public class WearOSMessageService extends FragmentActivity implements MessageCli
     }
 
     public WearOSConnection connect(String address, String name, CitizenHubService service) {
-        Log.d(TAG, "Entered connect with address " + address);
         appContext = service;
 
         Wearable.getMessageClient(service).addListener(this);
         WearOSConnection wearOSConnection = new WearOSConnection(address, name);
         connectionMap.put(address, wearOSConnection);
-        new SendMessage(citizenHubPath, "Ready", appContext).start();
 
         MessageClient.OnMessageReceivedListener listener = messageEvent -> {
             String message = new String(messageEvent.getData());
