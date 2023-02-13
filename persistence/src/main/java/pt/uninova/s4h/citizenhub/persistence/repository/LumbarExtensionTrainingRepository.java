@@ -98,20 +98,5 @@ public class LumbarExtensionTrainingRepository {
     public void selectTrainingSection(LocalDate localDate, Observer<List<LumbarExtensionWithTimestampPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectTrainingSections(localDate)));
     }
-    
-    /*public void selectDuration(Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectDuration()));
-    }
 
-    public void selectScore(Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectScore()));
-    }
-
-    public void selectRepetitions(Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectRepetitions()));
-    }
-
-    public void selectWeight(Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectWeight()));
-    }*/
 }

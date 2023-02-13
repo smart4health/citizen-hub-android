@@ -102,9 +102,7 @@ public interface ReportDao {
             + " INNER JOIN sample ON heart_rate_measurement.sample_id = sample.id "
             + " INNER JOIN tag ON heart_rate_measurement.sample_id = tag.sample_id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND tag.label = 1) heartRate, "
-            /*+ " (SELECT classification AS classification, SUM(duration) AS dailyPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification) posture, "*/
+
             + " (SELECT classification AS classification, SUM(duration) AS correctPostureDuration FROM posture_measurement "
             + " INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " INNER JOIN tag ON posture_measurement.sample_id = tag.sample_id "
@@ -152,9 +150,7 @@ public interface ReportDao {
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to "
             + " AND NOT EXISTS "
             + " (SELECT tag.label FROM tag WHERE tag.sample_id = heart_rate_measurement.sample_id AND tag.label = 1)) heartRate, "
-            /*+ " (SELECT classification AS classification, SUM(duration) AS dailyPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification) posture, "*/
+
             + " (SELECT classification AS classification, SUM(duration) AS correctPostureDuration FROM posture_measurement "
             + " INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 1 "
@@ -205,9 +201,6 @@ public interface ReportDao {
             + " INNER JOIN tag ON distance_measurement.sample_id = tag.sample_id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND tag.label = 1 GROUP BY days)) distanceData, "
 
-            /*+ " (SELECT classification AS classification, SUM(duration) AS dailyPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification) posture, "*/
             + " (SELECT classification AS classification, SUM(duration) AS correctPostureDuration FROM posture_measurement "
             + " INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " INNER JOIN tag ON posture_measurement.sample_id = tag.sample_id "
@@ -259,9 +252,6 @@ public interface ReportDao {
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to "
             + " AND NOT EXISTS (SELECT tag.label FROM tag WHERE tag.sample_id = distance_measurement.sample_id AND tag.label = 1) GROUP BY days)) distanceData, "
 
-            /*+ " (SELECT classification AS classification, SUM(duration) AS dailyPostureDuration "
-            + " FROM posture_measurement INNER JOIN sample ON posture_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to GROUP BY classification) posture, "*/
             + " (SELECT classification AS classification, SUM(duration) AS correctPostureDuration FROM posture_measurement "
             + " INNER JOIN sample ON posture_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :from AND sample.timestamp < :to AND classification = 1 "

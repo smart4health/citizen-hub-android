@@ -69,11 +69,8 @@ public class DeviceSearchFragmentWearOS extends Fragment {
                 for (Node node : nodes) {
                     String nodeId = node.getId();
                     String nodeName = node.getDisplayName();
-                    System.out.println("node found:" + " " + nodeId + " " + nodeName);
                     getActivity().runOnUiThread(() -> addItem(nodeName, nodeId));
                 }
-            } else {
-                System.out.println("no node found!");
             }
             client.disconnect();
         }).start();

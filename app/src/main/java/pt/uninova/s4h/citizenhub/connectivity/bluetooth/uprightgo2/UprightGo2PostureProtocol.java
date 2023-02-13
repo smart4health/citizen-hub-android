@@ -79,7 +79,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     };
 
     private final Observer<StateChangedMessage<Integer, ? extends Agent>> agentStateObserver = value -> {
-        System.out.println("STATEEEEEEEE" + value.getNewState() + value.getOldState());
+
         if (value.getNewState() != Agent.AGENT_STATE_ENABLED) {
             setState(Protocol.STATE_SUSPENDED);
             push(lastGoodPosture);
