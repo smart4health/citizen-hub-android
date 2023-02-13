@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds the hour of the day to a Distance Panel. */
 public class HourlyDistancePanel extends AbstractDistancePanel implements Hourly {
 
     private Integer hourOfDay;

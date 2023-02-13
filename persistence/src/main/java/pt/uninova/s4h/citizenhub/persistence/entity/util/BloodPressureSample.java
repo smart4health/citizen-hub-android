@@ -2,6 +2,7 @@ package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
 import java.time.Instant;
 
+/** Sample with all Blood Pressure attributes. */
 public class BloodPressureSample {
 
     private Double systolic;

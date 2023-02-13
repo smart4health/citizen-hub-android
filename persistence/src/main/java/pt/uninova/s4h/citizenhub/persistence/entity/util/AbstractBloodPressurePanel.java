@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Contains the basic attributes of blood pressure. */
 public class AbstractBloodPressurePanel implements BloodPressurePanel {
 
     private Double diastolic;

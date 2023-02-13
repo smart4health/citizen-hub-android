@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Contains the basic attributes of calories. */
 public class AbstractCaloriesPanel implements CaloriesPanel{
 
     private Double calories;

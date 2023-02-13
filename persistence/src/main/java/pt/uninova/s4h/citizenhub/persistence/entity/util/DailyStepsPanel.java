@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds a specific day to a Steps Panel. */
 public class DailyStepsPanel extends AbstractStepsPanel implements Daily {
 
     private Integer day;

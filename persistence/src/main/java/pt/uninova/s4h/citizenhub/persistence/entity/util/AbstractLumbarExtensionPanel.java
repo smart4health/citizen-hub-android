@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Contains the basic attributes of lumbar extension training. */
 public class AbstractLumbarExtensionPanel implements LumbarExtensionPanel {
 
     private Double duration;

@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds the hour of the day to a Posture Panel. */
 public class HourlyPosturePanel extends AbstractPosturePanel implements Hourly {
 
     private Integer hourOfDay;

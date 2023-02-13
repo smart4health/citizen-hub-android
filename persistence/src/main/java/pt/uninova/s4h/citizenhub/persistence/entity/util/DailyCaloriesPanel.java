@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds a specific day to a Calories Panel. */
 public class DailyCaloriesPanel extends AbstractCaloriesPanel implements Daily {
 
     private Integer day;
