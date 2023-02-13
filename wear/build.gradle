@@ -7,8 +7,8 @@ android {
         applicationId "pt.uninova.s4h.citizenhub"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 220221206
-        versionName "0.7.2"
+        versionCode 220221208
+        versionName "0.7.4"
     }
 
     buildTypes {

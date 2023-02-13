@@ -171,6 +171,12 @@ public class DeviceViewModel extends AndroidViewModel {
         agentOrchestrator.remove(device);
     }
 
+    public void reconnectDevice(Device device) {
+        final AgentOrchestrator agentOrchestrator = agentOrchestratorLiveData.getValue();
+        if (agentOrchestrator != null)
+            agentOrchestrator.enableDevice(device);
+    }
+
 
     public void selectDevice(Device device) {
         selectedDeviceLiveData.postValue(device);

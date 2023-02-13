@@ -90,16 +90,6 @@
             android:layout_gravity="center"
             android:src="@drawable/img_citizen_hub_logo_dark_name" />
 
-        <TextView
-            android:id="@+id/textViewSwipe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="3dp"
-            android:fontFamily="@font/primus_regular"
-            android:gravity="center"
-            android:text="@string/fragment_greeting_next_page"
-            android:textSize="16sp" />
 
     </LinearLayout>
 </ScrollView>

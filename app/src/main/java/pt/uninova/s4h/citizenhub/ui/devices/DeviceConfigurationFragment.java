@@ -12,8 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -46,8 +49,34 @@ public class DeviceConfigurationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         final View view = inflater.inflate(R.layout.fragment_device_configuration_listview, container, false);
+
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.device_configuration_fragment, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == R.id.device_configuration_menu_reconnect_item) {
+                    model.reconnectDevice(model.getSelectedDevice().getValue());
+                    return true;
+
+                } else if (id == R.id.device_configuration_menu_remove_item) {
+                    model.removeSelectedDevice();
+                    Navigation.findNavController(DeviceConfigurationFragment.this.requireView()).navigate(DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToDeviceListFragment());
+                    return true;
+
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
+
         nameDevice = view.findViewById(R.id.textConfigurationDeviceNameValue);
         addressDevice = view.findViewById(R.id.textConfigurationAddressValue);
         setHeaderValues(model.getSelectedDevice().getValue());
@@ -67,18 +96,6 @@ public class DeviceConfigurationFragment extends Fragment {
             ft.commitNow();
         }
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.device_configuration_fragment, menu);
-        MenuItem removeItem = menu.findItem(R.id.device_configuration_menu_remove_item);
-        removeItem.setOnMenuItemClickListener((MenuItem item) -> {
-            model.removeSelectedDevice();
-            Navigation.findNavController(DeviceConfigurationFragment.this.requireView()).navigate(DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToDeviceListFragment());
-
-            return true;
-        });
     }
 
     private static void setChildrenEnabled(ViewGroup layout, boolean state) {

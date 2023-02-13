@@ -49,7 +49,6 @@ public class MiBand2AuthProtocol extends BluetoothProtocol {
         connection.addCharacteristicListener(new BaseCharacteristicListener(MiBand2Agent.XIAOMI_MIBAND2_SERVICE_AUTH, MiBand2Agent.XIAOMI_MIBAND2_CHARACTERISTIC_AUTH) {
             @Override
             public void onChange(byte[] value) {
-                System.out.println("MOOOOP");
                 if (value[0] == 0x10 && value[1] == 0x01 && value[2] == 0x04) {
                     if (sendKey) {
                         sendKey();

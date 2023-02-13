@@ -18,7 +18,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyPosturePanel;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
 import pt.uninova.s4h.citizenhub.persistence.repository.PostureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -33,7 +34,7 @@ public class SummaryDetailPostureFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SummaryViewModel.class);
-        chartFunctions = new ChartFunctions(getContext());
+        chartFunctions = new ChartFunctions(getContext(), LocalDate.now());
     }
 
     @Override
@@ -97,32 +98,27 @@ public class SummaryDetailPostureFragment extends Fragment {
 
     private void dailyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
-        Observer<List<SummaryDetailUtil>> observerCorrect = correct -> {
-            Observer<List<SummaryDetailUtil>> observerIncorrect = incorrect -> {
-                chartFunctions.setAreaChart(lineChart, correct, incorrect, new String[]{getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 24);
-                chartFunctions.setPieChart(pieChart, correct, incorrect);
-            };
-            postureMeasurementRepository.readLastDayIncorrectPosture(LocalDate.now(), observerIncorrect);
+        Observer<List<HourlyPosturePanel>> observer = posture -> {
+            chartFunctions.setAreaChart(lineChart, chartFunctions.parsePostureUtil(posture), new String[]{getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 24);
+            chartFunctions.setPieChart(pieChart, chartFunctions.parsePostureUtil(posture));
         };
-        postureMeasurementRepository.readLastDayCorrectPosture(LocalDate.now(), observerCorrect);
+        postureMeasurementRepository.readLastDayPosture(LocalDate.now(), observer);
     }
 
     private void weeklyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
-        Observer<List<SummaryDetailUtil>> observerCorrect = correct -> {
-            Observer<List<SummaryDetailUtil>> observerIncorrect = incorrect -> chartFunctions.setAreaChart(lineChart, correct, incorrect, new String[] {getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 7);
-            postureMeasurementRepository.readLastSevenDaysIncorrectPosture(LocalDate.now(), observerIncorrect);
+        Observer<List<DailyPosturePanel>> observer = posture -> {
+            chartFunctions.setAreaChart(lineChart, chartFunctions.parsePostureUtil(posture, 7), new String[]{getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 7);
         };
-        postureMeasurementRepository.readLastSevenDaysCorrectPosture(LocalDate.now(), observerCorrect);
+        postureMeasurementRepository.readSeveralDaysPosture(LocalDate.now(), 7, observer);
     }
 
     private void monthlyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
-        Observer<List<SummaryDetailUtil>> observerCorrect = correct -> {
-            Observer<List<SummaryDetailUtil>> observerIncorrect = incorrect -> chartFunctions.setAreaChart(lineChart, correct, incorrect, new String[] {getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 30);
-            postureMeasurementRepository.readLastThirtyDaysIncorrectPosture(LocalDate.now(), observerIncorrect);
+        Observer<List<DailyPosturePanel>> observer = posture -> {
+            chartFunctions.setAreaChart(lineChart, chartFunctions.parsePostureUtil(posture, 30), new String[]{getString(R.string.summary_detail_posture_correct), getString(R.string.summary_detail_posture_incorrect)}, 30);
         };
-        postureMeasurementRepository.readLastThirtyDaysCorrectPosture(LocalDate.now(), observerCorrect);
+        postureMeasurementRepository.readSeveralDaysPosture(LocalDate.now(), 30, observer);
     }
 
 }

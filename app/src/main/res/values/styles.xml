@@ -68,7 +68,23 @@
         <item name="android:textColor">@color/colorS4HDarkBlue</item>
     </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar" />
+
+    <style name="Widget.MyApp.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="backgroundTint">@color/colorS4HDarkBlue</item>
+        <item name="android:fontFamily">@font/neo_sans_pro_bold</item>
+        <item name="android:textColor">@color/colorS4HWhite</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:layout_gravity">bottom|center</item>
+        <item name="android:contentDescription">fab</item>
+        <item name="iconTint">@color/colorS4HWhite</item>
+
+    </style>
+
 
     <!--style name="ReportDetailTitle">
         <item name="android:layout_width">114.520dp</item>
@@ -387,7 +403,7 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    /* Styles used for the report */
+    <!-- Styles used for the report -->
 
     <style name="ReportDetailValueType">
         <item name="android:fontFamily">@font/neosanspro</item>
@@ -659,4 +675,18 @@
         <item name="android:textSize">10sp</item>
         <item name="android:duplicateParentState">true</item>
     </style>
+
+    <style name="ScrollViewWithFab">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginBottom">70dp</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadeScrollbars">false</item>
+        <item name="android:scrollbarAlwaysDrawVerticalTrack">false</item>
+        <item name="android:scrollbarFadeDuration">0</item>
+        <item name="android:scrollbarThumbVertical">@color/colorS4HDarkBlue</item>
+        <item name="android:scrollbarSize">6dp</item>
+    </style>
+
 </resources>

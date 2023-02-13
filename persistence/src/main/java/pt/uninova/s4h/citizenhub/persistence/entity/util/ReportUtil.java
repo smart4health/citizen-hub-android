@@ -9,12 +9,6 @@ import pt.uninova.s4h.citizenhub.persistence.conversion.DurationTypeConverter;
 
 public class ReportUtil {
 
-    //Blood Pressure
-    private Double systolic;
-    private Double diastolic;
-    private Double meanArterialPressure;
-    private Double pulseRate;
-
     //Breathing
     private Double maxBreathingRate;
     private Double minBreathingRate;
@@ -30,13 +24,6 @@ public class ReportUtil {
     private Double maxHeartRate;
     private Double minHeartRate;
     private Double avgHeartRate;
-
-    //Lumbar Extension Training
-    @TypeConverters(DurationTypeConverter.class)
-    private Duration lumbarExtensionDuration;
-    private Double lumbarExtensionScore;
-    private Integer lumbarExtensionRepetitions;
-    private Integer lumbarExtensionWeight;
 
     //Position
     private Integer postureClassification;
@@ -54,31 +41,6 @@ public class ReportUtil {
     private Instant timestamp;
 
     private Long id;
-
-    //Blood Pressure
-    public Double getSystolic(){
-        return systolic;
-    }
-
-    public void setSystolic(Double systolic) { this.systolic = systolic; }
-
-    public Double getDiastolic(){
-        return diastolic;
-    }
-
-    public void setDiastolic(Double diastolic) { this.diastolic = diastolic; }
-
-    public Double getMeanArterialPressure(){
-        return meanArterialPressure;
-    }
-
-    public void setMeanArterialPressure(Double meanArterialPressure) { this.meanArterialPressure = meanArterialPressure; }
-
-    public Double getPulseRate(){
-        return pulseRate;
-    }
-
-    public void setPulseRate(Double pulseRate) { this.pulseRate = pulseRate; }
 
     //Breathing Rate
     public Double getMaxBreathingRate(){ return maxBreathingRate; }
@@ -121,29 +83,6 @@ public class ReportUtil {
     }
 
     public void setAvgHeartRate(Double avgHeartRate) { this.avgHeartRate = avgHeartRate; }
-
-    //Lumbar Extension Training
-    public Duration getLumbarExtensionDuration(){
-        return lumbarExtensionDuration;
-    }
-
-    public void setLumbarExtensionDuration(Duration lumbarExtensionDuration) { this.lumbarExtensionDuration = lumbarExtensionDuration; }
-
-    public Double getLumbarExtensionScore(){
-        return lumbarExtensionScore;
-    }
-
-    public void setLumbarExtensionScore(Double lumbarExtensionScore) { this.lumbarExtensionScore = lumbarExtensionScore; }
-
-    public Integer getLumbarExtensionRepetitions(){
-        return lumbarExtensionRepetitions;
-    }
-
-    public void setLumbarExtensionRepetitions(Integer lumbarExtensionRepetitions) { this.lumbarExtensionRepetitions = lumbarExtensionRepetitions; }
-
-    public Integer getLumbarExtensionWeight(){return lumbarExtensionWeight;}
-
-    public void setLumbarExtensionWeight(Integer lumbarExtensionWeight){this.lumbarExtensionWeight=lumbarExtensionWeight;}
 
     //Posture
     public Integer getPostureClassification(){ return postureClassification; }

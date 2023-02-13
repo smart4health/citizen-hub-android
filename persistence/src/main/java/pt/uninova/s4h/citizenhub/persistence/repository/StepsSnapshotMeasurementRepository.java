@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.StepsSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsSnapshotMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 

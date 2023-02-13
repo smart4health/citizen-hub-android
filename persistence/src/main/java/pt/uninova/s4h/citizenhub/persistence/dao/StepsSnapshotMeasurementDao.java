@@ -9,12 +9,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import pt.uninova.s4h.citizenhub.persistence.conversion.EpochTypeConverter;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsSnapshotMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 
 @Dao
@@ -41,27 +37,6 @@ public interface StepsSnapshotMeasurementDao {
     @Query(value = "SELECT MAX(value) FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
     @TypeConverters(EpochTypeConverter.class)
     Double selectMaximum(LocalDate from, LocalDate to);
-    
-    @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :localDate) / 3600000) % 24 AS hour, steps_snapshot_measurement.value AS value "
-            + " FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000) "
-            + " SELECT MAX(value) AS value1, hour AS time FROM agg GROUP BY hour")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastDay(LocalDate localDate);
-
-    @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :from) / 86400000) % 7 AS day, steps_snapshot_measurement.value AS value "
-            + " FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to + 86400000) "
-            + " SELECT MAX(value) AS value1, day AS time FROM agg GROUP BY day")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastSevenDays(LocalDate from, LocalDate to);
-
-    @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :from) / 86400000) % 30 AS day, steps_snapshot_measurement.value AS value "
-            + " FROM steps_snapshot_measurement INNER JOIN sample ON steps_snapshot_measurement.sample_id = sample.id "
-            + " WHERE sample.timestamp >= :from AND sample.timestamp < :to + 86400000) "
-            + " SELECT MAX(value) AS value1, day AS time FROM agg GROUP BY day")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectLastThirtyDays(LocalDate from, LocalDate to);
 
     @Query("SELECT value FROM steps_snapshot_measurement WHERE sample_id == :sampleId")
     Integer selectBasedOnId(Long sampleId);

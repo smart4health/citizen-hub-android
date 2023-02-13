@@ -62,6 +62,26 @@ public class AccountsViewModel extends AndroidViewModel {
         return preferences.getBoolean("account.smart4health.report.auto-upload", true);
     }
 
+    public void setReportWeeklyAutomaticUpload(boolean weeklyAutomaticUpload){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("account.smart4health.report.weekly-auto-upload", weeklyAutomaticUpload);
+        editor.apply();
+    }
+
+    public boolean hasReportWeeklyAutomaticUpload(){
+        return preferences.getBoolean("account.smart4health.report.weekly-auto-upload", true);
+    }
+
+    public void setReportMonthlyAutomaticUpload(boolean weeklyAutomaticUpload){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("account.smart4health.report.monthly-auto-upload", weeklyAutomaticUpload);
+        editor.apply();
+    }
+
+    public boolean hasReportMonthlyAutomaticUpload(){
+        return preferences.getBoolean("account.smart4health.report.monthly-auto-upload", true);
+    }
+
     public void setReportDataActivity(boolean activity){
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("account.smart4health.report.data.activity", activity);

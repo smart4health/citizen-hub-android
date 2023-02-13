@@ -26,6 +26,7 @@ public abstract class BluetoothAgent extends AbstractAgent {
 
     final private BluetoothConnection connection;
 
+
     final private Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> observer = (value) -> {
         updateState(value.getNewState());
     };
@@ -68,4 +69,6 @@ public abstract class BluetoothAgent extends AbstractAgent {
             setState(AGENT_STATE_INACTIVE);
         }
     }
+
+
 }

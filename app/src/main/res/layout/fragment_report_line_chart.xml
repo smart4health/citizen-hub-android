@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
+            android:layout_width="250dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@+id/text_view_y_axis_label"/>
+
+        <pt.uninova.s4h.citizenhub.ui.summary.VerticalTextView
+            android:id="@+id/text_view_y_axis_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="4dip"
+            android:rotation="180"
+            android:text="@string/summary_detail_blood_pressure_with_units"
+            android:textSize="7sp"
+            android:textColor="@color/colorS4HBlack"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/text_view_x_axis_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line_chart"
+            android:layout_alignEnd="@id/line_chart"
+            android:layout_alignStart="@id/line_chart"
+            android:gravity="center"
+            android:text="@string/summary_detail_time_days"
+            android:textSize="7sp"
+            android:textColor="@color/colorS4HBlack"
+            tools:ignore="SmallSp" />
+
+</RelativeLayout>

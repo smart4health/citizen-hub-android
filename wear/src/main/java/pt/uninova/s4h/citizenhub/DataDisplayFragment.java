@@ -31,7 +31,6 @@ public class DataDisplayFragment extends Fragment {
         heartRateDataTextView = view.findViewById(R.id.textViewHeartRateValue);
         stepsDataLayout = view.findViewById(R.id.stepsDataLayout);
         stepsDataTextView = view.findViewById(R.id.textViewStepsValue);
-        swipeLeft = view.findViewById(R.id.textViewSwipe);
         heartIcon = view.findViewById(R.id.imageIconHeartRate);
 
         initialAnimation();
@@ -40,13 +39,12 @@ public class DataDisplayFragment extends Fragment {
         return view;
     }
 
-    private void enableObservers(){
+    private void enableObservers() {
         MainActivity.listenHeartRateAverage.observe((LifecycleOwner) view.getContext(), s -> heartRateDataTextView.setText(s));
         MainActivity.listenSteps.observe((LifecycleOwner) view.getContext(), s -> stepsDataTextView.setText(s));
         MainActivity.protocolHeartRate.observe((LifecycleOwner) view.getContext(), aBoolean -> {
             if (aBoolean) {
                 heartRateDataLayout.setVisibility(View.VISIBLE);
-                swipeLeft.setVisibility(View.GONE);
             } else {
                 heartRateDataLayout.setVisibility(View.INVISIBLE);
             }
@@ -54,7 +52,6 @@ public class DataDisplayFragment extends Fragment {
         MainActivity.protocolSteps.observe((LifecycleOwner) view.getContext(), aBoolean -> {
             if (aBoolean) {
                 stepsDataLayout.setVisibility(View.VISIBLE);
-                swipeLeft.setVisibility(View.GONE);
             } else {
                 stepsDataLayout.setVisibility(View.INVISIBLE);
             }
@@ -62,8 +59,7 @@ public class DataDisplayFragment extends Fragment {
         MainActivity.heartRateIcon.observe((LifecycleOwner) view.getContext(), s -> heartIcon.setImageResource(s));
     }
 
-    private void initialAnimation(){
-        TextView swipeText = view.findViewById(R.id.textViewSwipe);
+    private void initialAnimation() {
         ImageView imageCitizen = view.findViewById(R.id.imageViewCitizenHub);
 
         AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
@@ -77,28 +73,5 @@ public class DataDisplayFragment extends Fragment {
         fadeOut.setStartOffset(0);
 
         imageCitizen.startAnimation(fadeInImage);
-        swipeText.startAnimation(fadeIn);
-
-        fadeIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                swipeText.startAnimation(fadeOut);
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
-
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                swipeText.startAnimation(fadeIn);
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
     }
 }
