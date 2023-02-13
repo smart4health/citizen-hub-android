@@ -57,24 +57,6 @@ public class ReportGenerator {
                 groups.add(groupActivity);
             }
         }
-        /*if(reportUtil.getCalories()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_CALORIES, localization);
-            Group groupCalories = new Group(label);
-            groupCalories.getItemList().add(new Item(new StringType("Calories"), new StringValue(reportUtil.getCalories().toString())));
-            groups.add(groupCalories);
-        }
-        if(reportUtil.getDistance()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_DISTANCE_SNAPSHOT, localization);
-            Group groupDistance = new Group(label);
-            groupDistance.getItemList().add(new Item(new StringType("Distance"), new StringValue(reportUtil.getDistance().toString())));
-            groups.add(groupDistance);
-        }
-        if(reportUtil.getSteps()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_STEPS_SNAPSHOT, localization);
-            Group groupSteps = new Group(label);
-            groupSteps.getItemList().add(new Item(new StringType("Steps"), new StringValue(reportUtil.getSteps().toString())));
-            groups.add(groupSteps);
-        }*/
         if (reportUtil.getMaxBreathingRate() != null && reportUtil.getMinBreathingRate() != null && reportUtil.getAvgBreathingRate() != null) {
             MeasurementTypeLocalizedResource label = new MeasurementTypeLocalizedResource(localization, Measurement.TYPE_BREATHING_RATE);
             Group groupBreathingRate = new Group(label);

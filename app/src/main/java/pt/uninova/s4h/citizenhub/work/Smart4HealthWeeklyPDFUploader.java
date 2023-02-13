@@ -117,8 +117,6 @@ public class Smart4HealthWeeklyPDFUploader extends ListenableWorker {
                                         .with(WeekFields.ISO.weekBasedYear(), value.getYear()) // year
                                         .with(WeekFields.ISO.weekOfWeekBasedYear(), value.getWeek()) // week of year
                                         .with(WeekFields.ISO.dayOfWeek(), 7).plusWeeks(1);
-                                System.out.println(localDate);
-                                System.out.println(localDate.get(WeekFields.ISO.weekOfWeekBasedYear()));
                                 upload(completer, smart4HealthWeeklyReportRepository, client, localDate);
                             }
                         });

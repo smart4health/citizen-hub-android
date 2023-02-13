@@ -2,10 +2,11 @@ package pt.uninova.s4h.citizenhub.persistence.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.StepsSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsSnapshotMeasurementRecord;
@@ -42,4 +43,7 @@ public class StepsSnapshotMeasurementRepository {
         return stepsSnapshotMeasurementDao.selectLatestWalkingInformationLiveData(localDate, localDate.plusDays(1));
     }
 
+    public void selectBasedOnId(Long sampleId, Observer<Integer> observer) {
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectBasedOnId(sampleId)));
+    }
 }

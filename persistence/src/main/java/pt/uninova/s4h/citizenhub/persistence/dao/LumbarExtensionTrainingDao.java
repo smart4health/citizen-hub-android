@@ -58,24 +58,5 @@ public interface LumbarExtensionTrainingDao {
             + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000")
     @TypeConverters(EpochTypeConverter.class)
     List<LumbarExtensionWithTimestampPanel> selectTrainingSections(LocalDate localDate);
-    
-    /*@Query(value = "SELECT lumbar_extension_training_measurement.duration AS value1, sample.timestamp AS time FROM lumbar_extension_training_measurement "
-            + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id ")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectDuration();
 
-    @Query(value = "SELECT lumbar_extension_training_measurement.score AS value1, sample.timestamp AS time FROM lumbar_extension_training_measurement "
-            + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id ")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectScore();
-
-    @Query(value = "SELECT lumbar_extension_training_measurement.repetitions AS value1, sample.timestamp AS time FROM lumbar_extension_training_measurement "
-            + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id ")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectRepetitions();
-
-    @Query(value = "SELECT lumbar_extension_training_measurement.weight AS value1, sample.timestamp AS time FROM lumbar_extension_training_measurement "
-            + " INNER JOIN sample ON lumbar_extension_training_measurement.sample_id = sample.id ")
-    @TypeConverters(EpochTypeConverter.class)
-    List<SummaryDetailUtil> selectWeight();*/
 }

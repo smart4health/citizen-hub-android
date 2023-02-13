@@ -370,22 +370,18 @@ public class ChartFunctions {
         barChart.invalidate();
     }
 
-    /*private void setStackedBar(BarChart barChart, List<SummaryDetailUtil> list1, List<SummaryDetailUtil> list2, String[] labels, int max){
-        float[] values1 = new float[max];
-        float[] values2 = new float[max];
+    private void setStackedBar(BarChart barChart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, int max){
+        float[][] values = new float[twoDimensionalChartData.getX()][twoDimensionalChartData.getY()];
+
+        for(int y = 0; y < twoDimensionalChartData.getY(); y++){
+            for (int x = 0; x < twoDimensionalChartData.getX(); x++){
+                values[x][y] = (float) twoDimensionalChartData.get(x, y);
+            }
+        }
 
         List<BarEntry> entries = new ArrayList<>();
-
-        for (SummaryDetailUtil data : list1) {
-            values1[Math.round(data.getTime())] = data.getValue1();
-        }
-
-        for (SummaryDetailUtil data : list2) {
-            values2[Math.round(data.getTime())] = data.getValue1();
-        }
-
-        for (int i = 0; i < max; i++){
-            entries.add(new BarEntry(i, new float[]{values1[i], values2[i]}));
+        for (int x = 0; x < twoDimensionalChartData.getX(); x++){
+            entries.add(new BarEntry((float) x, values[x]));
         }
 
         BarDataSet barDataSet = new BarDataSet(entries, null);
@@ -402,7 +398,7 @@ public class ChartFunctions {
         barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
         //barChart.groupBars(0.2f, 0.25f, 0.05f);
         barChart.invalidate();
-    }*/
+    }
 
     /** Used to plot the data on a line chart.
      * @param lineChart A Line Chart instance.
@@ -580,64 +576,5 @@ public class ChartFunctions {
 
         return result.equals("") ? "0s" : result;
     }
-
-    /* public void setLineChartData(List<List<SummaryDetailUtil>> list, LineChart lineChart, String[] label, int max) {
-        int color = 0;
-        ArrayList<ILineDataSet> dataSet = new ArrayList<>();
-
-        for (List<SummaryDetailUtil> data : list) {
-            dataSet.add(setLineChartDataSet(data, label[color], max, color));
-            color++;
-        }
-
-        LineData lineData = new LineData(dataSet);
-        lineData.setValueFormatter(new ChartValueFormatter());
-        lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
-        lineChart.invalidate();
-    }
-
-    public LineDataSet setLineChartDataSet(List<SummaryDetailUtil> list, String label, int max, int color) {
-        List<Entry> entries = new ArrayList<>();
-        int currentTime = 0;
-
-        for (SummaryDetailUtil data : list) {
-            while (currentTime < data.getTime()) {
-                //entries.add(new BarEntry(currentTime, 0));
-                currentTime++;
-            }
-            entries.add(new BarEntry(data.getTime(), data.getValue1()));
-            currentTime++;
-        }
-
-        while (currentTime < max) {
-            //entries.add(new BarEntry(currentTime, 0));
-            currentTime++;
-        }
-
-        LineDataSet lineDataSet = new LineDataSet(entries, label);
-        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        lineDataSet.setDrawValues(false);
-        lineDataSet.setDrawCircles(true);
-        lineDataSet.setDrawCircleHole(true);
-        switch (color) {
-            case 0:
-                lineDataSet.setColor(getApplication().getColor(R.color.colorS4HLightBlue));
-                lineDataSet.setCircleColor(getApplication().getColor(R.color.colorS4HLightBlue));
-                lineDataSet.setCircleHoleColor(getApplication().getColor(R.color.colorS4HLightBlue));
-                break;
-            case 1:
-                lineDataSet.setColor(getApplication().getColor(R.color.colorS4HOrange));
-                lineDataSet.setCircleColor(getApplication().getColor(R.color.colorS4HOrange));
-                lineDataSet.setCircleHoleColor(getApplication().getColor(R.color.colorS4HOrange));
-                break;
-            case 2:
-                lineDataSet.setColor(getApplication().getColor(R.color.colorS4HTurquoise));
-                lineDataSet.setCircleColor(getApplication().getColor(R.color.colorS4HTurquoise));
-                lineDataSet.setCircleHoleColor(getApplication().getColor(R.color.colorS4HTurquoise));
-                break;
-        }
-        return lineDataSet;
-    }*/
 
 }

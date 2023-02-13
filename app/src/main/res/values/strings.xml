@@ -181,11 +181,9 @@
     <string name="report_lumbar_training_duration_label">Duration</string>
 
     <!-- Settings Fragment Strings -->
-    <string name="fragment_settings_work_hours_title">Work Hours</string>
     <string name="fragment_settings_work_days">Work Days</string>
     <string name="fragment_settings_choose_work_days_text">Choose your working days</string>
     <string name="fragment_settings_current_work_days_text">Current work days:</string>
-    <string name="fragment_settings_work_days_title">Select your Working Days</string>
     <string-array name="workdays">
         <item>Monday</item>
         <item>Tuesday</item>
@@ -195,10 +193,12 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+    <string name="fragment_settings_work_hours_title">Work Hours</string>
+    <string name="fragment_settings_work_days_title">No work days selected</string>
     <string name="fragment_settings_work_start_title">Work Start Time</string>
-    <string name="fragment_settings_work_hours_start_message">Set some time</string>
     <string name="fragment_settings_work_end_title">Work End Time</string>
-    <string name="fragment_settings_work_hours_end_message">Set some time</string>
+    <string name="fragment_settings_work_hours_start_message">09:00</string>
+    <string name="fragment_settings_work_hours_end_message">17:00</string>
     <string-array name="workday_values" translatable="false">
         <item>1</item>
         <item>2</item>
@@ -441,6 +441,9 @@
     <string name="smart4health_information_to_send">Reported data</string>
     <string name="connect_label">Connect</string>
     <string name="search_label">Search</string>
+    <string name="label_work_hours">Work Hours</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">CANCEL</string>
     <string name="service_notification_message">Connected to %d out of %d devices\n</string>
 
 </resources>

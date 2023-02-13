@@ -481,22 +481,18 @@ public class PDFWeeklyAndMonthlyReport {
         switch (label) {
             case Measurement.TYPE_ACTIVITY:
             case Measurement.TYPE_DISTANCE_SNAPSHOT:
-                System.out.println("Activity");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_bar_chart, null);
                 drawBarChart(chart, steps, days);
                 break;
             case Measurement.TYPE_BLOOD_PRESSURE:
-                System.out.println("Blood Pressure");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_line_chart, null);
                 drawLineChart(chart, bloodPressure, new String[]{context.getString(R.string.summary_detail_blood_pressure_systolic), context.getString(R.string.summary_detail_blood_pressure_diastolic), context.getString(R.string.summary_detail_blood_pressure_mean)}, context.getString(R.string.summary_detail_blood_pressure_with_units), days);
                 break;
             case Measurement.TYPE_HEART_RATE:
-                System.out.println("Heart Rate");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_line_chart, null);
                 drawLineChart(chart, heartRate, new String[]{context.getString(R.string.summary_detail_heart_rate_average), context.getString(R.string.summary_detail_heart_rate_maximum), context.getString(R.string.summary_detail_heart_rate_minimum)}, context.getString(R.string.summary_detail_heart_rate_with_units), days);
                 break;
             case Measurement.TYPE_POSTURE:
-                System.out.println("Posture");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_line_chart, null);
                 drawAreaChart(chart, posture, new String[]{context.getString(R.string.summary_detail_posture_correct), context.getString(R.string.summary_detail_posture_incorrect)}, context.getString(R.string.summary_detail_posture), days);
                 break;

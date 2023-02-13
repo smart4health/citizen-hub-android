@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/DeviceConfiguration.ScrollView">
+
+    <LinearLayout style="@style/DeviceConfiguration.LinearLayout">
+
+        <ImageView
+            android:id="@+id/image_view_s4h"
+            style="@style/AppTheme.Summary.Item.ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/smart4health_description"
+            android:src="@drawable/img_s4h_logo_transparent_png" />
+
+        <TextView
+            android:id="@+id/text_view_description"
+            style="@style/AccountSettings.TextView"
+            android:text="@string/smart4health_description"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_daily_report_upload"
+                style="@style/AccountSettingsFragment.switchCompatStyle"
+                android:layout_marginVertical="0dp"
+                android:text="@string/smart4health_daily_report_uploads"
+                android:thumbTint="@color/thumb_selector"
+                android:trackTint="@color/track_selector" />
+
+            <TextView
+                android:id="@+id/text_view_daily_uploads_description"
+                style="@style/AccountSettingsFragment.subTextView"
+                android:text="@string/smart4health_automatic_uploads_description" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_weekly_report_upload"
+                style="@style/AccountSettingsFragment.switchCompatStyle"
+                android:layout_marginVertical="0dp"
+                android:text="@string/smart4health_weekly_report_uploads"
+                android:thumbTint="@color/thumb_selector"
+                android:trackTint="@color/track_selector" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_monthly_report_upload"
+                style="@style/AccountSettingsFragment.switchCompatStyle"
+                android:layout_marginVertical="0dp"
+                android:text="@string/smart4health_monthly_report_uploads"
+                android:thumbTint="@color/thumb_selector"
+                android:trackTint="@color/track_selector"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_view_information_to_send"
+            style="@style/AdvancedConfigurationFragmentCategoryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_information_to_send" />
+
+        <TextView
+            android:id="@+id/text_view_information_to_send_description"
+            style="@style/AccountSettingsFragment.subTextView"
+            android:layout_marginTop="10dp"
+            android:text="@string/smart4health_information_to_send_description"
+            android:textColor="@color/colorS4HGreyMedium"
+            android:textSize="12sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_activity"
+            style="@style/AccountSettingsFragment.switchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_activity"
+            android:textColor="@color/colorS4HDarkBlue"
+            android:thumbTint="@color/thumb_selector"
+            android:trackTint="@color/track_selector" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_blood_pressure"
+            style="@style/AccountSettingsFragment.switchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_blood_pressure"
+            android:textColor="@color/colorS4HDarkBlue"
+            android:thumbTint="@color/thumb_selector"
+            android:trackTint="@color/track_selector" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_heart_rate"
+            style="@style/AccountSettingsFragment.switchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_heart_rate"
+            android:textColor="@color/colorS4HDarkBlue" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_lumbar_extension_training"
+            style="@style/AccountSettingsFragment.switchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_lumbar_extension_training"
+            android:textColor="@color/colorS4HDarkBlue"
+            android:thumbTint="@color/thumb_selector"
+            android:trackTint="@color/track_selector" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_posture"
+            style="@style/AccountSettingsFragment.switchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart4health_posture"
+            android:textColor="@color/colorS4HDarkBlue"
+            android:thumbTint="@color/thumb_selector"
+            android:trackTint="@color/track_selector" />
+    </LinearLayout>
+</ScrollView>

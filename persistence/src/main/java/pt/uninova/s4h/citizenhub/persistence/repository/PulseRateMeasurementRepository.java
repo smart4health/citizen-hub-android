@@ -34,16 +34,4 @@ public class PulseRateMeasurementRepository {
         return pulseRateMeasurementDao.selectAverageLiveData(localDate, localDate.plusDays(1));
     }
 
-    /*public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(pulseRateMeasurementDao.selectLastDay(localDate)));
-    }
-
-    public void readLastSevenDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(pulseRateMeasurementDao.selectLastSevenDays(localDate.minusDays(7), localDate)));
-    }
-
-    public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(pulseRateMeasurementDao.selectLastThirtyDays(localDate.minusDays(30), localDate)));
-    }*/
-
 }

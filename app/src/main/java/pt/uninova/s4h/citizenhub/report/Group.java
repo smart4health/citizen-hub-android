@@ -11,9 +11,6 @@ public class Group {
     private final List<Group> groupList;
     private final List<Item> itemList;
 
-    /*
-     *
-     * */
     public Group(LocalizedResource label){
         this.label = label;
         this.groupList = new LinkedList<>();

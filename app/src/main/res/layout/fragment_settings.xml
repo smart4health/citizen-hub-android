@@ -1,6 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/DeviceConfiguration.ScrollView">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout style="@style/DeviceConfiguration.LinearLayout">
+        <TextView
+            style="@style/AdvancedConfigurationFragmentCategoryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_work_hours" />
+        <LinearLayout
+            android:id="@+id/layout_work_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Settings.TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:duplicateParentState="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/fragment_settings_work_days" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/placeholder_workdays"
+                style="@style/AccountSettingsFragment.subTextView"
+                android:text="@string/fragment_settings_work_days_title" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/work_hours_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Settings.TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:duplicateParentState="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/fragment_settings_work_start_title" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/placeholder_work_start_time"
+                    style="@style/AccountSettingsFragment.subTextView"
+                    android:text="@string/fragment_settings_work_hours_start_message" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_end_time"
+
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Settings.TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:duplicateParentState="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/fragment_settings_work_end_title" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/placeholder_work_end_time"
+                    style="@style/AccountSettingsFragment.subTextView"
+                    android:text="@string/fragment_settings_work_hours_end_message" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

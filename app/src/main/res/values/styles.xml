@@ -14,6 +14,24 @@
         <item name="preferenceTheme">@style/preferences</item>
     </style>
 
+    <style name="DialogTheme" parent="Theme.AppCompat"></style>
+
+    <style name="TimePickerTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Bridge">
+        <item name="colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:fontFamily">@font/neosanspro_regular</item>
+        <item name="android:font">@font/neosanspro_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="AlertDialogThemeWithCheckboxes" parent="@android:style/Theme.Material.Light.Dialog">
+        <item name="colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:colorAccent">@color/colorS4HDarkBlue</item>
+        <item name="android:fontFamily">@font/neosanspro_regular</item>
+        <item name="android:titleTextAppearance">@font/neo_sans_pro_bold</item>
+
+    </style>
+
     <style name="Theme.Citizen.AppSettings.Category.Material" parent="Preference.Category.Material">
         <item name="allowDividerAbove">false</item>
         <item name="allowDividerBelow">false</item>
@@ -403,7 +421,7 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    /* Styles used for the report */
+    <!-- Styles used for the report -->
 
     <style name="ReportDetailValueType">
         <item name="android:fontFamily">@font/neosanspro</item>
@@ -665,6 +683,18 @@
         <item name="android:duplicateParentState">true</item>
     </style>
 
+    <style name="Settings.TextView" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:fontFamily">@font/neo_sans_pro_regular</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/colorS4HDarkBlue</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:duplicateParentState">true</item>
+    </style>
+
     <style name="AccountSettingsFragment.subTextView" parent="ThemeOverlay.AppCompat.Light">
 
         <item name="android:layout_width">wrap_content</item>
@@ -672,7 +702,8 @@
         <item name="android:titleMarginEnd">60dp</item>
         <item name="android:fontFamily">@font/neo_sans_pro_regular</item>
         <item name="android:textColor">@color/colorS4HGreyMedium</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:paddingVertical">4dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:duplicateParentState">true</item>
     </style>
 

@@ -38,8 +38,7 @@ public interface HeartRateMeasurementDao {
     @Query("SELECT AVG(heart_rate_measurement.value) FROM heart_rate_measurement INNER JOIN sample ON heart_rate_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to")
     @TypeConverters(EpochTypeConverter.class)
     Double selectAverage(LocalDate from, LocalDate to);
-    
-    /* Queries used for the detailed summary fragments */
+
     @Query(value = "WITH agg AS(SELECT ((sample.timestamp - :localDate) / 3600000) % 24 AS hour, heart_rate_measurement.value AS value "
             + " FROM heart_rate_measurement INNER JOIN sample ON heart_rate_measurement.sample_id = sample.id "
             + " WHERE sample.timestamp >= :localDate AND sample.timestamp < :localDate + 86400000) "
@@ -53,5 +52,8 @@ public interface HeartRateMeasurementDao {
             + " SELECT AVG(value) AS average, MAX(value) AS maximum, MIN(value) AS minimum, day AS day FROM agg GROUP BY day")
     @TypeConverters(EpochTypeConverter.class)
     List<DailyHeartRatePanel> selectSeveralDays(LocalDate from, LocalDate to, int days);
+
+    @Query("SELECT value FROM heart_rate_measurement WHERE sample_id == :sampleId")
+    Integer selectBasedOnId(Long sampleId);
 
 }
