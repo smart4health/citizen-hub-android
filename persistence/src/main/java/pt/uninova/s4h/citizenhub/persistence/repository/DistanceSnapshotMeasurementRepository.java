@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.DistanceSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceSnapshotMeasurementRecord;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.SummaryDetailUtil;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class DistanceSnapshotMeasurementRepository {
@@ -32,18 +31,6 @@ public class DistanceSnapshotMeasurementRepository {
 
     public LiveData<Double> readMaximum(LocalDate localDate) {
         return distanceSnapshotMeasurementDao.selectMaximumLiveData(localDate, localDate.plusDays(1));
-    }
-
-    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceSnapshotMeasurementDao.selectLastDay(localDate)));
-    }
-
-    public void readLastSevenDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceSnapshotMeasurementDao.selectLastSevenDays(localDate.minusDays(6), localDate)));
-    }
-
-    public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceSnapshotMeasurementDao.selectLastThirtyDays(localDate.minusDays(29), localDate)));
     }
 
 }

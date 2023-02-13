@@ -13,6 +13,8 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.BloodPressureSample;
+import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSample;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
@@ -49,24 +51,6 @@ public class ReportGenerator {
                 groups.add(groupActivity);
             }
         }
-        /*if(reportUtil.getCalories()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_CALORIES, localization);
-            Group groupCalories = new Group(label);
-            groupCalories.getItemList().add(new Item(new StringType("Calories"), new StringValue(reportUtil.getCalories().toString())));
-            groups.add(groupCalories);
-        }
-        if(reportUtil.getDistance()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_DISTANCE_SNAPSHOT, localization);
-            Group groupDistance = new Group(label);
-            groupDistance.getItemList().add(new Item(new StringType("Distance"), new StringValue(reportUtil.getDistance().toString())));
-            groups.add(groupDistance);
-        }
-        if(reportUtil.getSteps()!=null){
-            StringMeasurementId label = new StringMeasurementId(Measurement.TYPE_STEPS_SNAPSHOT, localization);
-            Group groupSteps = new Group(label);
-            groupSteps.getItemList().add(new Item(new StringType("Steps"), new StringValue(reportUtil.getSteps().toString())));
-            groups.add(groupSteps);
-        }*/
         if (reportUtil.getMaxBreathingRate() != null && reportUtil.getMinBreathingRate() != null && reportUtil.getAvgBreathingRate() != null) {
             MeasurementTypeLocalizedResource label = new MeasurementTypeLocalizedResource(localization, Measurement.TYPE_BREATHING_RATE);
             Group groupBreathingRate = new Group(label);
@@ -108,19 +92,19 @@ public class ReportGenerator {
         }
     }
 
-    private void groupBloodPressure(List<ReportUtil> observerBloodPressure, List<Group> groups, boolean pdf) {
+    private void groupBloodPressure(List<BloodPressureSample> observerBloodPressure, List<Group> groups, boolean pdf) {
         if(preferences.getBoolean("account.smart4health.report.data.blood-pressure", true) || !pdf) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             if (observerBloodPressure.size() > 0) {
                 MeasurementTypeLocalizedResource label = new MeasurementTypeLocalizedResource(localization, Measurement.TYPE_BLOOD_PRESSURE);
                 Group groupBloodPressure = new Group(label);
-                for (ReportUtil reportUtil : observerBloodPressure) {
-                    LocalizedResource timestamp = new IsoTimestampLocalizedResource(reportUtil.getTimestamp());
+                for (BloodPressureSample bloodPressureSample : observerBloodPressure) {
+                    LocalizedResource timestamp = new IsoTimestampLocalizedResource(bloodPressureSample.getTimestamp());
                     Group group = new Group(timestamp);
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_average_label)), new ResourceValue(decimalFormat.format(reportUtil.getMeanArterialPressure())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_diastolic_label)), new ResourceValue(decimalFormat.format(reportUtil.getDiastolic())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_systolic_label)), new ResourceValue(decimalFormat.format(reportUtil.getSystolic())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_pulse_rate)), new ResourceValue(decimalFormat.format(reportUtil.getPulseRate())), new ResourceUnits(resources.getString(R.string.report_hr_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_average_label)), new ResourceValue(decimalFormat.format(bloodPressureSample.getMean())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_diastolic_label)), new ResourceValue(decimalFormat.format(bloodPressureSample.getDiastolic())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_bp_systolic_label)), new ResourceValue(decimalFormat.format(bloodPressureSample.getSystolic())), new ResourceUnits(resources.getString(R.string.report_bp_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_pulse_rate)), new ResourceValue(decimalFormat.format(bloodPressureSample.getPulseRate())), new ResourceUnits(resources.getString(R.string.report_hr_units))));
                     groupBloodPressure.getGroupList().add(group);
                 }
                 groups.add(groupBloodPressure);
@@ -128,21 +112,21 @@ public class ReportGenerator {
         }
     }
 
-    private void groupLumbarExtensionTraining(List<ReportUtil> observerLumbarExtension, List<Group> groups, boolean pdf) {
+    private void groupLumbarExtensionTraining(List<LumbarExtensionTrainingSample> observerLumbarExtension, List<Group> groups, boolean pdf) {
         if(preferences.getBoolean("account.smart4health.report.data.lumbar-extension-training", true) || !pdf) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             if (observerLumbarExtension.size() > 0) {
                 MeasurementTypeLocalizedResource label = new MeasurementTypeLocalizedResource(localization, Measurement.TYPE_LUMBAR_EXTENSION_TRAINING);
                 Group groupLumbarExtension = new Group(label);
-                for (ReportUtil reportUtil : observerLumbarExtension) {
-                    LocalizedResource timestamp = new IsoTimestampLocalizedResource(reportUtil.getTimestamp());
+                for (LumbarExtensionTrainingSample lumbarExtensionTrainingSample : observerLumbarExtension) {
+                    LocalizedResource timestamp = new IsoTimestampLocalizedResource(lumbarExtensionTrainingSample.getTimestamp());
                     Group group = new Group(timestamp);
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_score_label)), new ResourceValue(decimalFormat.format(reportUtil.getLumbarExtensionScore())), new ResourceUnits(resources.getString(R.string.report_lumbar_training_score_units))));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_repetitions_label)), new ResourceValue(decimalFormat.format(reportUtil.getLumbarExtensionRepetitions())), new ResourceUnits("-")));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_weight_label)), new ResourceValue(decimalFormat.format(reportUtil.getLumbarExtensionWeight())), new ResourceUnits(resources.getString(R.string.report_lumbar_training_weight_units))));
-                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_duration_label)), new ResourceValue(secondsToString(reportUtil.getLumbarExtensionDuration().getSeconds())), new ResourceUnits("-")));
-                    if (reportUtil.getCalories() != null) {
-                        group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_calories_label)), new ResourceValue(decimalFormat.format(reportUtil.getCalories())), new ResourceUnits(resources.getString(R.string.report_calories_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_score_label)), new ResourceValue(decimalFormat.format(lumbarExtensionTrainingSample.getScore())), new ResourceUnits(resources.getString(R.string.report_lumbar_training_score_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_repetitions_label)), new ResourceValue(decimalFormat.format(lumbarExtensionTrainingSample.getRepetitions())), new ResourceUnits("-")));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_weight_label)), new ResourceValue(decimalFormat.format(lumbarExtensionTrainingSample.getWeight())), new ResourceUnits(resources.getString(R.string.report_lumbar_training_weight_units))));
+                    group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_lumbar_training_duration_label)), new ResourceValue(secondsToString(lumbarExtensionTrainingSample.getDuration().getSeconds())), new ResourceUnits("-")));
+                    if (lumbarExtensionTrainingSample.getCalories() != null) {
+                        group.getItemList().add(new Item(new ResourceType(resources.getString(R.string.report_calories_label)), new ResourceValue(decimalFormat.format(lumbarExtensionTrainingSample.getCalories())), new ResourceUnits(resources.getString(R.string.report_calories_units))));
                     }
                     groupLumbarExtension.getGroupList().add(group);
                 }

@@ -97,7 +97,6 @@ public class DigitsoleActivityProtocol extends BluetoothMeasuringProtocol {
 
     @Override
     public void disable() {
-        System.out.println("DISABLE");
         final BluetoothConnection connection = getConnection();
         connection.removeCharacteristicListener(activationListener);
         connection.removeCharacteristicListener(dataListener);

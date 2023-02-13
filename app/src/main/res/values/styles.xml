@@ -421,7 +421,7 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    /* Styles used for the report */
+    <!-- Styles used for the report -->
 
     <style name="ReportDetailValueType">
         <item name="android:fontFamily">@font/neosanspro</item>

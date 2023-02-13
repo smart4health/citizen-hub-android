@@ -333,7 +333,6 @@ public class MainActivity extends FragmentActivity {
                 Task<Node> t = Wearable.getNodeClient(getApplicationContext()).getLocalNode();
                 Node n = Tasks.await(t);
                 nodeIdString = n.getId();
-                System.out.println("Node associated: " + n.getId() + " Message: " + message);
                 List<Node> nodes = Tasks.await(nodeListTask);
                 for (Node node : nodes) {
                     Task<Integer> sendMessageTask = Wearable.getMessageClient(MainActivity.this).sendMessage(node.getId(), path, message.getBytes());

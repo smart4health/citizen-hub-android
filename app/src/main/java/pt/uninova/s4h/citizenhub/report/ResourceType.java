@@ -8,9 +8,6 @@ public class ResourceType implements LocalizedResource {
         this.type = type;
     }
 
-    /***************************************
-     * This section only has get functions *
-     ***************************************/
     @Override
     public String getLocalizedString() {
         return type;

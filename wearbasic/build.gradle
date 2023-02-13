@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 32
+
+    defaultConfig {
+        applicationId "pt.uninova.s4h.citizenhub"
+        minSdkVersion 26
+        targetSdkVersion 32
+        versionCode 220221206
+        versionName "0.7.2"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            matchingFallbacks = ['release']
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
+    }
+
+    flavorDimensions "environment"
+
+    productFlavors {
+        development
+        stable
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint {
+        abortOnError false
+    }
+    namespace 'pt.uninova.s4h.citizenhub'
+
+}
+
+dependencies {
+    implementation project(path: ':data')
+    implementation project(path: ':persistence')
+    implementation project(path: ':util')
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.5"
+
+    compileOnly 'com.google.android.wearable:wearable:2.8.1'
+    implementation 'com.google.android.support:wearable:2.8.1'
+    implementation 'com.google.android.gms:play-services-wearable:17.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
+    implementation 'androidx.wear:wear:1.2.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation "androidx.work:work-runtime:2.3.4"
+    implementation "androidx.concurrent:concurrent-futures:1.1.0"
+    implementation "androidx.wear:wear-ongoing:1.0.0"
+    implementation "androidx.core:core:1.6.0"
+}

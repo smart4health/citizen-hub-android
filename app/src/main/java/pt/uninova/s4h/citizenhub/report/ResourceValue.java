@@ -8,9 +8,6 @@ public class ResourceValue implements LocalizedResource {
         this.value = value;
     }
 
-    /***************************************
-     * This section only has get functions *
-     ***************************************/
     @Override
     public String getLocalizedString() {
         return value;
