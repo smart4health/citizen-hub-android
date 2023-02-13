@@ -76,7 +76,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
 
         endTime = getView().findViewById(R.id.layout_end_time);
         endtimePlaceHolder = getView().findViewById(R.id.placeholder_work_end_time);
-        endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, getResources().getString(R.string.fragment_settings_work_hours_start_message)));
+        endtimePlaceHolder.setText(preferences.getString(KEY_WORK_TIME_END, getResources().getString(R.string.fragment_settings_work_hours_end_message)));
 
         Set<String> workDaysTest = new HashSet<>();
 
