@@ -162,4 +162,7 @@ public abstract class SampleDao {
     @TypeConverters(EpochTypeConverter.class)
     public abstract LiveData<Integer> selectCountLiveData(LocalDate from, LocalDate to);
 
+    @Query("SELECT timestamp FROM sample WHERE id == :sampleId")
+    public abstract Long selectTimestampBasedOnId(Long sampleId);
+
 }

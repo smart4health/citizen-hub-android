@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.data.Device;
+import pt.uninova.s4h.citizenhub.service.CitizenHubService;
 import pt.uninova.s4h.citizenhub.util.messaging.Dispatcher;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -19,14 +20,18 @@ public class WearOSConnection {
     private final Dispatcher<StateChangedMessage<WearOSConnectionState, WearOSConnection>> stateChangedMessageDispatcher;
     private final Map<Integer, Set<ChannelListener>> channelListenerMap;
     private WearOSConnectionState state;
+    CitizenHubService service;
+    String connectionPath = "connection";
 
-    public WearOSConnection(String address, String name) {
+    public WearOSConnection(String address, String name, CitizenHubService service) {
         this.address = address;
         this.name = name;
+        this.service = service;
 
         state = WearOSConnectionState.DISCONNECTED;
         stateChangedMessageDispatcher = new Dispatcher<>();
         channelListenerMap = new ConcurrentHashMap<>();
+
     }
 
     public String getAddress() {
@@ -92,9 +97,11 @@ public class WearOSConnection {
 
     public void disable() {
         setState(WearOSConnectionState.DISCONNECTED);
+        service.getWearOSMessageService().sendMessage(connectionPath, "disabled");
     }
 
     public void enable() {
         setState(WearOSConnectionState.READY);
+        service.getWearOSMessageService().sendMessage(connectionPath, "enabled");
     }
 }

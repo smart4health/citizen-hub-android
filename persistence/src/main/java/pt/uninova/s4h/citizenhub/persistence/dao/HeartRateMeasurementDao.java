@@ -53,4 +53,7 @@ public interface HeartRateMeasurementDao {
     @TypeConverters(EpochTypeConverter.class)
     List<DailyHeartRatePanel> selectSeveralDays(LocalDate from, LocalDate to, int days);
 
+    @Query("SELECT value FROM heart_rate_measurement WHERE sample_id == :sampleId")
+    Integer selectBasedOnId(Long sampleId);
+
 }

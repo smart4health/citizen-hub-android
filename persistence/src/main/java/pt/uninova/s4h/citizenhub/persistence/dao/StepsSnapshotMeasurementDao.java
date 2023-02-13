@@ -38,4 +38,7 @@ public interface StepsSnapshotMeasurementDao {
     @TypeConverters(EpochTypeConverter.class)
     Double selectMaximum(LocalDate from, LocalDate to);
 
+    @Query("SELECT value FROM steps_snapshot_measurement WHERE sample_id == :sampleId")
+    Integer selectBasedOnId(Long sampleId);
+
 }
