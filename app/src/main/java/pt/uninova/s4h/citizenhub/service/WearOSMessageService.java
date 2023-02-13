@@ -71,7 +71,7 @@ public class WearOSMessageService extends FragmentActivity implements MessageCli
         appContext = service;
 
         Wearable.getMessageClient(service).addListener(this);
-        WearOSConnection wearOSConnection = new WearOSConnection(address, name);
+        WearOSConnection wearOSConnection = new WearOSConnection(address, name, service);
         connectionMap.put(address, wearOSConnection);
 
         MessageClient.OnMessageReceivedListener listener = messageEvent -> {

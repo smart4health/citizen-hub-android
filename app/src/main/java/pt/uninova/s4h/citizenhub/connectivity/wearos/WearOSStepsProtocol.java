@@ -57,12 +57,12 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage(stepsPath, "false");
+        service.getWearOSMessageService().sendMessage(stepsPath, "disabled");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage(stepsPath, "true");
+        service.getWearOSMessageService().sendMessage(stepsPath, "enabled");
     }
 }

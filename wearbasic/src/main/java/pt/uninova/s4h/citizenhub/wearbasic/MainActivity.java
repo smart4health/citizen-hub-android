@@ -239,16 +239,16 @@ public class MainActivity extends FragmentActivity {
             startOneTimeWorkerSync();
         });
         MessageService.connection.observeForever(s -> {
-            System.out.println("Got Message from phone: " + s);
+            System.out.println("Wear connection is " + s);
         });
         MessageService.heartRate.observeForever(s -> {
-            System.out.println("Got Message from phone: " + s);
+            System.out.println("Heart rate protocol is " + s);
         });
         MessageService.steps.observeForever(s -> {
-            System.out.println("Got Message from phone: " + s);
+            System.out.println("Steps protocol is " + s);
         });
         MessageService.agent.observeForever(s -> {
-            System.out.println("Got Message from phone: " + s);
+            System.out.println("Wear agent is " + s);
         });
     }
 

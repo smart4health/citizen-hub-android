@@ -54,12 +54,12 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage(heartRatePath,"false");
+        service.getWearOSMessageService().sendMessage(heartRatePath,"disabled");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage(heartRatePath,"true");
+        service.getWearOSMessageService().sendMessage(heartRatePath,"enabled");
     }
 }
