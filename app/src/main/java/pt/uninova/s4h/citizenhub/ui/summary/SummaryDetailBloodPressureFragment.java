@@ -22,6 +22,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePane
 import pt.uninova.s4h.citizenhub.persistence.repository.BloodPressureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** This class aims to manage the detailed blood pressure layout */
 public class SummaryDetailBloodPressureFragment extends Fragment {
 
     private SummaryViewModel model;
@@ -86,40 +87,31 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
         dailyBloodPressure();
     }
 
+    /** Calls a query to retrieve daily blood pressure and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailyBloodPressure() {
         Observer<List<HourlyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 24);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly blood pressure and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklyBloodPressure() {
         Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 7), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 7);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly blood pressure and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlyBloodPressure() {
         Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 30), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 30);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
         bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
     }
-
-    /*private void dailyPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 24);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastDay(LocalDate.now(), observer);
-    }
-
-    private void weeklyPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 7);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastSevenDays(LocalDate.now(), observer);
-    }
-
-    private void monthPulseRate(){
-        Observer<List<SummaryDetailUtil>> observer = data -> chartFunctions.setLineChartData(lineChart, data, new String[]{getString(R.string.summary_detail_blood_pressure_pulse_rate)}, 30);
-        PulseRateMeasurementRepository pulseRateMeasurementRepository = new PulseRateMeasurementRepository(getContext());
-        pulseRateMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
-    }*/
 
 }

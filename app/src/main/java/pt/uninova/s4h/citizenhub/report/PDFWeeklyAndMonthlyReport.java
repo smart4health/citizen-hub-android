@@ -44,9 +44,10 @@ import pt.uninova.s4h.citizenhub.ui.summary.TwoDimensionalChartData;
 import pt.uninova.s4h.citizenhub.ui.summary.VerticalTextView;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Class responsible for drawing weekly and monthly PDFs. */
 public class PDFWeeklyAndMonthlyReport {
-    private final Context context;
 
+    private final Context context;
     private final Paint logoBackgroundPaint;
     private final TextPaint footerPaint;
     private final Paint titlePaint;
@@ -148,6 +149,11 @@ public class PDFWeeklyAndMonthlyReport {
 
     }
 
+    /** Calls multiple queries to have the information to draw into the chart to add to the PDF report.
+     * @param localDate Date of the report..
+     * @param days The number of days that are going to be displayed in the report. It depends on the current month and if it is a weekly report.
+     * @return
+     * */
     private void fetchChartsInfo(LocalDate localDate, int days) {
 
         Observer<List<DailyStepsPanel>> observerSteps = data -> steps = chartFunctions.parseStepsUtil(data, days);
@@ -174,6 +180,16 @@ public class PDFWeeklyAndMonthlyReport {
 
     }
 
+    /** Generates a complete report containing the complete weekly or monthly information.
+     * @param workTime Report with the information during working hours.
+     * @param notWorkTime Report with the information outside working hours.
+     * @param res Android resources.
+     * @param date Date of the report.
+     * @param days The number of days that are going to be displayed in the report. It depends on the current month and if it is a weekly report.
+     * @param measurementKindLocalization Decodes the type of information to process.
+     * @param observerReportPDF Observes the PDF generation.
+     * @return
+     * */
     public void generateCompleteReport(Report workTime, Report notWorkTime, Resources res, LocalDate date, int days, MeasurementKindLocalization measurementKindLocalization, Observer<byte[]> observerReportPDF) {
         if (Looper.myLooper() == null)
             Looper.prepare();
@@ -308,6 +324,14 @@ public class PDFWeeklyAndMonthlyReport {
             Looper.myLooper().quitSafely();
     }
 
+    /** Draws the header and the footer of the report.
+     * @param canvas The canvas where the report is drawn.
+     * @param canvasWriter A canvas writer.
+     * @param res Android resources.
+     * @param title It can be "Weekly Report" or "Monthly Report".
+     * @param date Report date.
+     * @return Position in the PDF page (height) after drawing the header.
+     * */
     private int drawHeaderAndFooter(Canvas canvas, CanvasWriter canvasWriter, Resources res, String title, LocalDate date) {
         /* CitizenHub Logo */
         final Drawable citizenHubLogo = ResourcesCompat.getDrawable(res, R.drawable.ic_citizen_hub_logo, null);
@@ -342,6 +366,15 @@ public class PDFWeeklyAndMonthlyReport {
         return 200;
     }
 
+    /** Draws the header of a group.
+     * @param canvas The canvas where the report is drawn.
+     * @param canvasWriter A canvas writer.
+     * @param measurementKindLocalization Decodes the type of information to process.
+     * @param label Group label.
+     * @param y The position where the group header will be drawn (height).
+     * @param rectHeight The starting position of the rectangle that surrounds a group.
+     * @return
+     * */
     private int drawGroupHeader(Canvas canvas, CanvasWriter canvasWriter, MeasurementKindLocalization measurementKindLocalization, int label, int y, int rectHeight) {
         Path path = new Path();
         path.addRoundRect(new RectF(50, rectHeight, 550, rectHeight + 25), corners, Path.Direction.CW);
@@ -352,11 +385,22 @@ public class PDFWeeklyAndMonthlyReport {
         return y + 40;
     }
 
+    /** Draws a group surrounding rectangle.
+     * @param canvas The canvas where the report is drawn.
+     * @param y The position where the group header will be drawn (height).
+     * @param rectHeight The starting position of the rectangle.
+     * */
     private void drawRect(Canvas canvas, int y, int rectHeight) {
         RectF rectAround = new RectF(50, rectHeight, 550, y - 50);
         canvas.drawRoundRect(rectAround, 12, 12, rectPaint);
     }
 
+    /** Verifies if the next group to be drawn into the report still fits the PDF page.
+     * @param group The group to be drawn.
+     * @param y The current page position (height) where the PDF is being drawn.
+     * @param complex If a group is composed by other groups.
+     * @return True if the group still fits the page and false if not.
+     * */
     private boolean verifyGroupSize(Group group, int y, boolean complex) {
         y += 25;
         if (group.getGroupList().size() == 0) {
@@ -371,10 +415,17 @@ public class PDFWeeklyAndMonthlyReport {
         return y >= 842;
     }
 
-    private int drawSimpleGroups(CanvasWriter canvasWriter, Group firstGroup, Group secondGroup, int y) {
-        if (firstGroup != null & secondGroup != null) {
-            for (Item itemNotWorkTime : firstGroup.getItemList()) {
-                for (Item itemWorkTime : secondGroup.getItemList()) {
+    /** Draws groups composed only by items into the PDF.
+     * @param canvasWriter A writer for the canvas.
+     * @param notWorkTime Group with the information regarding the time outside the working hours.
+     * @param workTime Group with the information regarding the time during the working hours.
+     * @param y Page current position (height).
+     * @return The PDF position after the group was drawn.
+     * */
+    private int drawSimpleGroups(CanvasWriter canvasWriter, Group notWorkTime, Group workTime, int y) {
+        if (notWorkTime != null & workTime != null) {
+            for (Item itemNotWorkTime : notWorkTime.getItemList()) {
+                for (Item itemWorkTime : workTime.getItemList()) {
                     if (itemNotWorkTime.getLabel().getLocalizedString().equals(itemWorkTime.getLabel().getLocalizedString())) {
                         canvasWriter.addText(itemNotWorkTime.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                         canvasWriter.addText(itemNotWorkTime.getValue().getLocalizedString(), 350, y, darkTextPaintAlignRight);
@@ -391,8 +442,8 @@ public class PDFWeeklyAndMonthlyReport {
                 }
             }
         } else {
-            if (firstGroup != null) {
-                for (Item item : firstGroup.getItemList()) {
+            if (notWorkTime != null) {
+                for (Item item : notWorkTime.getItemList()) {
                     canvasWriter.addText(item.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                     canvasWriter.addText(item.getValue().getLocalizedString(), 350, y, darkTextPaintAlignRight);
                     if (!item.getUnits().getLocalizedString().equals("-")) {
@@ -402,8 +453,8 @@ public class PDFWeeklyAndMonthlyReport {
                     y += 20;
                 }
             } else {
-                if (secondGroup != null) {
-                    for (Item item : secondGroup.getItemList()) {
+                if (workTime != null) {
+                    for (Item item : workTime.getItemList()) {
                         canvasWriter.addText(item.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                         canvasWriter.addText("-", 350, y, darkTextPaintAlignRight);
                         canvasWriter.addText(item.getValue().getLocalizedString(), 470, y, darkTextPaintAlignRight);
@@ -418,6 +469,13 @@ public class PDFWeeklyAndMonthlyReport {
         return y + 43;
     }
 
+    /** Draws the charts and their respective information into the PDF page.
+     * @param canvas The canvas where the report is drawn.
+     * @param label Label of the information to be drawn. Used to know which chart it is going to be drawn.
+     * @param days Number of days to be displayed in the charts.
+     * @param y Page current position (height).
+     * @return The PDF position (height) after the group was drawn.
+     * */
     private int drawCharts(Canvas canvas, int label, int days, int y) {
         View chart;
         switch (label) {
@@ -426,7 +484,7 @@ public class PDFWeeklyAndMonthlyReport {
                 System.out.println("Activity");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_bar_chart, null);
                 drawBarChart(chart, steps, days);
-                break; //Ver com o carlos
+                break;
             case Measurement.TYPE_BLOOD_PRESSURE:
                 System.out.println("Blood Pressure");
                 chart = LayoutInflater.from(context).inflate(R.layout.fragment_report_line_chart, null);
@@ -452,6 +510,12 @@ public class PDFWeeklyAndMonthlyReport {
         return y + 170;
     }
 
+    /** Draws a bar chart into the PDF page.
+     * @param chart View for the respective chart.
+     * @param twoDimensionalChartData Generic class containing the information to display in the chart.
+     * @param days Number of days to be displayed in the chart.
+     * @return
+     * */
     private void drawBarChart(View chart, TwoDimensionalChartData twoDimensionalChartData, int days) {
         BarChart barChart = chart.findViewById(R.id.bar_chart);
         barChart.getXAxis().setTextSize(6f);
@@ -462,6 +526,13 @@ public class PDFWeeklyAndMonthlyReport {
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }
 
+    /** Draws a line chart into the PDF page.
+     * @param chart View for the respective chart.
+     * @param twoDimensionalChartData Generic class containing the information to display in the chart.
+     * @param labels Chart's labels.
+     * @param leftAxisLabel Y axis label.
+     * @param days Number of days to be displayed in the chart.
+     * */
     private void drawLineChart(View chart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, String leftAxisLabel, int days) {
         LineChart lineChart = chart.findViewById(R.id.line_chart);
         chartFunctions.setupLineChart(lineChart, null);
@@ -475,6 +546,13 @@ public class PDFWeeklyAndMonthlyReport {
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }
 
+    /** Draws a area chart into the PDF page.
+     * @param chart View for the respective chart.
+     * @param twoDimensionalChartData Generic class containing the information to display in the chart.
+     * @param labels Chart's labels.
+     * @param leftAxisLabel Y axis label.
+     * @param days Number of days to be displayed in the chart.
+     * */
     private void drawAreaChart(View chart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, String leftAxisLabel, int days) {
         LineChart lineChart = chart.findViewById(R.id.line_chart);
         chartFunctions.setupLineChart(lineChart, null);
@@ -489,11 +567,11 @@ public class PDFWeeklyAndMonthlyReport {
         chart.layout(chart.getLeft(), chart.getTop(), chart.getRight(), chart.getBottom());
     }
 
-    private int createNewPage(Canvas canvas, CanvasWriter canvasWriter, Resources res, String title, LocalDate date) {
-        drawHeaderAndFooter(canvas, canvasWriter, res, title, date);
-        return 200;
-    }
-
+    /** Writes the canvas page into the PDF itself.
+     * @param document Document containing the PDF.
+     * @param page PDF page.
+     * @param canvasWriter Canvas containing the PDF page.
+     * */
     private void writePage(PdfDocument document, PdfDocument.Page page, CanvasWriter canvasWriter) {
         canvasWriter.draw();
         document.finishPage(page);

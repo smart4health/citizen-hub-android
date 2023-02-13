@@ -28,6 +28,7 @@ import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Class responsible for drawing daily PDFs. */
 public class PDFDailyReport {
 
     private final Context context;
@@ -125,16 +126,24 @@ public class PDFDailyReport {
 
     }
 
+    /** Generates a complete report containing the complete daily information.
+     * @param workTime Report with the information during working hours.
+     * @param notWorkTime Report with the information outside working hours.
+     * @param res Android resources.
+     * @param date Date of the report.
+     * @param measurementKindLocalization Decodes the type of information to process.
+     * @param observerReportPDF Observes the PDF generation.
+     * @return
+     * */
     public void generateCompleteReport(Report workTime, Report notWorkTime, Resources res, LocalDate date, MeasurementKindLocalization measurementKindLocalization, Observer<byte[]> observerReportPDF) {
         if(Looper.myLooper() == null)
             Looper.prepare();
 
         PdfDocument document = new PdfDocument();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
-        PdfDocument.Page page = document.startPage(pageInfo); // Não percebo porque é que se tem que alterar para isto
+        PdfDocument.Page page = document.startPage(pageInfo);
 
         Canvas canvas = page.getCanvas();
-        //canvas.setDensity(72);
 
         CanvasWriter canvasWriter = new CanvasWriter(canvas);
 
@@ -269,6 +278,13 @@ public class PDFDailyReport {
             Looper.myLooper().quitSafely();
     }
 
+    /** Draws the header and the footer of the report.
+     * @param canvas The canvas where the report is drawn.
+     * @param canvasWriter A canvas writer.
+     * @param res Android resources.
+     * @param date Report date.
+     * @return Position in the PDF page (height) after drawing the header.
+     * */
     private int drawHeaderAndFooter(Canvas canvas, CanvasWriter canvasWriter, Resources res, LocalDate date) {
         /* CitizenHub Logo */
         final Drawable citizenHubLogo = ResourcesCompat.getDrawable(res, R.drawable.ic_citizen_hub_logo, null);
@@ -303,6 +319,15 @@ public class PDFDailyReport {
         return 200;
     }
 
+   /** Draws the header of a group.
+    * @param canvas The canvas where the report is drawn.
+    * @param canvasWriter A canvas writer.
+    * @param measurementKindLocalization Decodes the type of information to process.
+    * @param label Group label.
+    * @param y The position where the group header will be drawn (height).
+    * @param rectHeight The starting position of the rectangle that surrounds a group.
+    * @return
+    * */
     private void drawGroupHeader(Canvas canvas, CanvasWriter canvasWriter, MeasurementKindLocalization measurementKindLocalization, int label, int y, int rectHeight) {
         Path path = new Path();
         path.addRoundRect(new RectF(50, rectHeight, 550, rectHeight + 25), corners, Path.Direction.CW);
@@ -312,11 +337,22 @@ public class PDFDailyReport {
         canvasWriter.addText("MyWork", 500, y - 4, whiteItalicTextPaint);
     }
 
+    /** Draws a group surrounding rectangle.
+     * @param canvas The canvas where the report is drawn.
+     * @param y The position where the group header will be drawn (height).
+     * @param rectHeight The starting position of the rectangle.
+     * */
     private void drawRect(Canvas canvas, int y, int rectHeight) {
         RectF rectAround = new RectF(50, rectHeight, 550, y - 50);
         canvas.drawRoundRect(rectAround, 12, 12, rectPaint);
     }
 
+    /** Verifies if the next group to be drawn into the report still fits the PDF page.
+     * @param group The group to be drawn.
+     * @param y The current page position (height) where the PDF is being drawn.
+     * @param complex If a group is composed by other groups.
+     * @return True if the group still fits the page and false if not.
+     * */
     private boolean verifyGroupSize(Group group, int y, boolean complex) {
         y += 25;
         if (group.getGroupList().size() == 0) {
@@ -331,10 +367,17 @@ public class PDFDailyReport {
         return y >= 842;
     }
 
-    private int drawSimpleGroups(CanvasWriter canvasWriter, Group firstGroup, Group secondGroup, int y) {
-        if (firstGroup != null & secondGroup != null) {
-            for (Item itemNotWorkTime : firstGroup.getItemList()) {
-                for (Item itemWorkTime : secondGroup.getItemList()) {
+    /** Draws groups composed only by items into the PDF.
+     * @param canvasWriter A writer for the canvas.
+     * @param notWorkTime Group with the information regarding the time outside the working hours.
+     * @param workTime Group with the information regarding the time during the working hours.
+     * @param y Page current position (height).
+     * @return The PDF position after the group was drawn.
+     * */
+    private int drawSimpleGroups(CanvasWriter canvasWriter, Group notWorkTime, Group workTime, int y) {
+        if (notWorkTime != null & workTime != null) {
+            for (Item itemNotWorkTime : notWorkTime.getItemList()) {
+                for (Item itemWorkTime : workTime.getItemList()) {
                     if (itemNotWorkTime.getLabel().getLocalizedString().equals(itemWorkTime.getLabel().getLocalizedString())) {
                         canvasWriter.addText(itemNotWorkTime.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                         canvasWriter.addText(itemNotWorkTime.getValue().getLocalizedString(), 350, y, darkTextPaintAlignRight);
@@ -351,8 +394,8 @@ public class PDFDailyReport {
                 }
             }
         } else {
-            if (firstGroup != null) {
-                for (Item item : firstGroup.getItemList()) {
+            if (notWorkTime != null) {
+                for (Item item : notWorkTime.getItemList()) {
                     canvasWriter.addText(item.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                     canvasWriter.addText(item.getValue().getLocalizedString(), 350, y, darkTextPaintAlignRight);
                     if (!item.getUnits().getLocalizedString().equals("-")) {
@@ -362,8 +405,8 @@ public class PDFDailyReport {
                     y += 20;
                 }
             } else {
-                if (secondGroup != null) {
-                    for (Item item : secondGroup.getItemList()) {
+                if (workTime != null) {
+                    for (Item item : workTime.getItemList()) {
                         canvasWriter.addText(item.getLabel().getLocalizedString(), 90, y, darkTextPaintAlignLeft);
                         canvasWriter.addText("-", 350, y, darkTextPaintAlignRight);
                         canvasWriter.addText(item.getValue().getLocalizedString(), 470, y, darkTextPaintAlignRight);
@@ -379,6 +422,13 @@ public class PDFDailyReport {
         return y;
     }
 
+    /** Draws groups composed by other groups into the PDF.
+     * @param canvasWriter A writer for the canvas.
+     * @param group Group to be drawn.
+     * @param x Page current position (width). It is used to write information further into the PDF page.
+     * @param y Page current position (height).
+     * @return The PDF position after the group was drawn.
+     * */
     private int drawComplexGroups(CanvasWriter canvasWriter, Group group, int x, int y) {
         String timestamp = group.getLabel().getLocalizedString();
         canvasWriter.addText(timestamp.substring(timestamp.indexOf("T") + 1, timestamp.indexOf("Z")), 75, y, darkTextPaintAlignLeft);
@@ -395,15 +445,11 @@ public class PDFDailyReport {
         return y;
     }
 
-
-    private int createNewPage(PdfDocument document, PdfDocument.Page[] page, PdfDocument.PageInfo pageInfo, Canvas[] canvas, CanvasWriter[] canvasWriter, Resources res, LocalDate date) {
-        page[0] = document.startPage(pageInfo);
-        canvas[0] = page[0].getCanvas();
-        canvasWriter[0] = new CanvasWriter(canvas[0]);
-        drawHeaderAndFooter(canvas[0], canvasWriter[0], res, date);
-        return 200;
-    }
-
+    /** Writes the canvas page into the PDF itself.
+     * @param document Document containing the PDF.
+     * @param page PDF page.
+     * @param canvasWriter Canvas containing the PDF page.
+     * */
     private void writePage(PdfDocument document, PdfDocument.Page page, CanvasWriter canvasWriter) {
         canvasWriter.draw();
         document.finishPage(page);

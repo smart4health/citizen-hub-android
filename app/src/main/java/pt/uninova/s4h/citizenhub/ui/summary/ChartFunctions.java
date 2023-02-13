@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +47,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyStepsPanel;
 
+/** This is the chart functions class. It contains functions to the configure and handle the charts. */
 public class ChartFunctions {
 
     private final Context context;
@@ -58,7 +58,12 @@ public class ChartFunctions {
         this.localDate = localDate;
     }
 
-    // This section has functions used to parse different utils to a more generic one used to pass the data to the charts //
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyBloodPressurePanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseBloodPressureUtil(List<HourlyBloodPressurePanel> hourlyBloodPressurePanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 3);
         for (HourlyBloodPressurePanel data : hourlyBloodPressurePanels){
@@ -69,6 +74,13 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyBloodPressurePanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseBloodPressureUtil(List<DailyBloodPressurePanel> dailyBloodPressurePanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 3);
         for (DailyBloodPressurePanel data : dailyBloodPressurePanels){
@@ -79,6 +91,12 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyCaloriesPanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseCaloriesUtil(List<HourlyCaloriesPanel> hourlyCaloriesPanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
         for (HourlyCaloriesPanel dailyCaloriesPanel : hourlyCaloriesPanels){
@@ -86,6 +104,13 @@ public class ChartFunctions {
         }
         return twoDimensionalChartData;
     }
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyCaloriesPanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseCaloriesUtil(List<DailyCaloriesPanel> dailyCaloriesPanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
         for (DailyCaloriesPanel dailyCaloriesPanel : dailyCaloriesPanels){
@@ -94,6 +119,12 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyDistancePanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseDistanceUtil(List<HourlyDistancePanel> hourlyDistancePanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
         for (HourlyDistancePanel hourlyDistancePanel : hourlyDistancePanels){
@@ -101,6 +132,14 @@ public class ChartFunctions {
         }
         return twoDimensionalChartData;
     }
+
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyDistancePanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseDistanceUtil(List<DailyDistancePanel> dailyDistancePanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
         for (DailyDistancePanel dailyCaloriesPanel : dailyDistancePanels){
@@ -109,6 +148,12 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyHeartRatePanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseHeartRateUtil(List<HourlyHeartRatePanel> hourlyHeartRatePanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 3);
         for (HourlyHeartRatePanel data : hourlyHeartRatePanels){
@@ -119,6 +164,13 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyHeartRatePanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseHeartRateUtil(List<DailyHeartRatePanel> dailyHeartRatePanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 3);
         for (DailyHeartRatePanel data : dailyHeartRatePanels){
@@ -129,6 +181,12 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyStepsPanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseStepsUtil(List<HourlyStepsPanel> hourlyStepsPanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 1);
         for (HourlyStepsPanel hourlyStepsPanel : hourlyStepsPanels){
@@ -136,6 +194,14 @@ public class ChartFunctions {
         }
         return twoDimensionalChartData;
     }
+
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyStepsPanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parseStepsUtil(List<DailyStepsPanel> dailyStepsPanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 1);
         for (DailyStepsPanel dailyStepsPanel : dailyStepsPanels){
@@ -144,6 +210,12 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for daily information.
+     * @param hourlyPosturePanels Information returned by the query.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parsePostureUtil(List<HourlyPosturePanel> hourlyPosturePanels){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(24, 2);
         for (HourlyPosturePanel hourlyPosturePanel : hourlyPosturePanels) {
@@ -153,6 +225,13 @@ public class ChartFunctions {
         return twoDimensionalChartData;
     }
 
+    /**
+     * Used to parse the retrieved data from the queries to a generic one, which is used to add information to the charts.
+     * This one is for weekly or monthly information.
+     * @param dailyPosturePanels Information returned by the query.
+     * @param days Used to define if the information regards a week or a month.
+     * @return Data to add to chart in the format of the class TwoDimensionalChartData.
+     */
     public TwoDimensionalChartData parsePostureUtil(List<DailyPosturePanel> dailyPosturePanels, int days){
         TwoDimensionalChartData twoDimensionalChartData = new TwoDimensionalChartData(days, 2);
         for (DailyPosturePanel data : dailyPosturePanels) {
@@ -164,6 +243,11 @@ public class ChartFunctions {
     //********************************************************************************************************************//
 
     // This section has functions used to define some characteristics of the different charts that cannot done in the layout //
+    /** Configures a bar chart.
+     * @param barChart The Bar Chart instance to be configured.
+     * @param chartMarkerView Serves to show the value when clicking on a place in the chart.
+     * @return
+     */
     public void setupBarChart(BarChart barChart, ChartMarkerView chartMarkerView) {
         barChart.setDrawGridBackground(false);
         barChart.setFitBars(true);
@@ -183,6 +267,11 @@ public class ChartFunctions {
         yAxisRight.setEnabled(false);
     }
 
+    /** Configures a line chart.
+     * @param lineChart The Line Chart instance to be configured.
+     * @param chartMarkerView Serves to show the value when clicking on a place in the chart.
+     * @return
+     */
     public void setupLineChart(LineChart lineChart, ChartMarkerView chartMarkerView) {
         lineChart.setDrawGridBackground(false);
         lineChart.getDescription().setEnabled(false);
@@ -203,54 +292,58 @@ public class ChartFunctions {
         yAxisRight.setEnabled(false);
     }
 
+    /** Configures a bar chart.
+     * @param pieChart The Bar Chart instance to be configured.
+     * @return
+     */
     public void setupPieChart(PieChart pieChart) {
         pieChart.getDescription().setEnabled(false);
         pieChart.getLegend().setEnabled(false);
     }
     //***********************************************************************************************************************//
 
-    /* setLabels: used to get the labels for the charts
-    * Parameters:
-    * max (int) - it represents the maximum of the X axis
-    * Return:
-    * labels (String) - a string that contains the labels which will be displayed in the charts */
-    public String[] setLabels(int days) {
-        String[] labels = new String[days];
-        if(days == 24)
-            labels = new String[days + 1];
+    /** Used to get the X axis labels for the different charts.
+     * @param max X axis maximum.
+     * @return String[] with the X axis labels.
+     */
+    public String[] setLabels(int max) {
+        String[] labels = new String[max];
+        if(max == 24)
+            labels = new String[max + 1];
         int i = 0;
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Date.from(localDate.minusDays(days - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        if (days == 24) {
-            while(i <= days) {
+        cal.setTime(Date.from(localDate.minusDays(max - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        if (max == 24) {
+            while(i <= max) {
                 labels[i] = String.valueOf(i);
                 i++;
             }
-        } else if (days == 7) {
-            while (i < days) {
+        } else if (max == 7) {
+            while (i < max) {
                 labels[i] = Objects.requireNonNull(cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())).substring(0, 3);
                 cal.add(Calendar.DATE, + 1);
                 i++;
             }
         } else {
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-            while (i < days) {
+            while (i < max) {
                 labels[i] = sdf.format(cal.getTime());
                 cal.add(Calendar.DATE, + 1);
                 i++;
             }
         }
-        //System.out.println(Arrays.toString(labels));
         return labels;
     }
     // This sections has functions used to input data into the different charts //
-    /* setBarChartData: used to plot the data on a bar chart
-    * Parameters:
-    * list (List<SummaryDetailUtil>) - the data retrieved from the queries
-    * barChart (BarChart) - a barChart
-    * label (String) - the label of the information to be displayed
-    * days (int) - represents the number of days to add to the chart. If it is 24, it equivalent to one day */
-    public void setBarChartData(BarChart barChart, TwoDimensionalChartData twoDimensionalChartData, String label, int days) {
+
+    /** Used to plot the data on a bar chart.
+     * @param barChart A Bar Chart instance.
+     * @param twoDimensionalChartData Contains the data to be added to the Chart.
+     * @param label Chart's label.
+     * @param max X axis maximum.
+     * @return
+     */
+    public void setBarChartData(BarChart barChart, TwoDimensionalChartData twoDimensionalChartData, String label, int max) {
         List<BarEntry> entries = new ArrayList<>();
 
         for (int y = 0; y < twoDimensionalChartData.getY(); y++) {
@@ -259,7 +352,7 @@ public class ChartFunctions {
             }
         }
 
-        if(days == 24)
+        if(max == 24)
             entries.add(new BarEntry(24, 0));
 
         BarDataSet barDataSet = new BarDataSet(entries, label);
@@ -272,7 +365,7 @@ public class ChartFunctions {
         BarData barData = new BarData(dataSet);
         barData.setValueFormatter(new ChartValueFormatter());
         barChart.setData(barData);
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
         barChart.getDescription().setText(label);
         barChart.invalidate();
     }
@@ -311,7 +404,14 @@ public class ChartFunctions {
         barChart.invalidate();
     }*/
 
-    public void setLineChartData(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] label, int days) {
+    /** Used to plot the data on a line chart.
+     * @param lineChart A Line Chart instance.
+     * @param twoDimensionalChartData Contains the data to add to the chart.
+     * @param label Chart label.
+     * @param max X axis maximum.
+     * @return
+     */
+    public void setLineChartData(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] label, int max) {
         ArrayList<ILineDataSet> dataSet = new ArrayList<>();
 
         for (int y = 0; y < twoDimensionalChartData.getY(); y++) {
@@ -328,10 +428,16 @@ public class ChartFunctions {
         LineData lineData = new LineData(dataSet);
         lineData.setValueFormatter(new ChartValueFormatter());
         lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
+        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
         lineChart.invalidate();
     }
 
+    /** Used to get a LineDataSet with different configurations in cases that a line chart has more than one line.
+     * @param entries Data to be presented in the LineDataSet.
+     * @param label Entry label.
+     * @param color Color of the LineDataSet.
+     * @return A LineDataSet.
+     */
     private LineDataSet getLineDataSet(List<Entry> entries, String label, int color){
         if (entries.size() < 1)
             return null;
@@ -361,15 +467,22 @@ public class ChartFunctions {
         return lineDataSet;
     }
 
-    public void setAreaChart(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, int days){
+    /** Used to plot the data on a area chart
+     * @param lineChart A Line Chart instance.
+     * @param twoDimensionalChartData Data to add to the chart.
+     * @param labels Chart's labels.
+     * @param max X axis maximum.
+     * @return
+     */
+    public void setAreaChart(LineChart lineChart, TwoDimensionalChartData twoDimensionalChartData, String[] labels, int max){
         int currentTime = 0;
         double total;
         List<Entry> entries1 = new ArrayList<>();
         List<Entry> entries2 = new ArrayList<>();
 
-        while(currentTime < days){
+        while(currentTime < max){
             total = twoDimensionalChartData.get(currentTime, 0) + twoDimensionalChartData.get(currentTime, 1);
-            if(days == 24) {
+            if(max == 24) {
                 if (total > 3600000) {
                     twoDimensionalChartData.set(currentTime, 0, twoDimensionalChartData.get(currentTime, 0) * 3600000 / total);
                     twoDimensionalChartData.set(currentTime, 1, twoDimensionalChartData.get(currentTime, 1) * 3600000 / total);
@@ -397,10 +510,16 @@ public class ChartFunctions {
         lineData.setValueFormatter(new ChartValueFormatter());
 
         lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(days)));
+        lineChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(setLabels(max)));
         lineChart.invalidate();
     }
 
+    /** Return a LineDataSet for the AreaChart. Not the same function as getLineDataSet.
+     * @param entries Data to be presented in the LineDataSet.
+     * @param label Entry label.
+     * @param color Color of the LineDataSet
+     * @return LineDataSet
+     */
     private LineDataSet setLineDataSet(List<Entry> entries, String label, int color){
         LineDataSet lineDataSet = new LineDataSet(entries, label);
         lineDataSet.setColor(color);
@@ -413,6 +532,11 @@ public class ChartFunctions {
         return lineDataSet;
     }
 
+    /** Used to plot the data on a pie chart.
+     * @param pieChart A pie chart instance.
+     * @param twoDimensionalChartData Data to be added to the pie chart.
+     * @return
+     */
     public void setPieChart(PieChart pieChart, TwoDimensionalChartData twoDimensionalChartData){
         int value1 = 0;
         int value2 = 0;
@@ -436,6 +560,10 @@ public class ChartFunctions {
         pieChart.invalidate();
     }
 
+    /** Converts a long value representing a time in seconds to a string containing hours, minutes and seconds.
+     * @param value Value to convert to string.
+     * @return A string with the converted value.
+     */
     private String secondsToString(long value) {
         long seconds = value;
         long minutes = seconds / 60;

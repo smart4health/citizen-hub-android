@@ -3,6 +3,8 @@ package pt.uninova.s4h.citizenhub.report;
 import java.util.LinkedList;
 import java.util.List;
 
+/** The Group class is used to group the elements of the same group to generate the report.
+ * A Group can be composed by other groups or items. */
 public class Group {
 
     private final LocalizedResource label;
@@ -18,9 +20,6 @@ public class Group {
         this.itemList = new LinkedList<>();
     }
 
-    /***************************************
-1     * This section only has get functions *
-     ***************************************/
     public LocalizedResource getLabel(){
         return label;
     }
