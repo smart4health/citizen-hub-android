@@ -2,10 +2,11 @@ package pt.uninova.s4h.citizenhub.persistence.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.StepsSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.StepsSnapshotMeasurementRecord;
@@ -42,19 +43,19 @@ public class StepsSnapshotMeasurementRepository {
         return stepsSnapshotMeasurementDao.selectLatestWalkingInformationLiveData(localDate, localDate.plusDays(1));
     }
 
-    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastDay(localDate)));
-    }
+//    public void readLastDay(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+//        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastDay(localDate)));
+//    }
+//
+//    public void readLastSevenDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+//        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastSevenDays(localDate.minusDays(6), localDate)));
+//    }
+//
+//    public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
+//        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastThirtyDays(localDate.minusDays(29), localDate)));
+//    }
 
-    public void readLastSevenDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastSevenDays(localDate.minusDays(6), localDate)));
-    }
-
-    public void readLastThirtyDays(LocalDate localDate, Observer<List<SummaryDetailUtil>> observer){
-        CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectLastThirtyDays(localDate.minusDays(29), localDate)));
-    }
-
-    public void selectBasedOnId(Long sampleId, Observer<Integer> observer){
+    public void selectBasedOnId(Long sampleId, Observer<Integer> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectBasedOnId(sampleId)));
     }
 }
