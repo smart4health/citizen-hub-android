@@ -22,6 +22,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTraining
 import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTimestampPanel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the lumbar extension training dao. */
 public class LumbarExtensionTrainingRepository {
 
     private final CaloriesMeasurementDao caloriesMeasurementDao;
@@ -95,6 +96,10 @@ public class LumbarExtensionTrainingRepository {
         CitizenHubDatabase.executorService().execute(() -> lumbarExtensionTrainingDao.update(record));
     }
 
+    /** Selects the daily lumbar extensions training sections.
+     * @param localDate Date.
+     * @param observer
+     * */
     public void selectTrainingSection(LocalDate localDate, Observer<List<LumbarExtensionWithTimestampPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.selectTrainingSections(localDate)));
     }

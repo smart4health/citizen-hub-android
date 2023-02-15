@@ -13,6 +13,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyDistancePanel;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyDistancePanel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the distance measurement dao. */
 public class DistanceMeasurementRepository {
 
     private final DistanceMeasurementDao distanceMeasurementDao;
@@ -39,10 +40,21 @@ public class DistanceMeasurementRepository {
         return distanceMeasurementDao.getDistanceAllTypes(localDate, localDate.plusDays(1));
     }
 
+    /** Selects steps information from one specific day.
+     * @param localDate Date.
+     * @param observer
+     * @return
+     * */
     public void readLastDay(LocalDate localDate, Observer<List<HourlyDistancePanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectLastDay(localDate)));
     }
 
+    /** Selects distance information from a range of days.
+     * @param localDate Date.
+     * @param days Days range.
+     * @param observer
+     * @return
+     * */
     public void readSeveralDays(LocalDate localDate, int days, Observer<List<DailyDistancePanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }

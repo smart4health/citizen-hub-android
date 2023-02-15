@@ -14,6 +14,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.DailyBloodPressurePanel
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyBloodPressurePanel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the blood pressure measurement dao. */
 public class BloodPressureMeasurementRepository {
 
     private final BloodPressureMeasurementDao bloodPressureMeasurementDao;
