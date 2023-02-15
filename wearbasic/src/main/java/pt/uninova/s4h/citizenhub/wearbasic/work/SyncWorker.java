@@ -49,7 +49,7 @@ public class SyncWorker extends Worker {
                     if (value != null)
                     {
                         MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> {
-                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT).start();
+                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT + "," + sampleId).start();
                             MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
                         });
                     }
@@ -64,7 +64,7 @@ public class SyncWorker extends Worker {
                 MainActivity.heartRateMeasurementRepository.selectBasedOnId(Long.valueOf(sampleId), value -> {
                     if (value != null) {
                         MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> {
-                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + HeartRateMeasurement.TYPE_HEART_RATE).start();
+                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + HeartRateMeasurement.TYPE_HEART_RATE + "," + sampleId).start();
                             MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
                         });
                     }

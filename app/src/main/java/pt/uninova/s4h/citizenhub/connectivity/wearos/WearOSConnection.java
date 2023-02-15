@@ -21,7 +21,6 @@ public class WearOSConnection {
     private final Map<Integer, Set<ChannelListener>> channelListenerMap;
     private WearOSConnectionState state;
     CitizenHubService service;
-    String connectionPath = "connection";
 
     public WearOSConnection(String address, String name, CitizenHubService service) {
         this.address = address;
@@ -66,7 +65,7 @@ public class WearOSConnection {
 
         if (channelListenerMap.containsKey(key)) {
             for (ChannelListener i : Objects.requireNonNull(channelListenerMap.get(key))) {
-                i.onChange(getValue(messageArray), getTimeStamp(messageArray));
+                i.onChange(getValue(messageArray), getTimeStamp(messageArray), getWearSampleId(messageArray));
             }
         }
     }
@@ -79,6 +78,11 @@ public class WearOSConnection {
     public Date getTimeStamp(String[] message) {
         String timeStampString = message[1];
         return new Date(Long.parseLong(timeStampString));
+    }
+
+    public Long getWearSampleId(String[] message) {
+        String timeStampString = message[3];
+        return Long.parseLong(timeStampString);
     }
 
     public void close() {
@@ -97,11 +101,9 @@ public class WearOSConnection {
 
     public void disable() {
         setState(WearOSConnectionState.DISCONNECTED);
-        service.getWearOSMessageService().sendMessage(connectionPath, "disabled");
     }
 
     public void enable() {
         setState(WearOSConnectionState.READY);
-        service.getWearOSMessageService().sendMessage(connectionPath, "enabled");
     }
 }

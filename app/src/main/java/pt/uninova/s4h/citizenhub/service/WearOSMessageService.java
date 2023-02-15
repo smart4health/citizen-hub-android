@@ -76,11 +76,12 @@ public class WearOSMessageService extends FragmentActivity implements MessageCli
 
         MessageClient.OnMessageReceivedListener listener = messageEvent -> {
             String message = new String(messageEvent.getData());
-            String[] messageParsed = message.split(",",3);
+            String[] messageParsed = message.split(",",4);
             Date time = new Date(Long.parseLong(messageParsed[1]));
             System.out.println("MeasurementValue: " + messageParsed[0] +
                     " | MeasurementTime: " + time +
                     " | MeasurementKind: " + Integer.parseInt(messageParsed[2]) +
+                    " | Wear SampleId: " + Integer.parseInt(messageParsed[3]) +
                     " | from nodeID: " + messageEvent.getSourceNodeId() +
                     " | from path: " + messageEvent.getPath());
         };

@@ -19,7 +19,6 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
     final private static int kind = Measurement.TYPE_HEART_RATE;
     final private static int wearProtocolDisable = 100000, wearProtocolEnable = 100001;
     String heartRatePath = "heartrate";
-    String connectionPath = "connection";
     CitizenHubService service;
 
     protected WearOSHeartRateProtocol(WearOSConnection connection, Dispatcher<Sample> sampleDispatcher, WearOSAgent agent, CitizenHubService service) {
@@ -28,8 +27,8 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
 
         connection.addChannelListener(new BaseChannelListener(kind) {
             @Override
-            public void onChange(double value, Date timestamp) {
-                service.getWearOSMessageService().sendMessage(connectionPath,"true");
+            public void onChange(double value, Date timestamp, long wear_sample_id) {
+                service.getWearOSMessageService().sendMessage(heartRatePath, String.valueOf(wear_sample_id));
                 final int heartRate = (int) value;
                 Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
                 if(value<wearProtocolDisable){
@@ -54,12 +53,10 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage(heartRatePath,"disabled");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage(heartRatePath,"enabled");
     }
 }

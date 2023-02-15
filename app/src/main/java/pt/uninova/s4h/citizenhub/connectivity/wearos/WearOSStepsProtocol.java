@@ -22,7 +22,6 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
     final private static int wearProtocolDisable = 100000, wearProtocolEnable = 100001;
     CitizenHubService service;
     String stepsPath = "steps";
-    String connectionPath = "connection";
 
     protected WearOSStepsProtocol(WearOSConnection connection, Dispatcher<Sample> sampleDispatcher, WearOSAgent agent, CitizenHubService service) {
         super(ID, agent, sampleDispatcher);
@@ -30,9 +29,9 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
 
         connection.addChannelListener(new BaseChannelListener(kind) {
             @Override
-            public void onChange(double value, Date timestamp) {
+            public void onChange(double value, Date timestamp, long wear_sample_id) {
+                service.getWearOSMessageService().sendMessage(stepsPath, String.valueOf(wear_sample_id));
                 Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
-                service.getWearOSMessageService().sendMessage(connectionPath,"true");
                 if (value < wearProtocolDisable) {
                     final int steps = (int) value;
                     final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
@@ -57,12 +56,10 @@ public class WearOSStepsProtocol extends AbstractMeasuringProtocol {
     @Override
     public void disable() {
         setState(Protocol.STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage(stepsPath, "disabled");
     }
 
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage(stepsPath, "enabled");
     }
 }
