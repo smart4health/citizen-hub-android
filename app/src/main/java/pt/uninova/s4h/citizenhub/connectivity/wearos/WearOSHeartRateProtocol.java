@@ -1,7 +1,6 @@
 package pt.uninova.s4h.citizenhub.connectivity.wearos;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 import pt.uninova.s4h.citizenhub.connectivity.AbstractMeasuringProtocol;
@@ -17,7 +16,6 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
 
     final public static UUID ID = AgentOrchestrator.namespaceGenerator().getUUID("wearos.wear.heartrate");
     final private static int kind = Measurement.TYPE_HEART_RATE;
-    final private static int wearProtocolDisable = 100000, wearProtocolEnable = 100001;
     String heartRatePath = "heartrate";
     CitizenHubService service;
 
@@ -28,24 +26,11 @@ public class WearOSHeartRateProtocol extends AbstractMeasuringProtocol {
         connection.addChannelListener(new BaseChannelListener(kind) {
             @Override
             public void onChange(double value, Date timestamp, long wear_sample_id) {
-                service.getWearOSMessageService().sendMessage(heartRatePath, String.valueOf(wear_sample_id));
                 final int heartRate = (int) value;
-                Set<Integer> enabledMeasurements = getAgent().getEnabledMeasurements();
-                if(value<wearProtocolDisable){
-                    final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
-                            new HeartRateMeasurement(heartRate));
-                    getSampleDispatcher().dispatch(sample);
-
-                    if(!enabledMeasurements.contains(Measurement.TYPE_HEART_RATE)){
-                        getAgent().enableMeasurement(Measurement.TYPE_HEART_RATE);
-                    }
-                }
-                else{
-                    if(value==wearProtocolDisable && enabledMeasurements.contains(Measurement.TYPE_HEART_RATE))
-                        getAgent().disableMeasurement(Measurement.TYPE_HEART_RATE);
-                    else if(value==wearProtocolEnable && !enabledMeasurements.contains(Measurement.TYPE_HEART_RATE))
-                        getAgent().enableMeasurement(Measurement.TYPE_HEART_RATE);
-                }
+                final Sample sample = new Sample(timestamp.toInstant(), getAgent().getSource(),
+                        new HeartRateMeasurement(heartRate));
+                getSampleDispatcher().dispatch(sample);
+                service.getWearOSMessageService().sendMessage(heartRatePath, String.valueOf(wear_sample_id));
             }
         });
     }
