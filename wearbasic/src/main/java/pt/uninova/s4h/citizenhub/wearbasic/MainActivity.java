@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -238,18 +237,10 @@ public class MainActivity extends FragmentActivity {
             System.out.println("Got Steps to save: " + s);
             startOneTimeWorkerSync();
         });
-        MessageService.connection.observeForever(s -> {
-            System.out.println("Wear connection is " + s);
-        });
-        MessageService.heartRate.observeForever(s -> {
-            System.out.println("Heart rate protocol is " + s);
-        });
-        MessageService.steps.observeForever(s -> {
-            System.out.println("Steps protocol is " + s);
-        });
-        MessageService.agent.observeForever(s -> {
-            System.out.println("Wear agent is " + s);
-        });
+        MessageService.connection.observeForever(s -> System.out.println("Received info about connection: " + s));
+        MessageService.heartRate.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
+        MessageService.steps.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
+        MessageService.agent.observeForever(s -> System.out.println("Received info about wear agent: " + s));
     }
 
     public void startService(int sensors) {

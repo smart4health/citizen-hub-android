@@ -48,10 +48,7 @@ public class SyncWorker extends Worker {
                 MainActivity.stepsSnapshotMeasurementRepository.selectBasedOnId(Long.valueOf(sampleId), value -> {
                     if (value != null)
                     {
-                        MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> {
-                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT + "," + sampleId).start();
-                            MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
-                        });
+                        MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + StepsSnapshotMeasurement.TYPE_STEPS_SNAPSHOT + "," + sampleId).start());
                     }
                 });
             }
@@ -63,10 +60,7 @@ public class SyncWorker extends Worker {
             for (Integer sampleId : values) {
                 MainActivity.heartRateMeasurementRepository.selectBasedOnId(Long.valueOf(sampleId), value -> {
                     if (value != null) {
-                        MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> {
-                            new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + HeartRateMeasurement.TYPE_HEART_RATE + "," + sampleId).start();
-                            MainActivity.tagRepository.updateLabel(Long.valueOf(sampleId), Tag.LABEL_MEASUREMENT_SYNCHRONIZED);
-                        });
+                        MainActivity.sampleRepository.selectTimestampBasedOnId(Long.valueOf(sampleId), time -> new SendMessage(getApplicationContext().getString(R.string.citizen_hub_path) + MainActivity.nodeIdString, value + "," + time + "," + HeartRateMeasurement.TYPE_HEART_RATE + "," + sampleId).start());
                     }
                 });
             }
