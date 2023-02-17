@@ -237,10 +237,8 @@ public class MainActivity extends FragmentActivity {
             System.out.println("Got Steps to save: " + s);
             startOneTimeWorkerSync();
         });
-        MessageService.connection.observeForever(s -> System.out.println("Received info about connection: " + s));
         MessageService.heartRate.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
         MessageService.steps.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
-        MessageService.agent.observeForever(s -> System.out.println("Received info about wear agent: " + s));
     }
 
     public void startService(int sensors) {
