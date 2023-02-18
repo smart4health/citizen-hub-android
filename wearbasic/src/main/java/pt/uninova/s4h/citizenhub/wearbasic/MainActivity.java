@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -157,13 +158,13 @@ public class MainActivity extends FragmentActivity {
         WorkManager workManager = WorkManager.getInstance(getApplicationContext());
         PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(stepsRequest);
+        workManager.enqueueUniquePeriodicWork("StepsWorker", ExistingPeriodicWorkPolicy.KEEP, stepsRequest);
         PeriodicWorkRequest heartRateRequest = new PeriodicWorkRequest.Builder(HeartRateWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(heartRateRequest);
+        workManager.enqueueUniquePeriodicWork("HeartRateWorker", ExistingPeriodicWorkPolicy.KEEP, heartRateRequest);
         PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(syncRequest);
+        workManager.enqueueUniquePeriodicWork("SyncWorker", ExistingPeriodicWorkPolicy.KEEP, syncRequest);
     }
 
     private void startOneTimeWorkers(){
