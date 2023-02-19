@@ -26,8 +26,6 @@ public class WearOSMessageService extends FragmentActivity implements MessageCli
     private String nodeIdString;
     private final Map<String,WearOSConnection> connectionMap = new HashMap<>();
     String citizenHubPath = "/citizenhub_";
-
-    String checkConnectionPath = "checkConnection";
     Context appContext;
 
     @Override
@@ -44,10 +42,7 @@ public class WearOSMessageService extends FragmentActivity implements MessageCli
         if(connectionMap.get(nodeIdString)!= null){
             WearOSConnection wearOSConnection = connectionMap.get(nodeIdString);
 
-            if (messageEvent.getPath().equals(citizenHubPath+checkConnectionPath)) {
-                new  GetConnectedNode("mobile", appContext).start();
-
-            }else if(messageEvent.getPath().equals(dataPath)) {
+            if (messageEvent.getPath().equals(dataPath)) {
                 Objects.requireNonNull(wearOSConnection).enable();
                 String message = new String(messageEvent.getData());
 

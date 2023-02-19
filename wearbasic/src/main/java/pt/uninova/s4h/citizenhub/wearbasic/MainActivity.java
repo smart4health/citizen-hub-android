@@ -209,7 +209,7 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
             heartRateText.setText(String.valueOf(s));
-            System.out.println("Got HR Instant: " + s);
+            System.out.println("HR Measurement: " + s);
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(0);
@@ -218,7 +218,7 @@ public class MainActivity extends FragmentActivity {
             saveHeartRateMeasurementLocally(s);
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
-            System.out.println("Got HR Avg: " + s);
+            System.out.println("Avg HR Saved: " + s);
             startOneTimeWorkerSync();
         });
         StepsWorker.stepsInstant.observeForever(s -> {
@@ -227,7 +227,7 @@ public class MainActivity extends FragmentActivity {
             sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsAreMeasuring = true;
             stepsText.setText(String.valueOf(s));
-            System.out.println("Got Steps Instant: " + s);
+            System.out.println("Steps Measurement: " + s);
         });
         StepsWorker.stepsToSave.observeForever(s -> {
             startService(0);
@@ -235,7 +235,7 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = false;
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
-            System.out.println("Got Steps to save: " + s);
+            System.out.println("Steps Saved: " + s);
             startOneTimeWorkerSync();
         });
         MessageService.heartRate.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
