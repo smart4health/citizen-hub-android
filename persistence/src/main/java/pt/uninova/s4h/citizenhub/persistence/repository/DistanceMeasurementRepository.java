@@ -43,7 +43,6 @@ public class DistanceMeasurementRepository {
     /** Selects steps information from one specific day.
      * @param localDate Date.
      * @param observer
-     * @return
      * */
     public void readLastDay(LocalDate localDate, Observer<List<HourlyDistancePanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectLastDay(localDate)));
@@ -53,7 +52,6 @@ public class DistanceMeasurementRepository {
      * @param localDate Date.
      * @param days Days range.
      * @param observer
-     * @return
      * */
     public void readSeveralDays(LocalDate localDate, int days, Observer<List<DailyDistancePanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));

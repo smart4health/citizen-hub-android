@@ -39,6 +39,7 @@ public class LumbarExtensionTrainingRepository {
         sampleDao = citizenHubDatabase.sampleDao();
     }
 
+
     public void create(LumbarExtensionTrainingMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> lumbarExtensionTrainingDao.insert(record));
     }
@@ -80,10 +81,18 @@ public class LumbarExtensionTrainingRepository {
 
     }
 
+     /** Selects live data from the lumbar extension training database. Normally used to constantly update the UI whenever new information is added.
+      * @param localDate Date.
+      * @return Live data list with all daily records.
+      * */
     public LiveData<List<LumbarExtensionTrainingMeasurementRecord>> read(LocalDate localDate) {
         return lumbarExtensionTrainingDao.selectLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects lumbar extension trainings from one specific day.
+     * @param localDate Date.
+     * @param observer
+     * */
     public void read(LocalDate localDate, Observer<List<LumbarExtensionTrainingMeasurementRecord>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.select(localDate, localDate.plusDays(1))));
     }
@@ -92,6 +101,9 @@ public class LumbarExtensionTrainingRepository {
         return lumbarExtensionTrainingDao.selectLatestLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Replaces a lumbar extension record.
+     * @param record New record.
+     * */
     public void update(LumbarExtensionTrainingMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> lumbarExtensionTrainingDao.update(record));
     }

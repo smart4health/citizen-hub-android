@@ -26,8 +26,7 @@ public class StepsMeasurementRepository {
     }
 
     /** Inserts a steps sample in the database.
-     * @param record
-     * @return
+     * @param record Record.
      * */
     public void create(StepsMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> stepsMeasurementDao.insert(record));
@@ -35,7 +34,7 @@ public class StepsMeasurementRepository {
 
     /** Selects steps live data for continuous UI update.
      * @param localDate Date.
-     * @return
+     * @return Live data list with full steps record.
      * */
     public LiveData<List<StepsMeasurementRecord>> read(LocalDate localDate) {
         return stepsMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
@@ -45,6 +44,9 @@ public class StepsMeasurementRepository {
         return stepsMeasurementDao.selectLatestWalkingInformationLiveData(localDate, localDate.plusDays(1));
     }
 
+    /**
+     * @param localDate Date.
+     * */
     public LiveData<Integer> getStepsAllTypes (LocalDate localDate) {
         return stepsMeasurementDao.getStepsAllTypes(localDate, localDate.plusDays(1));
     }
@@ -52,7 +54,6 @@ public class StepsMeasurementRepository {
     /** Selects steps information from one specific day.
      * @param localDate Date.
      * @param observer
-     * @return
      * */
     public void readLastDay(LocalDate localDate, Observer<List<HourlyStepsPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectLastDay(localDate)));
@@ -62,7 +63,6 @@ public class StepsMeasurementRepository {
      * @param localDate Date.
      * @param days Days range.
      * @param observer
-     * @return
      * */
     public void readSeveralDays(LocalDate localDate, int days, Observer<List<DailyStepsPanel>> observer){
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
