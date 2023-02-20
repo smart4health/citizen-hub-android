@@ -8,6 +8,7 @@ import care.data4life.fhir.r4.model.CodeSystemContactPointSystem;
 import care.data4life.fhir.r4.model.CodeableConcept;
 import care.data4life.fhir.r4.model.ContactPoint;
 import care.data4life.fhir.r4.model.Organization;
+import pt.uninova.s4h.citizenhub.fhir.codesystem.hl7.EducationalInstituteCoding;
 
 public class UninovaOrganization extends Organization {
 
@@ -32,6 +33,16 @@ public class UninovaOrganization extends Organization {
         this.name = "UNINOVA - Instituto de Desenvolvimento de Novas Tecnologias";
         this.telecom = Arrays.asList(phone, url);
 
-        this.type = Collections.singletonList(new EducationalInstituteCodeableConcept());
+        final CodeableConcept typeCodeableConcept = new CodeableConcept();
+
+        typeCodeableConcept.coding = Collections.singletonList(new EducationalInstituteCoding());
+
+        this.type = Collections.singletonList(typeCodeableConcept);
+    }
+
+    public UninovaOrganization(String id) {
+        this();
+
+        this.id = id;
     }
 }
