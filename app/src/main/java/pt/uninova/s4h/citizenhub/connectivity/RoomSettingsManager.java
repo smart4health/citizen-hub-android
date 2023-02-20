@@ -18,11 +18,11 @@ public class RoomSettingsManager implements SettingsManager {
 
     @Override
     public void get(String name, Observer<String> observer) {
-        settingRepository.read(address, name, observer::observe);
+        settingRepository.read(address, name, observer);
     }
 
     @Override
     public void set(String name, String value) {
-        settingRepository.insertOrReplace(address, name, value);
+        settingRepository.createOrUpdate(address, name, value);
     }
 }

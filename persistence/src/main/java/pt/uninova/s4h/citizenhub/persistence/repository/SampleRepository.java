@@ -1,6 +1,7 @@
 package pt.uninova.s4h.citizenhub.persistence.repository;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
@@ -10,14 +11,15 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.SampleDao;
+import pt.uninova.s4h.citizenhub.persistence.entity.SampleRecord;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class SampleRepository {
 
     private final SampleDao sampleDao;
 
-    public SampleRepository(Application application) {
-        final CitizenHubDatabase citizenHubDatabase = CitizenHubDatabase.getInstance(application);
+    public SampleRepository(Context context) {
+        final CitizenHubDatabase citizenHubDatabase = CitizenHubDatabase.getInstance(context);
 
         sampleDao = citizenHubDatabase.sampleDao();
     }
@@ -28,6 +30,10 @@ public class SampleRepository {
 
     public void create(Sample sample, Observer<Long> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(sampleDao.insert(sample)));
+    }
+
+    public void read(long id, Observer<SampleRecord> observer) {
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(sampleDao.select(id)));
     }
 
     public LiveData<Integer> readCount(LocalDate date) {

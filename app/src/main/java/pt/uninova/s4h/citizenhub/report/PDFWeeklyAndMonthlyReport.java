@@ -155,7 +155,7 @@ public class PDFWeeklyAndMonthlyReport {
 
         Observer<List<SummaryDetailBloodPressureUtil>> observerBloodPressure = data -> bloodPressure = chartFunctions.parseBloodPressureUtil(data);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(context);
-        bloodPressureMeasurementRepository.selectSeveralDays(localDate, days, observerBloodPressure);
+        bloodPressureMeasurementRepository.readSeveralDays(localDate, days, observerBloodPressure);
 
         Observer<List<SummaryDetailHeartRateUtil>> observerHeartRate = data -> heartRate = chartFunctions.parseHeartRateUtil(data);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(context);

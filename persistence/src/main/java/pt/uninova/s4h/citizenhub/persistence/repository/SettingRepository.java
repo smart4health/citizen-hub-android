@@ -2,7 +2,9 @@ package pt.uninova.s4h.citizenhub.persistence.repository;
 
 import android.content.Context;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.dao.SettingDao;
@@ -19,7 +21,7 @@ public class SettingRepository {
         settingDao = citizenHubDatabase.settingDao();
     }
 
-    public void insertOrReplace(String address, String key, String value) {
+    public void createOrUpdate(String address, String key, String value) {
         CitizenHubDatabase.executorService().execute(() -> settingDao.insert(address, key, value));
     }
 
@@ -28,9 +30,22 @@ public class SettingRepository {
     }
 
     public void read(String address, String name, Observer<String> observer) {
-        CitizenHubDatabase.executorService().execute(() ->  {
+        CitizenHubDatabase.executorService().execute(() -> {
             String val = settingDao.selectValue(address, name);
             observer.observe(val);
+        });
+    }
+
+    public void readBySample(long sampleId, Observer<Map<String, String>> observer) {
+        CitizenHubDatabase.executorService().execute(() -> {
+            final List<SettingRecord> settingRecordList = settingDao.selectBySample(sampleId);
+            final Map<String, String> map = new HashMap<>();
+
+            for (final SettingRecord i : settingRecordList) {
+                map.put(i.getKey(), i.getValue());
+            }
+
+            observer.observe(map);
         });
     }
 }
