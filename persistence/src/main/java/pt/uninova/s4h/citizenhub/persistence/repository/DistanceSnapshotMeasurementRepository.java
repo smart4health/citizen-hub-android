@@ -11,6 +11,7 @@ import pt.uninova.s4h.citizenhub.persistence.dao.DistanceSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.DistanceSnapshotMeasurementRecord;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the distance snapshot measurement dao. */
 public class DistanceSnapshotMeasurementRepository {
 
     private final DistanceSnapshotMeasurementDao distanceSnapshotMeasurementDao;
@@ -21,10 +22,17 @@ public class DistanceSnapshotMeasurementRepository {
         distanceSnapshotMeasurementDao = citizenHubDatabase.distanceSnapshotMeasurementDao();
     }
 
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(DistanceSnapshotMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> distanceSnapshotMeasurementDao.insert(record));
     }
 
+    /** Selects live data from the distance database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data list containing distance records.
+     * */
     public LiveData<List<DistanceSnapshotMeasurementRecord>> read(LocalDate localDate) {
         return distanceSnapshotMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }

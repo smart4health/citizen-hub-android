@@ -39,19 +39,28 @@ public class LumbarExtensionTrainingRepository {
         sampleDao = citizenHubDatabase.sampleDao();
     }
 
-
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(LumbarExtensionTrainingMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> lumbarExtensionTrainingDao.insert(record));
     }
 
+    /** Deletes the whole lumbar extension table.
+     * */
     public void delete() {
         CitizenHubDatabase.executorService().execute(lumbarExtensionTrainingDao::delete);
     }
 
+    /** Deletes an entry from the database.
+     * @param record Entry to delete.
+     * */
     public void delete(LumbarExtensionTrainingMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> lumbarExtensionTrainingDao.delete(record));
     }
 
+    /**
+     * */
     public void read(Long sampleId, Observer<Sample> observer) {
         CitizenHubDatabase.executorService().execute(() -> {
             final SampleRecord sampleRecord = sampleDao.select(sampleId);
@@ -97,6 +106,9 @@ public class LumbarExtensionTrainingRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(lumbarExtensionTrainingDao.select(localDate, localDate.plusDays(1))));
     }
 
+    /** Selects last daily training.
+     * @param localDate Date.
+     * */
     public LiveData<LumbarExtensionTrainingSummary> readLatest(LocalDate localDate) {
         return lumbarExtensionTrainingDao.selectLatestLiveData(localDate, localDate.plusDays(1));
     }

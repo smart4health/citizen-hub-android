@@ -11,6 +11,7 @@ import pt.uninova.s4h.citizenhub.persistence.dao.CaloriesSnapshotMeasurementDao;
 import pt.uninova.s4h.citizenhub.persistence.entity.CaloriesSnapshotMeasurementRecord;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the calories measurement dao. */
 public class CaloriesSnapshotMeasurementRepository {
 
     private final CaloriesSnapshotMeasurementDao caloriesSnapshotMeasurementDao;
@@ -21,10 +22,17 @@ public class CaloriesSnapshotMeasurementRepository {
         caloriesSnapshotMeasurementDao = citizenHubDatabase.caloriesSnapshotMeasurementDao();
     }
 
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(CaloriesSnapshotMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> caloriesSnapshotMeasurementDao.insert(record));
     }
 
+    /** Selects live data from the calories database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data list containing calories snapshot records.
+     * */
     public LiveData<List<CaloriesSnapshotMeasurementRecord>> read(LocalDate localDate) {
         return caloriesSnapshotMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }

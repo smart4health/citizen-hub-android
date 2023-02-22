@@ -24,23 +24,38 @@ public class DistanceMeasurementRepository {
         distanceMeasurementDao = citizenHubDatabase.distanceMeasurementDao();
     }
 
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(DistanceMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> distanceMeasurementDao.insert(record));
     }
 
+    /** Selects live data from the distance database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data list containing distance records.
+     * */
     public LiveData<List<DistanceMeasurementRecord>> read(LocalDate localDate) {
         return distanceMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects live data from the distance database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data containing the total daily distance.
+     * */
     public LiveData<Double> readMaximum(LocalDate localDate) {
         return distanceMeasurementDao.selectMaximumLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects live data from the distance database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data containing the total daily distance from both distance tables (distance snapshot and normal).
+     * */
     public LiveData<Double> getDistanceAllTypes (LocalDate localDate) {
         return distanceMeasurementDao.getDistanceAllTypes(localDate, localDate.plusDays(1));
     }
 
-    /** Selects steps information from one specific day.
+    /** Selects distance information from one specific day, grouped by hour.
      * @param localDate Date.
      * @param observer
      * */
@@ -48,7 +63,7 @@ public class DistanceMeasurementRepository {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(distanceMeasurementDao.selectLastDay(localDate)));
     }
 
-    /** Selects distance information from a range of days.
+    /** Selects distance information from a range of days, grouped by days.
      * @param localDate Date.
      * @param days Days range.
      * @param observer

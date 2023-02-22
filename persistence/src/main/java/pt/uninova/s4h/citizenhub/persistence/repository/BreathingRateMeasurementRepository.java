@@ -22,10 +22,17 @@ public class BreathingRateMeasurementRepository {
         breathingRateMeasurementDao = citizenHubDatabase.breathingRateMeasurementDao();
     }
 
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(BreathingRateMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> breathingRateMeasurementDao.insert(record));
     }
 
+    /** Selects live data from the breathing database. Normally used to constantly update the UI whenever new information is added.
+     * @param localDate Date.
+     * @return Live data list containing breathing records.
+     * */
     public LiveData<List<BreathingRateMeasurementRecord>> read(LocalDate localDate) {
         return breathingRateMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }
@@ -34,6 +41,10 @@ public class BreathingRateMeasurementRepository {
         return breathingRateMeasurementDao.selectAggregateLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects the daily breathing average rate.
+     * @param localDate Date.
+     * @return Live data containing the daily average breathig rate.
+     * */
     public LiveData<Double> readAverage(LocalDate localDate) {
         return breathingRateMeasurementDao.selectAverageLiveData(localDate, localDate.plusDays(1));
     }

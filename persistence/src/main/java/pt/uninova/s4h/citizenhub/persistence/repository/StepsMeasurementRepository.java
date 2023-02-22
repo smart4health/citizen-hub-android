@@ -44,8 +44,9 @@ public class StepsMeasurementRepository {
         return stepsMeasurementDao.selectLatestWalkingInformationLiveData(localDate, localDate.plusDays(1));
     }
 
-    /**
+    /** Selects live data from the steps database. Normally used to constantly update the UI whenever new information is added.
      * @param localDate Date.
+     * @return Live data containing the total daily distance from both distance tables (distance snapshot and normal).
      * */
     public LiveData<Integer> getStepsAllTypes (LocalDate localDate) {
         return stepsMeasurementDao.getStepsAllTypes(localDate, localDate.plusDays(1));

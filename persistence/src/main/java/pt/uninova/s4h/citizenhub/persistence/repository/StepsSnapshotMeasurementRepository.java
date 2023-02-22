@@ -13,6 +13,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.StepsSnapshotMeasurementReco
 import pt.uninova.s4h.citizenhub.persistence.entity.util.WalkingInformation;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Repository used to call queries from the steps snapshot measurement dao. */
 public class StepsSnapshotMeasurementRepository {
 
     private final StepsSnapshotMeasurementDao stepsSnapshotMeasurementDao;
@@ -23,18 +24,33 @@ public class StepsSnapshotMeasurementRepository {
         stepsSnapshotMeasurementDao = citizenHubDatabase.stepsSnapshotMeasurementDao();
     }
 
+    /** Inserts a steps sample in the database.
+     * @param record Record.
+     * */
     public void create(StepsSnapshotMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> stepsSnapshotMeasurementDao.insert(record));
     }
 
+    /** Selects steps live data for continuous UI update.
+     * @param localDate Date.
+     * @return Live data list with steps record.
+     * */
     public LiveData<List<StepsSnapshotMeasurementRecord>> read(LocalDate localDate) {
         return stepsSnapshotMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects the steps taken in a day.
+     * @param localDate Date.
+     * @return Live data containing the total number of steps from one day.
+     * */
     public LiveData<Integer> readMaximum(LocalDate localDate) {
         return stepsSnapshotMeasurementDao.selectMaximumLiveData(localDate, localDate.plusDays(1));
     }
 
+    /** Selects total steps from a day.
+     * @param localDate Date.
+     * @param observer
+     * */
     public void readMaximumObserved(LocalDate localDate, Observer<Double> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(stepsSnapshotMeasurementDao.selectMaximum(localDate, localDate.plusDays(1))));
     }

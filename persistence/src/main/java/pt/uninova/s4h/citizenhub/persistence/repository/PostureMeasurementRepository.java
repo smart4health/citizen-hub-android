@@ -42,7 +42,9 @@ public class PostureMeasurementRepository {
         return postureMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }
 
-    /**
+    /** Selects the correct and incorrect posture time for each hour of the day.
+     * @param localDate Date.
+     * @param observer
      * */
     public void read(LocalDate localDate, Observer<List<HourlyPosture>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(postureMeasurementDao.selectHourlyPosture(localDate)));

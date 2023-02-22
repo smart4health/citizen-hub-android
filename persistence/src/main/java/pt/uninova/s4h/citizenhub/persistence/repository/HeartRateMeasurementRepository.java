@@ -25,13 +25,16 @@ public class HeartRateMeasurementRepository {
         heartRateMeasurementDao = citizenHubDatabase.heartRateMeasurementDao();
     }
 
+    /** Inserts an entry into the database.
+     * @param record Entry to insert.
+     * */
     public void create(HeartRateMeasurementRecord record) {
         CitizenHubDatabase.executorService().execute(() -> heartRateMeasurementDao.insert(record));
     }
 
     /** Selects heart rate records from the heart rate database. Normally used to constantly update the UI whenever new information is added.
      * @param localDate Date.
-     * @return Livedata list with all heart rate records.
+     * @return Live data list with all heart rate records.
      * */
     public LiveData<List<HeartRateMeasurementRecord>> read(LocalDate localDate) {
         return heartRateMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
@@ -39,7 +42,7 @@ public class HeartRateMeasurementRepository {
 
     /** Selects live data (Max, Min and Avg) from the heart rate database. Normally used to constantly update the UI whenever new information is added.
      * @param localDate Date.
-     * @return Livedata with a summary of the heart rate attributes.
+     * @return Live data with a summary of the heart rate attributes.
      * */
     public LiveData<AggregateSummary> readAggregate(LocalDate localDate) {
         return heartRateMeasurementDao.selectAggregateLiveData(localDate, localDate.plusDays(1));
@@ -47,7 +50,7 @@ public class HeartRateMeasurementRepository {
 
     /** Selects live data (only Avg) from the heart rate database. Normally used to constantly update the UI whenever new information is added.
      * @param localDate Date.
-     * @return Livedata containing a double with the average daily heart rate.
+     * @return Live data containing a double with the average daily heart rate.
      * */
     public LiveData<Double> readAverage(LocalDate localDate) {
         return heartRateMeasurementDao.selectAverageLiveData(localDate, localDate.plusDays(1));
