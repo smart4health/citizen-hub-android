@@ -38,8 +38,8 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
     private DeviceViewModel model;
     private final String GS1_URL = "https://www.gs1.org/";
     private final String HIBCC_URL = "https://www.hibcc.org/";
-    private final String ICCBBA_URL ="https://www.iccbba.org/";
-    private final String ICCBA_URL ="https://www.iccba-abcpi.org/";
+    private final String ICCBBA_URL = "https://www.iccbba.org/";
+    private final String ICCBA_URL = "https://www.iccba-abcpi.org/";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,16 +181,21 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
             public void observe(String value) {
                 if (value != null) {
 
-                    switch (value){
-                        case "none": model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
+                    switch (value) {
+                        case "none":
+                           systemSpinner.setSelection(0);
                             break;
-                        case GS1_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
+                        case GS1_URL:
+                            systemSpinner.setSelection(1);
                             break;
-                        case HIBCC_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
+                        case HIBCC_URL:
+                            systemSpinner.setSelection(2);
                             break;
-                        case ICCBBA_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
+                        case ICCBBA_URL:
+                            systemSpinner.setSelection(3);
                             break;
-                        case ICCBA_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
+                        case ICCBA_URL:
+                            systemSpinner.setSelection(4);
 
                     }
 
@@ -204,20 +209,23 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                     ((TextView) adapterView.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorS4HDarkBlue));
                 }
 
-                switch (i){
-                    case 0: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", "none");
-                    break;
-                    case 1: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
-                    break;
-                    case 2: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
-                    break;
-                    case 3: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
-                    break;
-                    case 4: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
+                switch (i) {
+                    case 0:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", "none");
+                        break;
+                    case 1:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
+                        break;
+                    case 2:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
+                        break;
+                    case 3:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
+                        break;
+                    case 4:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
 
                 }
-//                model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", String.valueOf(systemSpinner.getSelectedItemPosition()));
-
             }
 
             @Override
