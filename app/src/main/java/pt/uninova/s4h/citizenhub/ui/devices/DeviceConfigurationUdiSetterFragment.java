@@ -180,6 +180,20 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
             @Override
             public void observe(String value) {
                 if (value != null) {
+
+                    switch (value){
+                        case "none": model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
+                            break;
+                        case GS1_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
+                            break;
+                        case HIBCC_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
+                            break;
+                        case ICCBBA_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
+                            break;
+                        case ICCBA_URL: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
+
+                    }
+
                     systemSpinner.setSelection(Integer.parseInt(value));
                 }
             }
@@ -191,7 +205,7 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                 }
 
                 switch (i){
-                    case 0: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
+                    case 0: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", "none");
                     break;
                     case 1: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
                     break;
@@ -200,9 +214,9 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                     case 3: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
                     break;
                     case 4: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
-                    
+
                 }
-                model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", String.valueOf(systemSpinner.getSelectedItemPosition()));
+//                model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", String.valueOf(systemSpinner.getSelectedItemPosition()));
 
             }
 
