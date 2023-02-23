@@ -198,8 +198,6 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                             systemSpinner.setSelection(4);
 
                     }
-
-                    systemSpinner.setSelection(Integer.parseInt(value));
                 }
             }
         });
