@@ -189,6 +189,19 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                 if (adapterView.getChildAt(0) != null) {
                     ((TextView) adapterView.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorS4HDarkBlue));
                 }
+
+                switch (i){
+                    case 0: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", null);
+                    break;
+                    case 1: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
+                    break;
+                    case 2: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
+                    break;
+                    case 3: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
+                    break;
+                    case 4: model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
+                    
+                }
                 model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", String.valueOf(systemSpinner.getSelectedItemPosition()));
 
             }
