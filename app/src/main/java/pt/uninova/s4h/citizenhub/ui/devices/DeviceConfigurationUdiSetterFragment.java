@@ -53,7 +53,9 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.device_configuration_udi_setter_menu, menu);
+                if (!menu.hasVisibleItems()) {
+                    menuInflater.inflate(R.menu.device_configuration_udi_setter_menu, menu);
+                }
             }
 
             @Override
