@@ -24,13 +24,17 @@ public class CanvasWriter {
         this(canvas, 0, 0);
     }
 
-
+    /** Draws text in a given position.
+     * @param text Text to write.
+     * @param paint Paint. */
     public void addText(String text, float x, float y, Paint paint) {
         DrawObject drawObject = new DrawObject(text, x, y, paint);
         drawingList.add(drawObject);
     }
 
-
+    /** Writes text in front of the last text writen.
+     * @param text Text to write.
+     * @param paint Text paint. */
     public void addTextInFront(String text, Paint paint) {
 
         DrawObject lastDrawObject = drawingList.get(drawingList.size() - 1);

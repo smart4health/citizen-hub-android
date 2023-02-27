@@ -128,6 +128,7 @@ public class Smart4HealthAccountFragment extends Fragment {
         return view;
     }
 
+    /** Changes the switches positions after rendering the layout and sets a listener when their state is changed. */
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         switch_daily_report_upload = view.findViewById(R.id.switch_daily_report_upload);
