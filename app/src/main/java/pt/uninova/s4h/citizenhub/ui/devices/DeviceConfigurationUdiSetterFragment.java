@@ -36,10 +36,10 @@ import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class DeviceConfigurationUdiSetterFragment extends Fragment {
     private DeviceViewModel model;
-    private final String GS1_URL = "https://www.gs1.org/";
-    private final String HIBCC_URL = "https://www.hibcc.org/";
-    private final String ICCBBA_URL = "https://www.iccbba.org/";
-    private final String ICCBA_URL = "https://www.iccba-abcpi.org/";
+    private final String GS1_URL = "http://hl7.org/fhir/NamingSystem/gs1";
+    private final String HIBCC_URL = "http://hl7.org/fhir/NamingSystem/hibcc";
+    private final String ICCBBA_URL = "http://hl7.org/fhir/NamingSystem/iccbba-blood";
+    private final String ICCBA_URL = "http://hl7.org/fhir/NamingSystem/iccbba-other";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
