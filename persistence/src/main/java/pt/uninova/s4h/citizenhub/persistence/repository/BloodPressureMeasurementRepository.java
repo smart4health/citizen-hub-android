@@ -32,11 +32,16 @@ public class BloodPressureMeasurementRepository {
         return bloodPressureMeasurementDao.selectLiveData(localDate, localDate.plusDays(1));
     }
 
+    public void readBySample(long sampleId, Observer<BloodPressureMeasurementRecord> observer) {
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.select(sampleId)));
+    }
+
     public void readLastDay(LocalDate localDate, Observer<List<HourlyBloodPressurePanel>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.selectLastDay(localDate)));
     }
 
-    public void selectSeveralDays(LocalDate localDate, int days, Observer<List<DailyBloodPressurePanel>> observer){
+    public void readSeveralDays(LocalDate localDate, int days, Observer<List<DailyBloodPressurePanel>> observer) {
+
         CitizenHubDatabase.executorService().execute(() -> observer.observe(bloodPressureMeasurementDao.selectSeveralDays(localDate.minusDays(days - 1), localDate.plusDays(1), days)));
     }
 

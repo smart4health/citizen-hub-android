@@ -159,7 +159,7 @@ public class PDFWeeklyAndMonthlyReport {
                 bloodPressure = chartFunctions.parseBloodPressureUtil(data, days);
         };
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(context);
-        bloodPressureMeasurementRepository.selectSeveralDays(localDate, days, observerBloodPressure);
+        bloodPressureMeasurementRepository.readSeveralDays(localDate, days, observerBloodPressure);
 
         Observer<List<DailyHeartRatePanel>> observerHeartRate = data -> {
             if(data.size() > 0)

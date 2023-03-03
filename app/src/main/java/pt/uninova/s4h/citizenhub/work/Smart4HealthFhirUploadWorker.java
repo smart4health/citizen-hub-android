@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub.work;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.concurrent.futures.CallbackToFutureAdapter;
 import androidx.work.ListenableWorker;
 import androidx.work.WorkerParameters;
 
@@ -16,6 +17,9 @@ public class Smart4HealthFhirUploadWorker extends ListenableWorker {
 
     @Override
     public ListenableFuture<Result> startWork() {
-        return null;
+        return CallbackToFutureAdapter.getFuture((completer) -> {
+
+            return this.toString();
+        });
     }
 }

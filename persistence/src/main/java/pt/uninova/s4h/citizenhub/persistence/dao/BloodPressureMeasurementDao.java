@@ -23,6 +23,9 @@ public interface BloodPressureMeasurementDao {
     @Query("INSERT INTO blood_pressure_measurement (sample_id, systolic, diastolic, mean_arterial_pressure) VALUES (:sampleId, :systolic, :diastolic, :meanArterialPressure)")
     long insert(Long sampleId, Double systolic, Double diastolic, Double meanArterialPressure);
 
+    @Query("SELECT blood_pressure_measurement.* FROM blood_pressure_measurement WHERE blood_pressure_measurement.sample_id = :sampleId")
+    BloodPressureMeasurementRecord select(long sampleId);
+
     @Query("SELECT blood_pressure_measurement.* FROM blood_pressure_measurement INNER JOIN sample ON blood_pressure_measurement.sample_id = sample.id WHERE sample.timestamp >= :from AND sample.timestamp < :to ORDER BY timestamp")
     @TypeConverters(EpochTypeConverter.class)
     LiveData<List<BloodPressureMeasurementRecord>> selectLiveData(LocalDate from, LocalDate to);
