@@ -17,6 +17,8 @@ public class BaseChannelListener implements ChannelListener {
 
     @Override
     public void onChange(double value, Date timestamp) {}
+    @Override
+    public void onChange(double value, Date timestamp, long wear_sample_id) {}
 
     @Override
     public void onWrite(byte[] value) {}
