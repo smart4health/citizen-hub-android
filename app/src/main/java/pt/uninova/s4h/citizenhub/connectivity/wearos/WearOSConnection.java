@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.data.Device;
+import pt.uninova.s4h.citizenhub.service.CitizenHubService;
 import pt.uninova.s4h.citizenhub.util.messaging.Dispatcher;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
@@ -19,14 +20,17 @@ public class WearOSConnection {
     private final Dispatcher<StateChangedMessage<WearOSConnectionState, WearOSConnection>> stateChangedMessageDispatcher;
     private final Map<Integer, Set<ChannelListener>> channelListenerMap;
     private WearOSConnectionState state;
+    CitizenHubService service;
 
-    public WearOSConnection(String address, String name) {
+    public WearOSConnection(String address, String name, CitizenHubService service) {
         this.address = address;
         this.name = name;
+        this.service = service;
 
         state = WearOSConnectionState.DISCONNECTED;
         stateChangedMessageDispatcher = new Dispatcher<>();
         channelListenerMap = new ConcurrentHashMap<>();
+
     }
 
     public String getAddress() {
@@ -61,7 +65,7 @@ public class WearOSConnection {
 
         if (channelListenerMap.containsKey(key)) {
             for (ChannelListener i : Objects.requireNonNull(channelListenerMap.get(key))) {
-                i.onChange(getValue(messageArray), getTimeStamp(messageArray));
+                i.onChange(getValue(messageArray), getTimeStamp(messageArray), getWearSampleId(messageArray));
             }
         }
     }
@@ -74,6 +78,11 @@ public class WearOSConnection {
     public Date getTimeStamp(String[] message) {
         String timeStampString = message[1];
         return new Date(Long.parseLong(timeStampString));
+    }
+
+    public Long getWearSampleId(String[] message) {
+        String timeStampString = message[3];
+        return Long.parseLong(timeStampString);
     }
 
     public void close() {

@@ -50,13 +50,11 @@ public class WearOSAgent extends AbstractAgent {
     @Override
     public void disable() {
         setState(Agent.AGENT_STATE_DISABLED);
-        service.getWearOSMessageService().sendMessage("WearOSAgent", "false");
     }
 
     @Override
     public void enable() {
         setState(Agent.AGENT_STATE_ENABLED);
-        service.getWearOSMessageService().sendMessage("WearOSAgent", "true");
     }
 
     @Override

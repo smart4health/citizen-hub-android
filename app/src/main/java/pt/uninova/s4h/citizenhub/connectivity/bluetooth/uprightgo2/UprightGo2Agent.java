@@ -63,7 +63,6 @@ public class UprightGo2Agent extends BluetoothAgent {
 
     @Override
     protected MeasuringProtocol getMeasuringProtocol(int kind) {
-        System.out.println("UprightGo2Agent.getMeasuringProtocol kind=" + kind);
 
         if (kind == Measurement.TYPE_POSTURE) {
             return new UprightGo2PostureProtocol(this.getConnection(), getSampleDispatcher(), this);

@@ -8,9 +8,6 @@ public class ResourceUnits implements LocalizedResource {
         this.units = units;
     }
 
-    /***************************************
-     * This section only has get functions *
-     ***************************************/
     @Override
     public String getLocalizedString() {
         return units;

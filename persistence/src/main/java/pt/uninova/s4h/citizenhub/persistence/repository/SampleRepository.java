@@ -43,4 +43,8 @@ public class SampleRepository {
     public void readNonEmptyDates(LocalDate from, LocalDate to, Observer<List<LocalDate>> observer) {
         CitizenHubDatabase.executorService().execute(() -> observer.observe(sampleDao.select(from, to)));
     }
+
+    public void selectTimestampBasedOnId(Long sampleId, Observer<Long> observer){
+        CitizenHubDatabase.executorService().execute(() -> observer.observe(sampleDao.selectTimestampBasedOnId(sampleId)));
+    }
 }

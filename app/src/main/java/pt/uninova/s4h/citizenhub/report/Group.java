@@ -9,18 +9,12 @@ public class Group {
     private final List<Group> groupList;
     private final List<Item> itemList;
 
-    /*
-     *
-     * */
     public Group(LocalizedResource label){
         this.label = label;
         this.groupList = new LinkedList<>();
         this.itemList = new LinkedList<>();
     }
 
-    /***************************************
-1     * This section only has get functions *
-     ***************************************/
     public LocalizedResource getLabel(){
         return label;
     }

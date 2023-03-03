@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Citizen Wear</string>
+    <string name="main_activity_no_measurement">--</string>
+    <string name="main_activity_sensors_initializing">Sensors are\ninitializing</string>
+    <string name="main_activity_sensors_measuring">Sensors are\nmeasuring</string>
+    <string name="main_activity_sensors_idle">Tap icon to measure\nHeart Rate</string>
+    <string name="main_activity_content_description_name_logo">Citizen Hub Name Logo</string>
+    <string name="main_activity_content_description_icon_heart">White Heart Icon</string>
+    <string name="main_activity_content_description_icon_steps">White Man Standing</string>
+    <string name="main_activity_content_description_app_icon">Citizen Hub Logo</string>
+    <string name="notification_content_title">"Citizen Wear is Active"</string>
+    <string name="notification_sensors_measuring">"%d sensors measuring"</string>
+    <string name="notification_sensors_measuring_active">"Sensors are measuring"</string>
+    <string name="notification_sensors_measuring_idle">"Sensors are idle"</string>
+    <string name="citizen_hub_path">"/citizenhub_"</string>
+</resources>

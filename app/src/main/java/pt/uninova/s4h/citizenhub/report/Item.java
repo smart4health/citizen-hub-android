@@ -14,9 +14,6 @@ public class Item {
         this.units = units;
     }
 
-    /***************************************
-     * This section only has get functions *
-     ***************************************/
     public LocalizedResource getLabel(){
         return label;
     }

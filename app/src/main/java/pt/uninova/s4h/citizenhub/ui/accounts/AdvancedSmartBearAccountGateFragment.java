@@ -85,7 +85,6 @@ public class AdvancedSmartBearAccountGateFragment extends Fragment {
 
             final LocalDateTime now = LocalDateTime.now();
 
-            System.out.println(now.toString());
             return month == now.getMonthValue() && day == now.getDayOfMonth() && hour == now.getHour();
         } catch (NumberFormatException e) {
             return false;
