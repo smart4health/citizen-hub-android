@@ -36,7 +36,10 @@ import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class DeviceConfigurationUdiSetterFragment extends Fragment {
     private DeviceViewModel model;
-
+    private final String GS1_URL = "http://hl7.org/fhir/NamingSystem/gs1";
+    private final String HIBCC_URL = "http://hl7.org/fhir/NamingSystem/hibcc";
+    private final String ICCBBA_URL = "http://hl7.org/fhir/NamingSystem/iccbba-blood";
+    private final String ICCBA_URL = "http://hl7.org/fhir/NamingSystem/iccbba-other";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -179,7 +182,24 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
             @Override
             public void observe(String value) {
                 if (value != null) {
-                    systemSpinner.setSelection(Integer.parseInt(value));
+
+                    switch (value) {
+                        case "none":
+                           systemSpinner.setSelection(0);
+                            break;
+                        case GS1_URL:
+                            systemSpinner.setSelection(1);
+                            break;
+                        case HIBCC_URL:
+                            systemSpinner.setSelection(2);
+                            break;
+                        case ICCBBA_URL:
+                            systemSpinner.setSelection(3);
+                            break;
+                        case ICCBA_URL:
+                            systemSpinner.setSelection(4);
+
+                    }
                 }
             }
         });
@@ -188,8 +208,24 @@ public class DeviceConfigurationUdiSetterFragment extends Fragment {
                 if (adapterView.getChildAt(0) != null) {
                     ((TextView) adapterView.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorS4HDarkBlue));
                 }
-                model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", String.valueOf(systemSpinner.getSelectedItemPosition()));
 
+                switch (i) {
+                    case 0:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", "none");
+                        break;
+                    case 1:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", GS1_URL);
+                        break;
+                    case 2:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", HIBCC_URL);
+                        break;
+                    case 3:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBBA_URL);
+                        break;
+                    case 4:
+                        model.getSelectedDeviceAgent().getSettingsManager().set("udi-system", ICCBA_URL);
+
+                }
             }
 
             @Override
