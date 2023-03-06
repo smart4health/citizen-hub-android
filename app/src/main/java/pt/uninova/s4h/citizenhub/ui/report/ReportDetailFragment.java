@@ -87,6 +87,20 @@ public class ReportDetailFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_report_detail, container, false);
+
+        AccountsViewModel viewModel = new ViewModelProvider(requireActivity()).get(AccountsViewModel.class);
+
+        if (viewModel.hasSmart4HealthAccount()) {
+            setHasOptionsMenu(true);
+        }
+
+        return view;
+    }
+
+
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -102,6 +116,7 @@ public class ReportDetailFragment extends Fragment {
         infoTextView_day.setText(String.format("%s %s", day, month));
         infoTextView_year.setText(year);
 
+        System.out.println("Dewde");
         Observer<Report> observerWorkTimeReport = workTimeData -> {
 
             Observer<Report> observerNotWorkTimeReport = notWorkTimeData -> {
