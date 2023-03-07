@@ -31,14 +31,14 @@ import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothScanner;
-import pt.uninova.s4h.citizenhub.connectivity.bluetooth.medx.MedXAgent;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.medx.LumbarExtensionTrainingProtocol;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.medx.MedXAgent;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
-import pt.uninova.s4h.citizenhub.work.LumbarExtensionTrainingUploader;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
+import pt.uninova.s4h.citizenhub.work.LumbarExtensionTrainingUploader;
 
 public class LumbarExtensionTrainingSearchFragment extends BluetoothFragment {
 

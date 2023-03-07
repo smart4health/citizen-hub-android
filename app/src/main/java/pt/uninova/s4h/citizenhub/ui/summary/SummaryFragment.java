@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.ServiceFragment;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
-import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionTrainingSummary;
 
 public class SummaryFragment extends ServiceFragment {
 
