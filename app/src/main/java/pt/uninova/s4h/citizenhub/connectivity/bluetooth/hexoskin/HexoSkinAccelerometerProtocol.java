@@ -14,7 +14,6 @@ import pt.uninova.s4h.citizenhub.data.ActivityMeasurement;
 import pt.uninova.s4h.citizenhub.data.CadenceMeasurement;
 import pt.uninova.s4h.citizenhub.data.CaloriesSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.data.DistanceSnapshotMeasurement;
-import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.data.SnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.data.StepsSnapshotMeasurement;

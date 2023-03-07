@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import java.text.DecimalFormat;
-import java.time.ZoneId;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;

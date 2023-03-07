@@ -17,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import org.apache.commons.text.WordUtils;
-
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +83,7 @@ public class SettingsFragment extends Fragment implements SharedPreferences.OnSh
             for (int i = 0; i < workDaysSet.size(); i++) {
                 stringsList.set(i, String.valueOf(DayOfWeek.of(i + 1)));
             }
-            workDaysPlaceholder.setText(WordUtils.capitalizeFully(stringsList.toString().replaceAll("[\\[\\]]", "")));
+            workDaysPlaceholder.setText(stringsList.toString().replaceAll("[\\[\\]]", ""));
         } else {
             disableWorkHours();
         }

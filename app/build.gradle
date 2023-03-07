@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "pt.uninova.s4h.citizenhub"
         minSdkVersion 26
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 120221206
         versionName "0.13.2"
 
@@ -86,77 +86,105 @@ android {
 }
 
 dependencies {
-    def concurrent_version = "1.1.0"
-    def d4l_sdk_android_version = "1.16.0"
-    def d4l_fhir_helper_sdk_version = "1.9.0"
-    def desugar_version = "1.1.5"
-    def fragment_version = "1.5.2"
-    def hapi_fhir_version = "6.0.2"
-    def lifecycle_version = "2.5.1"
-    def preference_version = "1.2.0"
-    def okhttp_version = "4.9.3"
-    def work_version = "2.7.1"
+    def androidx_activity_version = "1.6.1"
+    def androidx_appcompat_version = "1.6.1"
+    def androidx_cardview_version = "1.0.0"
+    def androidx_concurrent_version = "1.1.0"
+    def androidx_constraintlayout_version = "2.1.4"
+    def androidx_coordinatorlayout_version = "1.2.0"
+    def androidx_core_version = "1.9.0"
+    def androidx_customview_version = "1.1.0"
+    def androidx_drawerlayout_version = "1.1.1"
+    def androidx_fragment_version = "1.5.5"
+    def androidx_lifecycle_version = "2.5.1"
+    def androidx_preference_version = "1.2.0"
+    def androidx_recyclerview_version = "1.2.1"
+    def androidx_transition_version = "1.4.1"
+    def androidx_viewpager_version = "1.0.0"
+    def androidx_work_version = "2.8.0"
+    def com_android_tools_version = "2.0.2"
+    def ca_uhn_hapi_fhir_hapifhir_version = "6.4.2"
+    def ca_uhn_hapi_fhir_org_hl7_fhir_r4_version = "5.6.971"
+    def care_data4life_hcsdkkmp_version = "1.16.0"
+    def care_data4life_hcfhirhelpersdkkmp_version = "1.9.0"
+    def com_github_PhilJay_version = "v3.1.0"
+    def com_google_android_gms_version = "18.0.0"
+    def com_google_android_material_version = "1.8.0"
+    def com_google_guava_version = "31.1-android"
+    def com_squareup_okhttp3_version = "4.10.0"
+    def pt_uninova_s4h_materialcalendarview = "2.0.1"
 
     implementation(project(":data"))
     implementation(project(":persistence"))
     implementation(project(":util"))
 
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_version"
+    implementation "androidx.activity:activity:$androidx_activity_version"
 
-    implementation "androidx.concurrent:concurrent-futures:$concurrent_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
 
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation "androidx.cardview:cardview:$androidx_cardview_version"
 
-    implementation "androidx.fragment:fragment:$fragment_version"
+    implementation "androidx.concurrent:concurrent-futures:$androidx_concurrent_version"
 
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraintlayout_version"
 
-    implementation "androidx.preference:preference:$preference_version"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_coordinatorlayout_version"
 
-    implementation "androidx.work:work-runtime:$work_version"
+    implementation "androidx.core:core:$androidx_core_version"
 
-    implementation "ca.uhn.hapi.fhir:hapi-fhir-android:$hapi_fhir_version"
-    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4:$hapi_fhir_version"
+    implementation "androidx.customview:customview:$androidx_customview_version"
 
-    implementation("care.data4life.hc-sdk-kmp:sdk-android:$d4l_sdk_android_version") {
+    implementation "androidx.drawerlayout:drawerlayout:$androidx_drawerlayout_version"
+
+    implementation "androidx.fragment:fragment:$androidx_fragment_version"
+
+    implementation "androidx.lifecycle:lifecycle-common:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-service:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-core:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$androidx_lifecycle_version"
+
+    implementation "androidx.navigation:navigation-common:$androidx_navigation_version"
+    implementation "androidx.navigation:navigation-fragment:$androidx_navigation_version"
+    implementation "androidx.navigation:navigation-runtime:$androidx_navigation_version"
+    implementation "androidx.navigation:navigation-ui:$androidx_navigation_version"
+
+    implementation "androidx.preference:preference:$androidx_preference_version"
+
+    implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview_version"
+
+    implementation "androidx.transition:transition:$androidx_transition_version"
+
+    implementation "androidx.viewpager:viewpager:$androidx_viewpager_version"
+
+    implementation "androidx.work:work-runtime:$androidx_work_version"
+
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-base:$ca_uhn_hapi_fhir_hapifhir_version"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4:$ca_uhn_hapi_fhir_hapifhir_version"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r4:$ca_uhn_hapi_fhir_org_hl7_fhir_r4_version"
+    runtimeOnly "ca.uhn.hapi.fhir:hapi-fhir-android:$ca_uhn_hapi_fhir_hapifhir_version"
+
+    implementation("care.data4life.hc-sdk-kmp:sdk-android:$care_data4life_hcsdkkmp_version") {
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'securestore-jvm'
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'crypto-jvm'
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'auth-jvm'
         exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util-jvm'
     }
 
-    implementation "care.data4life.hc-fhir-helper-sdk-kmp:fhir-helper-android:$d4l_fhir_helper_sdk_version"
+    implementation "care.data4life.hc-fhir-helper-sdk-kmp:fhir-helper-android:$care_data4life_hcfhirhelpersdkkmp_version"
 
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$com_android_tools_version"
 
-    //
+    implementation "com.github.PhilJay:MPAndroidChart:$com_github_PhilJay_version"
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "com.google.android.gms:play-services-wearable:$com_google_android_gms_version"
 
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "com.google.android.material:material:$com_google_android_material_version"
 
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "com.google.guava:guava:$com_google_guava_version"
 
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$navigation_version"
-    implementation "androidx.navigation:navigation-fragment:$navigation_version"
-    implementation "androidx.navigation:navigation-ui:$navigation_version"
+    implementation "com.squareup.okhttp3:okhttp:$com_squareup_okhttp3_version"
 
-    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
-
-
-
-    // Material Calendar View
-    implementation 'pt.uninova.s4h:material-calendarview:2.0.1'
-
-    implementation 'com.google.android.gms:play-services-wearable:17.1.0'
-
-    implementation 'com.android.support:support-annotations:28.0.0'
-
-    // Material to design graphs in summary details
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:design:28.0.0'
+    implementation "pt.uninova.s4h:material-calendarview:$pt_uninova_s4h_materialcalendarview"
 }

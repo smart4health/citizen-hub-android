@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
+
 import java.util.ArrayList;
 
 public class MethodConnectionAdapter extends ArrayAdapter<String> {

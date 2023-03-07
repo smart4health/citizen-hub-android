@@ -2,11 +2,7 @@ package pt.uninova.s4h.citizenhub.work;
 
 import android.content.Context;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.NonNull;
-
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -18,7 +14,8 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-import pt.uninova.s4h.citizenhub.data.Sample;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class WorkOrchestrator {
 

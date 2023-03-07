@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.concurrent.futures.CallbackToFutureAdapter;
 import androidx.preference.PreferenceManager;
 import androidx.work.ListenableWorker;
-import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,7 +16,6 @@ import java.time.LocalDate;
 import pt.uninova.s4h.citizenhub.BuildConfig;
 import pt.uninova.s4h.citizenhub.interoperability.DailyPostureReport;
 import pt.uninova.s4h.citizenhub.interoperability.SmartBearClient;
-import pt.uninova.s4h.citizenhub.persistence.entity.SmartBearDailyReportRecord;
 import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosture;
 import pt.uninova.s4h.citizenhub.persistence.repository.PostureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SmartBearDailyReportRepository;

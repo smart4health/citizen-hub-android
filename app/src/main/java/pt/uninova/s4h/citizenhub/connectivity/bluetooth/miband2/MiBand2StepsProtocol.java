@@ -12,7 +12,6 @@ import pt.uninova.s4h.citizenhub.connectivity.Protocol;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BaseCharacteristicListener;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothMeasuringProtocol;
-import pt.uninova.s4h.citizenhub.data.CaloriesMeasurement;
 import pt.uninova.s4h.citizenhub.data.CaloriesSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.data.DistanceSnapshotMeasurement;
 import pt.uninova.s4h.citizenhub.data.Measurement;
