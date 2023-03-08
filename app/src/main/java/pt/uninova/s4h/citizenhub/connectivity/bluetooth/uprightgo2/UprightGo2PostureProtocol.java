@@ -88,7 +88,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
         @Override
         public void onChange(byte[] value) {
-            push(value[0] == 0);
+            posture.set(value[0] == 0);
         }
     };
 
