@@ -72,8 +72,13 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         characteristicListenerMap = new ConcurrentHashMap<>();
         descriptorListenerMap = new ConcurrentHashMap<>();
         stateChangedMessageDispatcher = new Dispatcher<>();
+        int runnableCounter = 0;
 
         state = BluetoothConnectionState.DISCONNECTED;
+    }
+
+    public int getRunnableSize() {
+        return runnables.size();
     }
 
     public void addCharacteristicListener(CharacteristicListener listener) {
@@ -243,10 +248,11 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     private synchronized void next() {
         if (BuildConfig.DEBUG)
             System.out.println("BluetoothConnection.next " + runnables.size());
-
+        System.out.println("RUNNABLE NEXTTT " + runnables.size());
         runnables.poll();
 
         if (!runnables.isEmpty()) {
+            System.out.println("RUNNABLE NOT EMPTY " + runnables.size());
             runnables.element().run();
         }
     }
@@ -396,7 +402,6 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
                 }
             }
         }
-
         next();
     }
 
@@ -404,7 +409,10 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         if (BuildConfig.DEBUG)
             System.out.println("BluetoothConnection.push " + (runnables.size() + 1));
 
+
+        System.out.println("RUNNABLE PUSH " + runnables.size());
         runnables.add(runnable);
+        System.out.println("RUNNABLE ADDED " + runnables.size());
 
         if (runnables.size() == 1) {
             runnables.element().run();

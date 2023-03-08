@@ -63,9 +63,7 @@ public abstract class BluetoothAgent extends AbstractAgent {
     }
 
     private void updateState(BluetoothConnectionState connectionState) {
-        if (connectionState == BluetoothConnectionState.CONNECTED) {
-            connection.reconnect();
-        }
+
         if (connectionState == BluetoothConnectionState.READY) {
             setState(AGENT_STATE_ENABLED);
         } else {

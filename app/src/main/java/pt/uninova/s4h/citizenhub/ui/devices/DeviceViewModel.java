@@ -177,6 +177,13 @@ public class DeviceViewModel extends AndroidViewModel {
             agentOrchestrator.enableDevice(device);
     }
 
+    public int getRunnableSize(Device device) {
+        final AgentOrchestrator agentOrchestrator = agentOrchestratorLiveData.getValue();
+        if (agentOrchestrator != null)
+            return agentOrchestrator.getRunnableSize(device);
+        else return 0;
+    }
+
 
     public void selectDevice(Device device) {
         selectedDeviceLiveData.postValue(device);

@@ -132,6 +132,13 @@ public class AgentOrchestrator {
         }
     }
 
+    public int getRunnableSize(Device device) {
+        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
+            BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
+            return agent.getConnection().getRunnableSize();
+        } else return 0;
+    }
+
     public void enableAll(int connectionType) {
         int connectionKind = connectionType;
         for (Device device : getDevices()

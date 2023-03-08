@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -117,6 +118,8 @@ public class DeviceConfigurationFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (model.getSelectedDeviceAgent() != null) {
+
+            Toast.makeText(getContext(), String.valueOf(model.getRunnableSize(model.getSelectedDevice().getValue())), Toast.LENGTH_LONG).show();
             model.getSelectedDeviceAgent().addStateObserver(agentStateObserver);
             setChildrenEnabled(advancedConfigurationLayout, model.getSelectedDeviceAgent().getState() == Agent.AGENT_STATE_ENABLED);
         }
