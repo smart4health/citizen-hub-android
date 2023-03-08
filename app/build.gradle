@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
-    compileSdkVersion 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "pt.uninova.s4h.citizenhub"
@@ -83,6 +83,7 @@ android {
     }
 
     namespace 'pt.uninova.s4h.citizenhub'
+    buildToolsVersion '34.0.0 rc1'
 }
 
 dependencies {

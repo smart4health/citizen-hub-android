@@ -1,24 +1,24 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-import pt.uninova.s4h.citizenhub.connectivity.Agent;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
 import pt.uninova.s4h.citizenhub.connectivity.Protocol;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BaseCharacteristicListener;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothMeasuringProtocol;
+import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.data.PostureMeasurement;
 import pt.uninova.s4h.citizenhub.data.PostureValue;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.util.messaging.Dispatcher;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
+import pt.uninova.s4h.citizenhub.util.time.Accumulator;
+import pt.uninova.s4h.citizenhub.util.time.FlushingAccumulator;
 
 public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
 
@@ -28,6 +28,20 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     final private static UUID CHARACTERISTIC = UUID.fromString("0000bac4-0000-1000-8000-00805f9b34fb"); //bac4
 
     private static final int selfUpdatingInterval = 5000;
+    private final Accumulator<Boolean> posture;
+    private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
+        @Override
+        public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
+            if (value.getNewState() == BluetoothConnectionState.READY) {
+                UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
+                UprightGo2PostureProtocol.this.getConnection().writeCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION, new byte[]{1 & 0xFF});
+            } else {
+                UprightGo2PostureProtocol.this.setState(Protocol.STATE_SUSPENDED);
+                posture.stop();
+            }
+        }
+    };
+
     /*
     ALL KNOWN SERVICES
     0x1800 -> Generic Access Service
@@ -78,30 +92,22 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         }
     };
 
-    private final Observer<StateChangedMessage<Integer, ? extends Agent>> agentStateObserver = value -> {
-
-        if (value.getNewState() != Agent.AGENT_STATE_ENABLED) {
-            setState(Protocol.STATE_SUSPENDED);
-            push(lastGoodPosture);
-            reset();
-        } else {
-            setState(Protocol.STATE_ENABLED);
-
-            if (selfUpdatingThread == null) {
-                startSelfUpdatingThread();
-            }
-            getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
-        }
-    };
-
     public UprightGo2PostureProtocol(BluetoothConnection connection, UprightGo2Agent agent) {
         super(ID, connection, agent);
+        this.posture = new FlushingAccumulator<>(5000);
     }
 
     public UprightGo2PostureProtocol(BluetoothConnection connection, Dispatcher<Sample> dispatcher, UprightGo2Agent agent) {
         super(ID, connection, dispatcher, agent);
-        getAgent().addStateObserver(agentStateObserver);
+        this.posture = new FlushingAccumulator<>(5000);
 
+        this.posture.addObserver(value -> {
+            final int classification = value.getFirst() ? PostureValue.CLASSIFICATION_CORRECT : PostureValue.CLASSIFICATION_INCORRECT;
+            final Measurement<?> measurement = new PostureMeasurement(new PostureValue(classification, value.getSecond()));
+            final Sample sample = new Sample(getAgent().getSource(), measurement);
+
+            getSampleDispatcher().dispatch(sample);
+        });
     }
 
     @Override
@@ -113,7 +119,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         connection.disableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
         connection.removeCharacteristicListener(postureChangedListener);
-//        getAgent().removeStateObserver(agentStateObserver);
+        posture.stop();
 
         super.disable();
     }
@@ -125,10 +131,9 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         final BluetoothConnection connection = getConnection();
 
         connection.addCharacteristicListener(postureChangedListener);
+        getConnection().addConnectionStateChangeListener(connectionStateObserver);
 
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
-
-        startSelfUpdatingThread();
 
         reset();
 
@@ -161,32 +166,11 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         lastGoodPosture = true;
     }
 
-    private void startSelfUpdatingThread() {
-        selfUpdatingThread = new Thread() {
-            @Override
-            public void run() {
+    public void close() {
 
-                Looper.prepare();
+        posture.clear();
 
-                Handler handler = new Handler(Looper.myLooper());
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (UprightGo2PostureProtocol.this.getState() == Protocol.STATE_ENABLED) {
-                            UprightGo2PostureProtocol.this.push(lastGoodPosture);
-                            handler.postDelayed(this, selfUpdatingInterval);
-                        } else {
-                            selfUpdatingThread.interrupt();
-                            selfUpdatingThread = null;
-                        }
-                    }
-                }, selfUpdatingInterval);
-
-                Looper.loop();
-            }
-        };
-
-        selfUpdatingThread.start();
+        super.close();
     }
+
 }
