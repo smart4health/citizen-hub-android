@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.UUID;
 
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
@@ -34,7 +32,8 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
-                UprightGo2PostureProtocol.this.getConnection().writeCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION, new byte[]{1 & 0xFF});
+                UprightGo2PostureProtocol.this.getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+
             } else {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_SUSPENDED);
                 posture.stop();
@@ -80,22 +79,12 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         own counters, BAA6 is an internal counter)
      */
 
-    private boolean lastGoodPosture;
-    private Instant lastTimestamp;
-
-    private Thread selfUpdatingThread;
-
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
         @Override
         public void onChange(byte[] value) {
             posture.set(value[0] == 0);
         }
     };
-
-    public UprightGo2PostureProtocol(BluetoothConnection connection, UprightGo2Agent agent) {
-        super(ID, connection, agent);
-        this.posture = new FlushingAccumulator<>(5000);
-    }
 
     public UprightGo2PostureProtocol(BluetoothConnection connection, Dispatcher<Sample> dispatcher, UprightGo2Agent agent) {
         super(ID, connection, dispatcher, agent);
@@ -112,13 +101,14 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
 
     @Override
     public void disable() {
+
         setState(Protocol.STATE_DISABLING);
 
         final BluetoothConnection connection = getConnection();
+        connection.removeCharacteristicListener(postureChangedListener);
+        getConnection().removeConnectionStateChangeListener(connectionStateObserver);
 
         connection.disableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
-
-        connection.removeCharacteristicListener(postureChangedListener);
         posture.stop();
 
         super.disable();
@@ -129,47 +119,17 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_ENABLING);
 
         final BluetoothConnection connection = getConnection();
-
         connection.addCharacteristicListener(postureChangedListener);
         getConnection().addConnectionStateChangeListener(connectionStateObserver);
 
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
-        reset();
-
         super.enable();
-    }
-
-    private void push(boolean goodPosture) {
-        final Instant now = Instant.now();
-
-        if (lastTimestamp != null) {
-            Duration duration = Duration.between(lastTimestamp, now);
-
-            if (duration.toMillis() > selfUpdatingInterval) {
-                duration = Duration.ofMillis(selfUpdatingInterval);
-            }
-
-            if (!duration.isNegative()) {
-                final int classification = lastGoodPosture ? PostureValue.CLASSIFICATION_CORRECT : PostureValue.CLASSIFICATION_INCORRECT;
-                final Sample sample = new Sample(getAgent().getSource(), new PostureMeasurement(new PostureValue(classification, duration)));
-                getSampleDispatcher().dispatch(sample);
-            }
-        }
-
-        lastTimestamp = now;
-        lastGoodPosture = goodPosture;
-    }
-
-    private void reset() {
-        lastTimestamp = null;
-        lastGoodPosture = true;
     }
 
     public void close() {
 
         posture.clear();
-
         super.close();
     }
 
