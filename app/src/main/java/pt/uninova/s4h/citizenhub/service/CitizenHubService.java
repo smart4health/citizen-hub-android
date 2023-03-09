@@ -356,7 +356,7 @@ public class CitizenHubService extends LifecycleService {
 
                                         enableAll(CONNECTION_KIND_BLUETOOTH);
                             }
-                        }, 20000);   //5 seconds
+                        }, 5000);   //5 seconds
                         break;
                     case BluetoothAdapter.STATE_OFF:
                         break;
