@@ -1,5 +1,8 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.UUID;
 
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
@@ -32,7 +35,13 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
-                UprightGo2PostureProtocol.this.getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        UprightGo2PostureProtocol.this.getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+                    }
+                }, 5000);
 
             } else {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_SUSPENDED);
