@@ -524,6 +524,9 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     private void setState(BluetoothConnectionState value) {
         if (value != state) {
+            if (value == BluetoothConnectionState.DISCONNECTED) {
+                runnables.clear();
+            }
             final BluetoothConnectionState oldValue = state;
 
             this.state = value;
