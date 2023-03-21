@@ -140,9 +140,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-common:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-service:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-core:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-service:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$androidx_lifecycle_version"
 
     implementation "androidx.navigation:navigation-common:$androidx_navigation_version"
@@ -165,14 +165,14 @@ dependencies {
     implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r4:$ca_uhn_hapi_fhir_org_hl7_fhir_r4_version"
     runtimeOnly "ca.uhn.hapi.fhir:hapi-fhir-android:$ca_uhn_hapi_fhir_hapifhir_version"
 
+    implementation "care.data4life.hc-fhir-helper-sdk-kmp:fhir-helper-android:$care_data4life_hcfhirhelpersdkkmp_version"
+
     implementation("care.data4life.hc-sdk-kmp:sdk-android:$care_data4life_hcsdkkmp_version") {
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'securestore-jvm'
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'crypto-jvm'
         exclude group: 'care.data4life.hc-sdk-kmp', module: 'auth-jvm'
         exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util-jvm'
     }
-
-    implementation "care.data4life.hc-fhir-helper-sdk-kmp:fhir-helper-android:$care_data4life_hcfhirhelpersdkkmp_version"
 
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$com_android_tools_version"
 
