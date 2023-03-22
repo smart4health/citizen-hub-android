@@ -2,11 +2,9 @@ package pt.uninova.s4h.citizenhub.ui.summary;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Region;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.TextView;
 
 public class VerticalTextView extends androidx.appcompat.widget.AppCompatTextView {
     final boolean topDown;

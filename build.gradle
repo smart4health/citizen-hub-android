@@ -1,26 +1,21 @@
 buildscript {
     ext {
-        desugar_version = '1.1.5'
-
-        appcompat_version = '1.5.1'
-        constraintlayout_version = '2.1.4'
-        lifecycle_version = '2.3.1'
-        navigation_version = '2.5.2'
-        recyclerview_version = '1.2.1'
-
-        d4lsdk_version = '1.15.1'
-        d4lhelpersdk_version = '1.8.0'
-        materialcalendarview_version = '2.0.1'
+        androidx_navigation_version = '2.5.3'
     }
 
     repositories {
         google()
         mavenCentral()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$androidx_navigation_version"
     }
+}
+
+plugins {
+    id "com.autonomousapps.dependency-analysis" version "1.19.0"
 }
 
 allprojects {

@@ -1,42 +1,25 @@
 package pt.uninova.s4h.citizenhub.ui.report;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
-import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
 import pt.uninova.s4h.citizenhub.report.Group;
 import pt.uninova.s4h.citizenhub.report.Item;
 import pt.uninova.s4h.citizenhub.report.MeasurementTypeLocalizedResource;
-import pt.uninova.s4h.citizenhub.report.PDFDailyReport;
-import pt.uninova.s4h.citizenhub.report.PDFWeeklyAndMonthlyReport;
 import pt.uninova.s4h.citizenhub.report.Report;
-import pt.uninova.s4h.citizenhub.report.ReportGenerator;
-import pt.uninova.s4h.citizenhub.ui.accounts.AccountsViewModel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
 public class ReportDetailFragment extends Fragment {
@@ -87,6 +70,20 @@ public class ReportDetailFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_report_detail, container, false);
+
+        AccountsViewModel viewModel = new ViewModelProvider(requireActivity()).get(AccountsViewModel.class);
+
+        if (viewModel.hasSmart4HealthAccount()) {
+            setHasOptionsMenu(true);
+        }
+
+        return view;
+    }
+
+
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -102,6 +99,7 @@ public class ReportDetailFragment extends Fragment {
         infoTextView_day.setText(String.format("%s %s", day, month));
         infoTextView_year.setText(year);
 
+        System.out.println("Dewde");
         Observer<Report> observerWorkTimeReport = workTimeData -> {
 
             Observer<Report> observerNotWorkTimeReport = notWorkTimeData -> {

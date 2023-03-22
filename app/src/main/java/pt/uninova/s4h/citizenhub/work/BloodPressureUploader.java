@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import care.data4life.fhir.r4.model.DocumentReference;
 import care.data4life.fhir.r4.model.Observation;
 import care.data4life.sdk.Data4LifeClient;
 import care.data4life.sdk.SdkContract;
@@ -21,7 +20,6 @@ import care.data4life.sdk.call.Fhir4Record;
 import care.data4life.sdk.lang.D4LException;
 import pt.uninova.s4h.citizenhub.fhir.BloodPressureObservation;
 import pt.uninova.s4h.citizenhub.fhir.Device;
-import pt.uninova.s4h.citizenhub.persistence.CitizenHubDatabase;
 import pt.uninova.s4h.citizenhub.persistence.repository.BloodPressureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SampleRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.SettingRepository;

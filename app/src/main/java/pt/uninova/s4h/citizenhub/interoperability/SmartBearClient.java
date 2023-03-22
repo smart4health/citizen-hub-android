@@ -1,9 +1,6 @@
 package pt.uninova.s4h.citizenhub.interoperability;
 
-import org.checkerframework.checker.units.qual.C;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Narrative;
@@ -11,21 +8,15 @@ import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.SampledData;
-import org.hl7.fhir.r4.model.Type;
-import org.hl7.fhir.r4.utils.client.network.FhirRequestBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.util.BundleBuilder;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
