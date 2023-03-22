@@ -117,6 +117,7 @@ public class DeviceConfigurationFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (model.getSelectedDeviceAgent() != null) {
+
             model.getSelectedDeviceAgent().addStateObserver(agentStateObserver);
             setChildrenEnabled(advancedConfigurationLayout, model.getSelectedDeviceAgent().getState() == Agent.AGENT_STATE_ENABLED);
         }
