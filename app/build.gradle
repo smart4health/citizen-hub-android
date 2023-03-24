@@ -20,7 +20,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -177,9 +177,8 @@ dependencies {
     implementation "care.data4life.hc-fhir-helper-sdk-kmp:fhir-helper-android:$care_data4life_hcfhirhelpersdkkmp_version"
 
     implementation("care.data4life.hc-sdk-kmp:sdk-android:$care_data4life_hcsdkkmp_version") {
-        exclude group: 'care.data4life.hc-sdk-kmp', module: 'securestore-jvm'
-        exclude group: 'care.data4life.hc-sdk-kmp', module: 'crypto-jvm'
-        exclude group: 'care.data4life.hc-sdk-kmp', module: 'auth-jvm'
+        exclude group: 'care.data4life.hc-securestore-sdk-kmp', module: 'securestore-jvm'
+        exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'error-jvm'
         exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util-jvm'
     }
 
