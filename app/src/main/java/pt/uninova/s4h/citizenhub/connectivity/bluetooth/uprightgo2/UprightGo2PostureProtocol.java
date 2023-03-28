@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.time.Duration;
 import java.util.UUID;
 
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
@@ -16,6 +17,7 @@ import pt.uninova.s4h.citizenhub.data.Measurement;
 import pt.uninova.s4h.citizenhub.data.PostureMeasurement;
 import pt.uninova.s4h.citizenhub.data.PostureValue;
 import pt.uninova.s4h.citizenhub.data.Sample;
+import pt.uninova.s4h.citizenhub.util.Pair;
 import pt.uninova.s4h.citizenhub.util.messaging.Dispatcher;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 import pt.uninova.s4h.citizenhub.util.time.Accumulator;
@@ -27,6 +29,20 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     final public static UUID MEASUREMENTS_SERVICE = UUID.fromString("0000bac0-0000-1000-8000-00805f9b34fb"); //bac0
     final private static UUID POSTURE_CORRECTION = UUID.fromString("0000bac3-0000-1000-8000-00805f9b34fb"); //bac3
     final private static UUID CHARACTERISTIC = UUID.fromString("0000bac4-0000-1000-8000-00805f9b34fb"); //bac4
+    final public static UUID BATTERY_SERVICE = UUID.fromString("0000bad0-0000-1000-8000-00805f9b34fb"); //bab0
+
+    final private static UUID BATTERY = UUID.fromString("0000bad2-0000-1000-8000-00805f9b34fb"); //bad2
+    private int isCharging = 0;
+    private Observer<Pair<Boolean, Duration>> observer = new Observer<Pair<Boolean, Duration>>() {
+        @Override
+        public void observe(Pair<Boolean, Duration> value) {
+            final int classification = value.getFirst() ? PostureValue.CLASSIFICATION_CORRECT : PostureValue.CLASSIFICATION_INCORRECT;
+            final Measurement<?> measurement = new PostureMeasurement(new PostureValue(classification, value.getSecond()));
+            final Sample sample = new Sample(UprightGo2PostureProtocol.this.getAgent().getSource(), measurement);
+
+            UprightGo2PostureProtocol.this.getSampleDispatcher().dispatch(sample);
+        }
+    };
 
     private static final int selfUpdatingInterval = 5000;
     private final Accumulator<Boolean> posture;
@@ -35,21 +51,42 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
+                getConnection().addCharacteristicListener(isChargingListener);
 
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
                     public void run() {
+
                         UprightGo2PostureProtocol.this.getConnection().enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+                        UprightGo2PostureProtocol.this.getConnection().enableNotifications(BATTERY_SERVICE, BATTERY);
+
                     }
                 }, 5000);
 
             } else {
+                getConnection().removeCharacteristicListener(isChargingListener);
+
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_SUSPENDED);
                 posture.stop();
             }
         }
     };
 
+    private final BaseCharacteristicListener isChargingListener = new BaseCharacteristicListener(BATTERY_SERVICE, BATTERY) {
+        @Override
+        public void onChange(byte[] value) {
+            if (value[0] == 0) {
+                getConnection().addCharacteristicListener(postureChangedListener);
+                posture.addObserver(observer);
+                isCharging = 0;
+            } else {
+                posture.clear();
+                posture.removeObserver(observer);
+                isCharging = 1;
+            }
+
+        }
+    };
     /*
     ALL KNOWN SERVICES
     0x1800 -> Generic Access Service
@@ -91,21 +128,19 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
         @Override
         public void onChange(byte[] value) {
-            posture.set(value[0] == 0);
+            System.out.println("ISCHARGINGGGGGGGG" + isCharging);
+            if (isCharging == 0) {
+                posture.set(value[0] == 0);
+            }
         }
     };
+
 
     public UprightGo2PostureProtocol(BluetoothConnection connection, Dispatcher<Sample> dispatcher, UprightGo2Agent agent) {
         super(ID, connection, dispatcher, agent);
         this.posture = new FlushingAccumulator<>(5000);
+        posture.addObserver(observer);
 
-        this.posture.addObserver(value -> {
-            final int classification = value.getFirst() ? PostureValue.CLASSIFICATION_CORRECT : PostureValue.CLASSIFICATION_INCORRECT;
-            final Measurement<?> measurement = new PostureMeasurement(new PostureValue(classification, value.getSecond()));
-            final Sample sample = new Sample(getAgent().getSource(), measurement);
-
-            getSampleDispatcher().dispatch(sample);
-        });
     }
 
     @Override
@@ -114,10 +149,13 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_DISABLING);
 
         final BluetoothConnection connection = getConnection();
-        connection.removeCharacteristicListener(postureChangedListener);
+        connection.removeCharacteristicListener(isChargingListener);
         getConnection().removeConnectionStateChangeListener(connectionStateObserver);
+        getConnection().removeCharacteristicListener(postureChangedListener);
 
         connection.disableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+        connection.disableNotifications(BATTERY_SERVICE, BATTERY);
+
         posture.stop();
 
         super.disable();
@@ -128,11 +166,13 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_ENABLING);
 
         final BluetoothConnection connection = getConnection();
-        connection.addCharacteristicListener(postureChangedListener);
         getConnection().addConnectionStateChangeListener(connectionStateObserver);
+        getConnection().addCharacteristicListener(isChargingListener);
+
+        getConnection().addCharacteristicListener(postureChangedListener);
 
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
-
+        connection.enableNotifications(BATTERY_SERVICE, BATTERY);
         super.enable();
     }
 
