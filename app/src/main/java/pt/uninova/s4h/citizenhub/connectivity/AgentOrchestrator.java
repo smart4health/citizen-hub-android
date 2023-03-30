@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub.connectivity;
 
-import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_BLUETOOTH;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgent;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.util.UUIDv5;
@@ -134,13 +131,6 @@ public class AgentOrchestrator {
             }
         }
         return deviceSet;
-    }
-
-    public int getRunnableSize(Device device) {
-        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
-            BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
-            return agent.getConnection().getRunnableSize();
-        } else return 0;
     }
 
     public void identify(Device device, Observer<Agent> observer) {
