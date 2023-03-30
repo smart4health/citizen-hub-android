@@ -5,6 +5,7 @@ import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,16 @@ public class AgentOrchestrator {
 
     public Set<Device> getDevices() {
         return Collections.unmodifiableSet(new TreeSet<>(agentMap.keySet()));
+    }
+
+    public Set<Device> getDevices(int connectionKind) {
+        Set<Device> deviceSet = new HashSet<>();
+        for (Device device : getDevices()) {
+            if (device.getConnectionKind() == connectionKind) {
+                deviceSet.add(device);
+            }
+        }
+        return deviceSet;
     }
 
     public void enableDevice(Device device) {
