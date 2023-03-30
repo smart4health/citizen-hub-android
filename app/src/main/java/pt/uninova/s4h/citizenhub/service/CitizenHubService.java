@@ -153,20 +153,12 @@ public class CitizenHubService extends LifecycleService {
         int i = 0;
         for (Device device : orchestrator.getDevices()
         ) {
-            System.out.println("GETCONNECTEDDEVICES_TOTAL " + orchestrator.getDevices(CONNECTION_KIND_BLUETOOTH).size());
             if (orchestrator.getAgent(device) != null) {
                 if (orchestrator.getAgent(device).getState() == Agent.AGENT_STATE_ENABLED) {
                     i++;
-
-                    System.out.println("CONNECTED DEVICE " + orchestrator.getAgent(device).getName() + i);
-
-                } else {
-                    System.out.println("NOT CONNECTED DEVICE " + orchestrator.getAgent(device).getName() + i);
-
                 }
             }
         }
-        System.out.println("FINAL DEVICE COUNT " + (orchestrator.getDevices(CONNECTION_KIND_BLUETOOTH).size() - i));
         return i;
     }
 
@@ -216,7 +208,6 @@ public class CitizenHubService extends LifecycleService {
         orchestrator.addListener(new AgentOrchestratorListener() {
             @Override
             public void onAgentStateChanged(Agent agent) {
-                System.out.println("AGENT STATE CHANGED PLS UPDATE NOTIFICATION");
                 updateNotification(getConnectedDevices());
             }
 
