@@ -174,9 +174,16 @@ public class DeviceViewModel extends AndroidViewModel {
     }
 
     public void reconnectDevice(Device device) {
+        enableDevice(device);
+    }
+
+    private void enableDevice(Device device) {
         final AgentOrchestrator agentOrchestrator = agentOrchestratorLiveData.getValue();
         if (agentOrchestrator != null)
-            agentOrchestrator.enableDevice(device, CONNECTION_KIND_BLUETOOTH);
+            if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
+                BluetoothAgent agent = ((BluetoothAgent) agentOrchestrator.getAgent(device));
+                agent.getConnection().reconnect();
+            }
     }
 
     public void selectDevice(Device device) {
