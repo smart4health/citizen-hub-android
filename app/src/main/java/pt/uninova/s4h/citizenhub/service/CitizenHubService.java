@@ -280,6 +280,7 @@ public class CitizenHubService extends LifecycleService {
                 }
             }
         });
+        updateNotification(getConnectedDevices());
     }
 
     @Override
