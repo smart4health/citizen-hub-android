@@ -207,7 +207,6 @@ public class CitizenHubService extends LifecycleService {
         orchestrator.addListener(new AgentOrchestratorListener() {
             @Override
             public void onAgentStateChanged(Agent agent) {
-                int i = 0;
                 updateNotification(getConnectedDevices());
             }
 
@@ -350,9 +349,7 @@ public class CitizenHubService extends LifecycleService {
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             public void run() {
-                                orchestrator.
-
-                                        enableAll(CONNECTION_KIND_BLUETOOTH);
+                                orchestrator.enableAll(CONNECTION_KIND_BLUETOOTH);
                             }
                         }, 5000);   //5 seconds
                         break;

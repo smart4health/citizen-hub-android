@@ -140,12 +140,13 @@ public class AgentOrchestrator {
     }
 
     public void enableAll(int connectionType) {
-        int connectionKind = connectionType;
-        for (Device device : getDevices()
-        ) {
-            if (device.getConnectionKind() == connectionKind) {
-                BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
-                agent.getConnection().reconnect();
+        for (Device device : getDevices()) {
+            if (device.getConnectionKind() == connectionType) {
+                final BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
+
+                if (agent != null) {
+                    agent.getConnection().reconnect();
+                }
             }
         }
     }
