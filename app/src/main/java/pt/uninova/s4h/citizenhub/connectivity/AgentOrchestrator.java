@@ -136,8 +136,8 @@ public class AgentOrchestrator {
         return deviceSet;
     }
 
-    public void enableDevice(Device device) {
-        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
+    public void enableDevice(Device device, int connectionKind) {
+        if (device.getConnectionKind() == connectionKind) {
             BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
             agent.getConnection().reconnect();
         }

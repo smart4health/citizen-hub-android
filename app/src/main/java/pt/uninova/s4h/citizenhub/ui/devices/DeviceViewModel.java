@@ -1,5 +1,7 @@
 package pt.uninova.s4h.citizenhub.ui.devices;
 
+import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_BLUETOOTH;
+
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -174,7 +176,7 @@ public class DeviceViewModel extends AndroidViewModel {
     public void reconnectDevice(Device device) {
         final AgentOrchestrator agentOrchestrator = agentOrchestratorLiveData.getValue();
         if (agentOrchestrator != null)
-            agentOrchestrator.enableDevice(device);
+            agentOrchestrator.enableDevice(device, CONNECTION_KIND_BLUETOOTH);
     }
 
     public void selectDevice(Device device) {
