@@ -8,8 +8,8 @@ android {
         applicationId "pt.uninova.s4h.citizenhub"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 120230330
-        versionName "1.0.1"
+        versionCode 120230403
+        versionName "1.0.1a"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -20,7 +20,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
