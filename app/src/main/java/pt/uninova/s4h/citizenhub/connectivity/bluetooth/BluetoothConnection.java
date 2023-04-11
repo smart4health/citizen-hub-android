@@ -156,6 +156,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         runnables.clear();
     }
 
+    @Override
     public void connect() {
         device.connectGatt(null, true, this, BluetoothDevice.TRANSPORT_LE);
     }
@@ -164,6 +165,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         device.connectGatt(null, true, this, bluetoothTransport);
     }
 
+    @Override
     public void close() {
         characteristicListenerMap.clear();
         descriptorListenerMap.clear();
@@ -205,6 +207,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         }
     }
 
+    @Override
     public void disconnect() {
         if (gatt != null) {
             gatt.disconnect();

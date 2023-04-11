@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         final DeviceViewModel model = new ViewModelProvider(MainActivity.this).get(DeviceViewModel.class);
         System.out.println("MAIN BACK PRESS " + model.getSelectedDevice().getValue().getAddress());
+        model.getDeviceConnection().disconnect();
         model.getDeviceConnection().close();
         model.removeSelectedDevice();
         System.out.println("MAIN BACK PRESS2 " + model.getSelectedDevice().getValue().getAddress());
