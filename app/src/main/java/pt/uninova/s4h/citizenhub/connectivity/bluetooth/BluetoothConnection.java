@@ -180,8 +180,8 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     }
 
     @Override
-    public BluetoothConnectionState getConnectionState() {
-        return state;
+    public int getConnectionState() {
+        return state.ordinal();
     }
 
     private Triple<UUID, UUID, UUID> descriptorKey(BluetoothGattDescriptor descriptor) {

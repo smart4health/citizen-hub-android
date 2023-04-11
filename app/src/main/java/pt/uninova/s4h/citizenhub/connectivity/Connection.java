@@ -20,7 +20,7 @@ public interface Connection {
 
     void close();
 
-    BluetoothConnectionState getConnectionState();
+    int getConnectionState();
 
     void addConnectionStateChangeListener(Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> observer);
 

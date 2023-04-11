@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED) {
+                if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED.ordinal()) {
 
                     model.getDeviceConnection().disconnect();
                     model.getDeviceConnection().close();
