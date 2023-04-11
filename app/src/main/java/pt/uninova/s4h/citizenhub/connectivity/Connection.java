@@ -1,5 +1,9 @@
 package pt.uninova.s4h.citizenhub.connectivity;
 
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
+import pt.uninova.s4h.citizenhub.util.messaging.Observer;
+
 public interface Connection {
 
     public static final int CONNECTION_KIND_UNKNOWN = 0;
@@ -16,5 +20,8 @@ public interface Connection {
 
     void close();
 
+    BluetoothConnectionState getConnectionState();
+
+    void addConnectionStateChangeListener(Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> observer);
 
 }

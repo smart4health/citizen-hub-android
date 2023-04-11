@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
 import pt.uninova.s4h.citizenhub.ui.devices.DeviceViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -152,13 +154,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         final DeviceViewModel model = new ViewModelProvider(MainActivity.this).get(DeviceViewModel.class);
         System.out.println("MAIN BACK PRESS " + model.getSelectedDevice().getValue().getAddress());
         model.getDeviceConnection().disconnect();
         model.getDeviceConnection().close();
-        model.removeSelectedDevice();
-        System.out.println("MAIN BACK PRESS2 " + model.getSelectedDevice().getValue().getAddress());
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED) {
+
+                    model.getDeviceConnection().disconnect();
+                    model.getDeviceConnection().close();
+                    if (model.getSelectedDeviceAgent() != null) {
+                        System.out.println("MAIN BACK AGENT NOT NULL " + model.getSelectedDeviceAgent().getName());
+
+                        model.getSelectedDeviceAgent().disable();
+                        model.removeSelectedDevice();
+                    }
+                    System.out.println("MAIN BACK PRESS2 " + model.getSelectedDevice().getValue().getAddress());
+                }
+            }
+        }, 10000);
+
 
         NavController navController = ((NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
 

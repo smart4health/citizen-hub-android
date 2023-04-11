@@ -179,6 +179,11 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         }
     }
 
+    @Override
+    public BluetoothConnectionState getConnectionState() {
+        return state;
+    }
+
     private Triple<UUID, UUID, UUID> descriptorKey(BluetoothGattDescriptor descriptor) {
         return descriptorKey(descriptor.getCharacteristic().getService().getUuid(), descriptor.getCharacteristic().getUuid(), descriptor.getUuid());
     }
