@@ -138,6 +138,10 @@ public class DeviceViewModel extends AndroidViewModel {
         return agentOrchestratorLiveData.getValue().getAgent(device) != null;
     }
 
+    public Connection getDeviceConnection() {
+        return deviceConnection;
+    }
+
     public Agent getAttachedAgent(Device device) {
         return agentOrchestratorLiveData.getValue().getAgent(device);
     }
