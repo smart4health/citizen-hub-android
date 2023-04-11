@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         final DeviceViewModel model = new ViewModelProvider(MainActivity.this).get(DeviceViewModel.class);
-        System.out.println("MAIN BACK PRESS " + model.getSelectedDevice().getValue().getAddress());
         model.getDeviceConnection().disconnect();
         model.getDeviceConnection().close();
 
@@ -168,12 +167,10 @@ public class MainActivity extends AppCompatActivity {
                     model.getDeviceConnection().disconnect();
                     model.getDeviceConnection().close();
                     if (model.getSelectedDeviceAgent() != null) {
-                        System.out.println("MAIN BACK AGENT NOT NULL " + model.getSelectedDeviceAgent().getName());
 
                         model.getSelectedDeviceAgent().disable();
                         model.removeSelectedDevice();
                     }
-                    System.out.println("MAIN BACK PRESS2 " + model.getSelectedDevice().getValue().getAddress());
                 }
             }
         }, 10000);
