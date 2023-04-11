@@ -1,6 +1,7 @@
 package pt.uninova.s4h.citizenhub.ui.devices;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -16,8 +17,10 @@ import java.util.List;
 import pt.uninova.s4h.citizenhub.connectivity.Agent;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestratorListener;
+import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgent;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnection;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.service.CitizenHubService;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
@@ -31,6 +34,7 @@ public class DeviceViewModel extends AndroidViewModel {
     private final MutableLiveData<Device> selectedDeviceLiveData;
     private final MutableLiveData<Agent> selectedAgentLiveData;
 
+    private Connection deviceConnection;
 
     public DeviceViewModel(Application application) {
         super(application);
@@ -186,6 +190,8 @@ public class DeviceViewModel extends AndroidViewModel {
     }
 
     public void identifySelectedDevice(Observer<Agent> observer) {
-        agentOrchestratorLiveData.getValue().identify(selectedDeviceLiveData.getValue(), observer);
+
+        deviceConnection = new BluetoothConnection(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(getSelectedDevice().getValue().getAddress()));
+        agentOrchestratorLiveData.getValue().identify(deviceConnection, observer);
     }
 }
