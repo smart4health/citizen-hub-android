@@ -122,6 +122,19 @@ public class BluetoothAgentFactory implements AgentFactory<BluetoothAgent> {
 
     @Override
     public void create(Connection connection, Observer<BluetoothAgent> observer) {
+        ((BluetoothConnection) connection).addConnectionStateChangeListener(new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
+
+            @Override
+            public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
+                if (value.getNewState() == BluetoothConnectionState.READY) {
+                    final BluetoothConnection source = value.getSource();
+
+                    value.getSource().removeConnectionStateChangeListener(this);
+
+                    initAgent((identifyAgent(source)), source, observer);
+                }
+            }
+        });
         connection.connect();
     }
 
