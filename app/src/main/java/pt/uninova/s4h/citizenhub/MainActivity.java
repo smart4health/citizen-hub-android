@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,6 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import pt.uninova.s4h.citizenhub.ui.devices.DeviceViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -150,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        final DeviceViewModel model = new ViewModelProvider(MainActivity.this).get(DeviceViewModel.class);
+        System.out.println("MAIN BACK PRESS " + model.getSelectedDevice().getValue().getAddress());
+        model.getDeviceConnection().close();
+        model.removeSelectedDevice();
+        System.out.println("MAIN BACK PRESS2 " + model.getSelectedDevice().getValue().getAddress());
+
         NavController navController = ((NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
 
         if (navController.getCurrentBackStackEntry().getDestination().getId() == R.id.summary_fragment) {
