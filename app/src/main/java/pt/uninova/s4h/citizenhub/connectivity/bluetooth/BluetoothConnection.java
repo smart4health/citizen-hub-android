@@ -72,6 +72,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     private BluetoothGatt gatt;
 
     private BluetoothConnectionState state;
+    private boolean disconnectFlag = false;
 
     public BluetoothConnection(BluetoothDevice device, int readying) {
         this.device = device;
@@ -158,6 +159,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     @Override
     public void connect() {
+        disconnectFlag = false;
         device.connectGatt(null, true, this, BluetoothDevice.TRANSPORT_LE);
     }
 
@@ -214,6 +216,7 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     @Override
     public void disconnect() {
+        disconnectFlag = true;
         if (gatt != null) {
             gatt.disconnect();
         }
@@ -348,32 +351,41 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     @Override
     public void onConnectionStateChange(final BluetoothGatt gatt, int status, int newState) {
         if (BuildConfig.DEBUG)
-            System.out.println("BluetoothConnection.onConnectionStateChange " + gatt.getDevice().getAddress() + " status=" + status + " newState=" + newState);
-
-        if (status == BLE_HCI_STATUS_CODE_SUCCESS) {
+            System.out.println("BluetoothConnection.onConnectionStateChange " + gatt.getDevice().getAddress() + " status=" + status + " newState=" + newState + " disconnectFlag=" + disconnectFlag);
+        if (disconnectFlag) {
             if (newState == BluetoothGatt.STATE_CONNECTED) {
-                if (this.gatt == null) {
-                    this.gatt = gatt;
-                    setState(BluetoothConnectionState.CONNECTED);
-
-                    push(gatt::discoverServices);
-                } else {
-                    setState(BluetoothConnectionState.READYING);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            setState(BluetoothConnectionState.READY);
-                        }
-                    }, READYING_DELAY);
-                }
-            } else {
+                gatt.disconnect();
+                gatt.close();
                 setState(BluetoothConnectionState.DISCONNECTED);
             }
         } else {
-            if (newState != BluetoothGatt.STATE_CONNECTED) {
-                setState(BluetoothConnectionState.DISCONNECTED);
+            if (status == BLE_HCI_STATUS_CODE_SUCCESS) {
+
+                if (newState == BluetoothGatt.STATE_CONNECTED) {
+                    if (this.gatt == null) {
+                        this.gatt = gatt;
+                        setState(BluetoothConnectionState.CONNECTED);
+
+                        push(gatt::discoverServices);
+                    } else {
+                        setState(BluetoothConnectionState.READYING);
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                setState(BluetoothConnectionState.READY);
+                            }
+                        }, READYING_DELAY);
+                    }
+                } else {
+                    setState(BluetoothConnectionState.DISCONNECTED);
+                }
+            } else {
+                if (newState != BluetoothGatt.STATE_CONNECTED) {
+                    setState(BluetoothConnectionState.DISCONNECTED);
+                }
             }
         }
+
     }
 
     @Override
