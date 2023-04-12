@@ -1,6 +1,7 @@
 package pt.uninova.s4h.citizenhub.ui.devices;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,10 @@ public class DeviceIdentificationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device_configuration_update_test, container, false);
 
-        final Device device = model.getSelectedDevice().getValue();
         nameDevice = view.findViewById(R.id.textConfigurationDeviceNameValue);
         addressDevice = view.findViewById(R.id.textConfigurationAddressValue);
         setHeaderValues(model.getSelectedDevice().getValue());
@@ -46,9 +47,7 @@ public class DeviceIdentificationFragment extends Fragment {
                 Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceUnsupportedFragment());
             } else {
                 if (model.getSelectedDeviceAgent() != null) {
-                    DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> {
-                        Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceConfigurationStreamsFragment());
-                    });
+                    DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceConfigurationStreamsFragment()));
                 } else {
                     DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> {
                         addFragment(new DeviceConfigurationFeaturesFragment(agent));
@@ -81,4 +80,42 @@ public class DeviceIdentificationFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requireView().setFocusableInTouchMode(true);
+        requireView().requestFocus();
+        requireView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                requireActivity().onBackPressed();
+                return true;
+            }
+            return false;
+        });
+
+    }
+
+
+    public void onBackPressed() {
+
+        final DeviceViewModel model = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        model.getDeviceConnection().disconnect();
+        model.getDeviceConnection().close();
+
+//        final Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(() -> {
+//            if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED.ordinal()) {
+//
+//                model.getDeviceConnection().disconnect();
+//                model.getDeviceConnection().close();
+//                if (model.getSelectedDeviceAgent() != null) {
+//
+//                    model.getSelectedDeviceAgent().disable();
+//                    model.removeSelectedDevice();
+//                }
+//            }
+//        }, 10000);
+    }
 }
