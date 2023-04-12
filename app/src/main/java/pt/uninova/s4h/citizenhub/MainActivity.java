@@ -3,7 +3,6 @@ package pt.uninova.s4h.citizenhub;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.widget.Toast;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -33,8 +31,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothConnectionState;
-import pt.uninova.s4h.citizenhub.ui.devices.DeviceViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -154,26 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        final DeviceViewModel model = new ViewModelProvider(MainActivity.this).get(DeviceViewModel.class);
-        model.getDeviceConnection().disconnect();
-        model.getDeviceConnection().close();
-
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED.ordinal()) {
-
-                    model.getDeviceConnection().disconnect();
-                    model.getDeviceConnection().close();
-                    if (model.getSelectedDeviceAgent() != null) {
-
-                        model.getSelectedDeviceAgent().disable();
-                        model.removeSelectedDevice();
-                    }
-                }
-            }
-        }, 10000);
 
 
         NavController navController = ((NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
@@ -184,5 +160,15 @@ public class MainActivity extends AppCompatActivity {
             navController.popBackStack();
         }
     }
+
+//    private Fragment getLastNotNull(List<Fragment> list){
+//        for (int i= list.size()-1;i>=0;i--){
+//            Fragment frag = list.get(i);
+//            if (frag != null){
+//                return frag;
+//            }
+//        }
+//        return null;
+//    }
 
 }
