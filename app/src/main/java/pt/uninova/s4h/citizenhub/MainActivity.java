@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
         NavController navController = ((NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
 
         if (navController.getCurrentBackStackEntry().getDestination().getId() == R.id.summary_fragment) {
@@ -160,15 +159,5 @@ public class MainActivity extends AppCompatActivity {
             navController.popBackStack();
         }
     }
-
-//    private Fragment getLastNotNull(List<Fragment> list){
-//        for (int i= list.size()-1;i>=0;i--){
-//            Fragment frag = list.get(i);
-//            if (frag != null){
-//                return frag;
-//            }
-//        }
-//        return null;
-//    }
 
 }

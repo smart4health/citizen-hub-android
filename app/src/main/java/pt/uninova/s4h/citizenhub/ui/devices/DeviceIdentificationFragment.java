@@ -126,21 +126,9 @@ public class DeviceIdentificationFragment extends Fragment {
     public void onBackPressed() {
 
         final DeviceViewModel model = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+
         model.getDeviceConnection().disconnect();
         model.getDeviceConnection().close();
 
-//        final Handler handler = new Handler(Looper.getMainLooper());
-//        handler.postDelayed(() -> {
-//            if (model.getDeviceConnection().getConnectionState() != BluetoothConnectionState.DISCONNECTED.ordinal()) {
-//
-//                model.getDeviceConnection().disconnect();
-//                model.getDeviceConnection().close();
-//                if (model.getSelectedDeviceAgent() != null) {
-//
-//                    model.getSelectedDeviceAgent().disable();
-//                    model.removeSelectedDevice();
-//                }
-//            }
-//        }, 10000);
     }
 }
