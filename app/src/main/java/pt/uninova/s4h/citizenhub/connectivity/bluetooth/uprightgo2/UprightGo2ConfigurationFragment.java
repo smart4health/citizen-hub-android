@@ -279,14 +279,10 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     private void setSetting(Agent agent, boolean vibrate) {
         //some value adaptation
         int time = 5;
-        if (interval == 0)
-            time = 5;
-        else if (interval == 1)
-            time = 15;
-        else if (interval == 2)
-            time = 30;
-        else if (interval == 3)
-            time = 60;
+        if (interval == 0) time = 5;
+        else if (interval == 1) time = 15;
+        else if (interval == 2) time = 30;
+        else if (interval == 3) time = 60;
 
         //Send Message vibration settings
         if (agent.getState() == Agent.AGENT_STATE_ENABLED) {
@@ -338,8 +334,6 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     public void enable() {
-
-
         requireActivity().runOnUiThread(() -> {
             setView(buttonCalibration, true);
             setView(spinnerIntervalLayout, true);
