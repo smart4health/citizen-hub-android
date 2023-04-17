@@ -70,6 +70,11 @@ public class Accumulator<T> {
 
     }
 
+    public void forceSet(T value) {
+        notify(timestamp);
+        this.value = value;
+    }
+
     public void stop() {
         stop(Instant.now());
     }
