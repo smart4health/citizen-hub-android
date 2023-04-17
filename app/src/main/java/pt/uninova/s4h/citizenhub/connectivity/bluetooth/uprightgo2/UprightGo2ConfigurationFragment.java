@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.navigation.Navigation;
 
+import java.util.Objects;
+
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.connectivity.Agent;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
@@ -91,6 +93,8 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device_configuration_advanced, container, false);
+
+
         deviceAdvancedSettings = view.findViewById(R.id.layoutStubConfigurationAdvancedSettings);
         deviceAdvancedSettings.setLayoutResource(R.layout.fragment_device_configuration_uprightgo2);
         deviceAdvancedSettingsInflated = deviceAdvancedSettings.inflate();
@@ -102,11 +106,11 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         agent.getSettingsManager().get("First Time", new Observer<String>() {
             @Override
             public void observe(String value) {
-                if (value == null) {
+                if (!Objects.equals(value, "1")) {
+                    System.out.println("FIRST TIMEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                     agent.getSettingsManager().set("posture-correction-vibration", "false");
                     agent.getSettingsManager().set("vibration-angle", "0");
                     agent.getSettingsManager().set("vibration-interval", "0");
@@ -117,31 +121,35 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
                     agent.getSettingsManager().set("First Time", "1");
 
                 }
-                setupAdvancedConfigurationsUprightGo2(deviceAdvancedSettingsInflated);
+
+                setupAdvancedConfigurationsUprightGo2();
 
             }
         });
         agent.getSettingsManager().get("posture-correction-vibration", postureSwitchObserver);
 
-
     }
 
-    protected void setupAdvancedConfigurationsUprightGo2(View view) {
-        //vibration-angle (1 (strict) to 6 (relaxed))
+    protected void setupAdvancedConfigurationsUprightGo2() {
 
+        System.out.println("SETTING UPPPPP 1 " + "angle: " + angle + " interval: " + interval + "pattern: " + pattern + "strength" + strength);
+        //vibration-angle (1 (strict) to 6 (relaxed))
         agent.getSettingsManager().get("vibration-angle", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerAngle.setSelection(Integer.parseInt(value));
+                System.out.println("ANGLE " + angle);
                 angle = Integer.parseInt(value);
+                spinnerAngle.setSelection(angle);
             }
         });
 
         agent.getSettingsManager().get("vibration-interval", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerInterval.setSelection(Integer.parseInt(value));
+                System.out.println("INTERVAL " + interval);
+
                 interval = Integer.parseInt(value);
+                spinnerInterval.setSelection(interval);
             }
         });
 
@@ -151,23 +159,33 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
         agent.getSettingsManager().get("vibration-pattern", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerPattern.setSelection(Integer.parseInt(value));
                 pattern = Integer.parseInt(value);
+                System.out.println("PATTERN " + pattern);
+
+                spinnerPattern.setSelection(pattern);
             }
         });
 
         agent.getSettingsManager().get("vibration-strength", new Observer<String>() {
             @Override
             public void observe(String value) {
-                if (value == null) {
-                    correctionStrength.setSelection(0);
-                    strength = 0;
-                } else {
-                    correctionStrength.setSelection(Integer.parseInt(value));
-                    strength = Integer.parseInt(value);
-                }
+                strength = Integer.parseInt(value);
+                System.out.println("STRENGTH " + strength);
+
+                correctionStrength.setSelection(Integer.parseInt(value));
+
+//                if (value == null) {
+//                    correctionStrength.setSelection(0);
+//                    strength = 0;
+//                } else {
+//                    correctionStrength.setSelection(Integer.parseInt(value));
+//                    strength = Integer.parseInt(value);
+//                }
             }
         });
+
+        System.out.println("SETTING UPPPPP 2 " + "angle: " + angle + " interval: " + interval + "pattern: " + pattern + "strength" + strength);
+
 
     }
 
@@ -297,14 +315,9 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public void onResume() {
         super.onResume();
+        setupAdvancedConfigurationsUprightGo2();
         agent.addStateObserver(agentStateObserver);
-        requireActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 setListeners();
-
-            }
-        });
         if (agent.getState() != Agent.AGENT_STATE_ENABLED) {
             requireActivity().runOnUiThread(this::disable);
         }
@@ -322,15 +335,12 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     private void disableListeners() {
-
-        requireActivity().runOnUiThread(() -> {
             buttonCalibration.setOnClickListener(null);
             postureCorrectionVibration.setOnCheckedChangeListener(null);
             spinnerAngle.setOnItemSelectedListener(null);
             spinnerPattern.setOnItemSelectedListener(null);
             spinnerInterval.setOnItemSelectedListener(null);
             correctionStrength.setOnItemSelectedListener(null);
-        });
     }
 
     public void enable() {
