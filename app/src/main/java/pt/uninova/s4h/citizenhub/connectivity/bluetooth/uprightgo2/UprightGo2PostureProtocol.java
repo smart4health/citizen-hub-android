@@ -100,18 +100,15 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
         @Override
         public void onRead(byte[] value) {
-            System.out.println("read");
             posture.set(value[0] == 0);
         }
 
         @Override
         public void onChange(byte[] value) {
-            System.out.println("CALIBRATED?" + wasCalibrated);
             if (wasCalibrated) {
                 posture.forceSet(value[0] == 0);
                 wasCalibrated = false;
             } else {
-                System.out.println("onchange");
                 posture.set(value[0] == 0);
             }
         }
