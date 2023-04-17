@@ -132,12 +132,10 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
 
     protected void setupAdvancedConfigurationsUprightGo2() {
 
-        System.out.println("SETTING UPPPPP 1 " + "angle: " + angle + " interval: " + interval + "pattern: " + pattern + "strength" + strength);
         //vibration-angle (1 (strict) to 6 (relaxed))
         agent.getSettingsManager().get("vibration-angle", new Observer<String>() {
             @Override
             public void observe(String value) {
-                System.out.println("ANGLE " + angle);
                 angle = Integer.parseInt(value);
                 spinnerAngle.setSelection(angle);
             }
@@ -146,8 +144,6 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
         agent.getSettingsManager().get("vibration-interval", new Observer<String>() {
             @Override
             public void observe(String value) {
-                System.out.println("INTERVAL " + interval);
-
                 interval = Integer.parseInt(value);
                 spinnerInterval.setSelection(interval);
             }
@@ -160,8 +156,6 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
             @Override
             public void observe(String value) {
                 pattern = Integer.parseInt(value);
-                System.out.println("PATTERN " + pattern);
-
                 spinnerPattern.setSelection(pattern);
             }
         });
@@ -173,19 +167,8 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
                 System.out.println("STRENGTH " + strength);
 
                 correctionStrength.setSelection(Integer.parseInt(value));
-
-//                if (value == null) {
-//                    correctionStrength.setSelection(0);
-//                    strength = 0;
-//                } else {
-//                    correctionStrength.setSelection(Integer.parseInt(value));
-//                    strength = Integer.parseInt(value);
-//                }
             }
         });
-
-        System.out.println("SETTING UPPPPP 2 " + "angle: " + angle + " interval: " + interval + "pattern: " + pattern + "strength" + strength);
-
 
     }
 
@@ -317,7 +300,7 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
         super.onResume();
         setupAdvancedConfigurationsUprightGo2();
         agent.addStateObserver(agentStateObserver);
-                setListeners();
+        setListeners();
         if (agent.getState() != Agent.AGENT_STATE_ENABLED) {
             requireActivity().runOnUiThread(this::disable);
         }
@@ -335,12 +318,12 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     private void disableListeners() {
-            buttonCalibration.setOnClickListener(null);
-            postureCorrectionVibration.setOnCheckedChangeListener(null);
-            spinnerAngle.setOnItemSelectedListener(null);
-            spinnerPattern.setOnItemSelectedListener(null);
-            spinnerInterval.setOnItemSelectedListener(null);
-            correctionStrength.setOnItemSelectedListener(null);
+        buttonCalibration.setOnClickListener(null);
+        postureCorrectionVibration.setOnCheckedChangeListener(null);
+        spinnerAngle.setOnItemSelectedListener(null);
+        spinnerPattern.setOnItemSelectedListener(null);
+        spinnerInterval.setOnItemSelectedListener(null);
+        correctionStrength.setOnItemSelectedListener(null);
     }
 
     public void enable() {
