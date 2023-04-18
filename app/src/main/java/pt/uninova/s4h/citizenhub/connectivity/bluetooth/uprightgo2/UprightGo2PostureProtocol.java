@@ -30,7 +30,6 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     final private static UUID POSTURE_CORRECTION = UUID.fromString("0000bac3-0000-1000-8000-00805f9b34fb"); //bac3
     final private static UUID CHARACTERISTIC = UUID.fromString("0000bac4-0000-1000-8000-00805f9b34fb"); //bac4
 
-    private static final int selfUpdatingInterval = 5000;
     private final Accumulator<Boolean> posture;
 
     private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
