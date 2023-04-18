@@ -32,12 +32,14 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
 
     private static final int selfUpdatingInterval = 5000;
     private final Accumulator<Boolean> posture;
-    public boolean wasCalibrated = false;
+
     private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
         @Override
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
+
+                getConnection().readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
@@ -94,9 +96,10 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     private final BaseCharacteristicListener calibrationWriteListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, TRIGGER_CALIBRATION) {
         @Override
         public void onWrite(byte[] value) {
-            wasCalibrated = true;
+            posture.stop();
         }
     };
+
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
         @Override
         public void onRead(byte[] value) {
@@ -105,12 +108,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
 
         @Override
         public void onChange(byte[] value) {
-            if (wasCalibrated) {
-                posture.forceSet(value[0] == 0);
-                wasCalibrated = false;
-            } else {
-                posture.set(value[0] == 0);
-            }
+            posture.set(value[0] == 0);
         }
     };
 
@@ -150,7 +148,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         connection.addCharacteristicListener(calibrationWriteListener);
         connection.addCharacteristicListener(postureChangedListener);
         getConnection().addConnectionStateChangeListener(connectionStateObserver);
-        connection.readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
+        getConnection().readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
         super.enable();
