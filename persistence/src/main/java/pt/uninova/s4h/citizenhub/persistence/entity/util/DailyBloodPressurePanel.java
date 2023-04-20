@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds a specific day to a Blood Pressure Panel. */
 public class DailyBloodPressurePanel extends AbstractBloodPressurePanel implements Daily {
 
     private Integer day;

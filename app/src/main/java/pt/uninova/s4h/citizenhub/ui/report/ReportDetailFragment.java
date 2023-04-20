@@ -24,6 +24,7 @@ import pt.uninova.s4h.citizenhub.report.Report;
 import pt.uninova.s4h.citizenhub.ui.accounts.AccountsViewModel;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Class responsible for generating and displaying the daily report / activities. */
 public class ReportDetailFragment extends Fragment {
 
     private ReportViewModel model;
@@ -227,6 +228,11 @@ public class ReportDetailFragment extends Fragment {
         model.getWorkTimeReport(requireActivity().getApplication(), false, observerWorkTimeReport);
     }
 
+    /** Displays the title of a specific activity.
+     * @param tableLayout The table in the layout.
+     * @param title Title to be added to the table.
+     * @return
+     * */
     private void displayTitle(TableLayout tableLayout, String title) {
         View vTitle = LayoutInflater.from(getContext()).inflate(R.layout.fragment_report_title, null);
         TextView tvTitle = vTitle.findViewById(R.id.tvTitle);
@@ -234,6 +240,14 @@ public class ReportDetailFragment extends Fragment {
         tableLayout.addView(vTitle);
     }
 
+    /** Adds a row into the table.
+     * @param tableLayout The table in the layout.
+     * @param label Label of the information to be added to the row.
+     * @param valueWorkTime Value read during working hours.
+     * @param valueMyTime Value read outside working hours.
+     * @param units Units.
+     * @return
+     * */
     private void addNewRow(TableLayout tableLayout, String label, String valueMyTime, String valueWorkTime, String units) {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_report_rows, null);
         TextView tvLabel = v.findViewById(R.id.tvLabel);
@@ -259,6 +273,12 @@ public class ReportDetailFragment extends Fragment {
         tableLayout.addView(v);
     }
 
+    /** Adds a row into the table.
+     * @param tableLayout The table in the layout.
+     * @param timestamp Timestamp value.
+     * @param addPadding When true, creates a space between the timestamp text view and the information above it.
+     * @return
+     * */
     private void displayTimestamp(TableLayout tableLayout, String timestamp, boolean addPadding) {
         View vTimestamp = LayoutInflater.from(getContext()).inflate(R.layout.fragment_report_timestamp, null);
         TextView tvTimestamp = vTimestamp.findViewById(R.id.tvTimestamp);

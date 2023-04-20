@@ -22,6 +22,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyHeartRatePanel;
 import pt.uninova.s4h.citizenhub.persistence.repository.HeartRateMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** This class aims to manage the detailed posture layout */
 public class SummaryDetailHeartRateFragment extends Fragment {
 
     private SummaryViewModel model;
@@ -86,18 +87,27 @@ public class SummaryDetailHeartRateFragment extends Fragment {
         dailyHeartRate();
     }
 
+    /** Calls a query to retrieve daily heart rate and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailyHeartRate(){
         Observer<List<HourlyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate),new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 24);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
         heartRateMeasurementRepository.selectLastDay(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly heart rate and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklyHeartRate(){
         Observer<List<DailyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate, 7), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 7);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());
         heartRateMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly heart rate and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlyHeartRate(){
         Observer<List<DailyHeartRatePanel>> observer = heartRate -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseHeartRateUtil(heartRate, 30), new String[]{getString(R.string.summary_detail_heart_rate_average), getString(R.string.summary_detail_heart_rate_maximum), getString(R.string.summary_detail_heart_rate_minimum)}, 30);
         HeartRateMeasurementRepository heartRateMeasurementRepository = new HeartRateMeasurementRepository(getContext());

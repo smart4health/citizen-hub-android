@@ -6,7 +6,8 @@ import java.time.Duration;
 import java.time.Instant;
 
 import pt.uninova.s4h.citizenhub.persistence.conversion.DurationTypeConverter;
-
+/** Class that has all simple attributes to add into the different reports.
+ * The attributes are: Breathing Rate, Calories, Distance, Heart Rate and Posture.  */
 public class ReportUtil {
 
     //Breathing

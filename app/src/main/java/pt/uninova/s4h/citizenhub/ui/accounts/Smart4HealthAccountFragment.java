@@ -126,6 +126,7 @@ public class Smart4HealthAccountFragment extends Fragment {
         return view;
     }
 
+    /** Changes the switches positions after rendering the layout and sets a listener when their state is changed. */
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         switch_daily_report_upload = view.findViewById(R.id.switch_daily_report_upload);
@@ -211,6 +212,7 @@ public class Smart4HealthAccountFragment extends Fragment {
         verifyAllSwitchStatus();
     }
 
+    /** Verifies if all the switches are turned off. */
     private void verifyAllSwitchStatus() {
         WorkOrchestrator workOrchestrator = new WorkOrchestrator(WorkManager.getInstance(requireContext()));
         if(!switch_activity.isChecked() && !switch_blood_pressure.isChecked() && !switch_heart_rate.isChecked() && !switch_lumbar_extension_training.isChecked() && !switch_posture.isChecked()){

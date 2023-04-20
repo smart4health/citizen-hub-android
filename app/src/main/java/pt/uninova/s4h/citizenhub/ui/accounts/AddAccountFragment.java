@@ -57,6 +57,8 @@ public class AddAccountFragment extends Fragment {
             authenticate();
         }
     }
+
+    /**  */
     private void authenticate() {
         final Data4LifeClient client = Data4LifeClient.getInstance();
 

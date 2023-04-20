@@ -2,6 +2,7 @@ package pt.uninova.s4h.citizenhub.report;
 
 import java.text.DecimalFormat;
 
+/** The Item class saves information about a given attribute from the database. */
 public class Item {
 
     private final LocalizedResource label;

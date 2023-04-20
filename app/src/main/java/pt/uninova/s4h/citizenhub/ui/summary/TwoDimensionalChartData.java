@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.ui.summary;
 
+/** A generic class used to parse the information coming from the different queries for the graphics. */
 public class TwoDimensionalChartData {
 
     private final double[][] data;

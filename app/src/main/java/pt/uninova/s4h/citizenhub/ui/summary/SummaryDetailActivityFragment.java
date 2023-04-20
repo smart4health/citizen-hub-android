@@ -28,6 +28,7 @@ import pt.uninova.s4h.citizenhub.persistence.repository.DistanceMeasurementRepos
 import pt.uninova.s4h.citizenhub.persistence.repository.StepsMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** This class aims to manage the detailed activity layout */
 public class SummaryDetailActivityFragment extends Fragment {
 
     private SummaryViewModel model;
@@ -156,56 +157,81 @@ public class SummaryDetailActivityFragment extends Fragment {
         dailySteps();
     }
 
+    /** Calls a query to retrieve daily steps activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailySteps() {
         Observer<List<HourlyStepsPanel>> observer = steps -> chartFunctions.setBarChartData(barChart, chartFunctions.parseStepsUtil(steps), getString(R.string.summary_detail_activity_steps), 24);
         StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
         stepsMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly steps activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklySteps() {
         Observer<List<DailyStepsPanel>> observer = steps -> chartFunctions.setBarChartData(barChart, chartFunctions.parseStepsUtil(steps, 7), getString(R.string.summary_detail_activity_steps), 7);
         StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
         stepsMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly steps activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlySteps() {
         Observer<List<DailyStepsPanel>> observer = steps -> chartFunctions.setBarChartData(barChart, chartFunctions.parseStepsUtil(steps, 30), getString(R.string.summary_detail_activity_steps), 30);
         StepsMeasurementRepository stepsMeasurementRepository =  new StepsMeasurementRepository((getContext()));
         stepsMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
-        //StepsSnapshotMeasurementRepository stepsSnapshotMeasurementRepository = new StepsSnapshotMeasurementRepository(getContext());
-        //stepsSnapshotMeasurementRepository.readLastThirtyDays(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve daily distance activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailyDistance() {
         Observer<List<HourlyDistancePanel>> observer = distance -> chartFunctions.setBarChartData(barChart, chartFunctions.parseDistanceUtil(distance), getString(R.string.summary_detail_activity_distance), 24);
         DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
         distanceMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly distance activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklyDistance() {
         Observer<List<DailyDistancePanel>> observer = distance -> chartFunctions.setBarChartData(barChart, chartFunctions.parseDistanceUtil(distance, 7), getString(R.string.summary_detail_activity_distance), 7);
         DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
         distanceMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly distance activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlyDistance(){
         Observer<List<DailyDistancePanel>> observer = distance -> chartFunctions.setBarChartData(barChart, chartFunctions.parseDistanceUtil(distance, 30), getString(R.string.summary_detail_activity_distance), 30);
         DistanceMeasurementRepository distanceMeasurementRepository = new DistanceMeasurementRepository(getContext());
         distanceMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
     }
 
+    /** Calls a query to retrieve daily calories activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailyCalories(){
         Observer<List<HourlyCaloriesPanel>> observer = calories -> chartFunctions.setBarChartData(barChart, chartFunctions.parseCaloriesUtil(calories), getString(R.string.summary_detail_activity_calories), 24);
         CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());
         caloriesMeasurementRepository.readLastDay(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly calories activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklyCalories(){
         Observer<List<DailyCaloriesPanel>> observer = calories -> chartFunctions.setBarChartData(barChart, chartFunctions.parseCaloriesUtil(calories, 7), getString(R.string.summary_detail_activity_calories), 7);
         CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());
         caloriesMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly calories activity and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlyCalories(){
         Observer<List<DailyCaloriesPanel>> observer = calories -> chartFunctions.setBarChartData(barChart, chartFunctions.parseCaloriesUtil(calories, 30), getString(R.string.summary_detail_activity_calories), 30);
         CaloriesMeasurementRepository caloriesMeasurementRepository = new CaloriesMeasurementRepository(getContext());

@@ -3,6 +3,7 @@ package pt.uninova.s4h.citizenhub.report;
 import java.util.LinkedList;
 import java.util.List;
 
+/** Class responsible to save the information to put in the different reports. */
 public class Report {
 
     private final LocalizedResource title;

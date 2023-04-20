@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds the hour of the day to a Blood Pressure Panel. */
 public class HourlyBloodPressurePanel extends AbstractBloodPressurePanel implements Hourly{
 
     private Integer hourOfDay;

@@ -20,6 +20,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.LumbarExtensionWithTime
 import pt.uninova.s4h.citizenhub.persistence.repository.LumbarExtensionTrainingRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** This class aims to manage the detailed lumbar extension training layout */
 public class SummaryDetailLumbarExtensionFragment extends Fragment {
 
     private SummaryViewModel model;
@@ -43,6 +44,9 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         fillFragment();
     }
 
+    /** Calls a query to retrieve daily lumbar extension trainings and draws the information on the fragment layout.
+     * @return
+     */
     private void fillFragment(){
         Observer<List<LumbarExtensionWithTimestampPanel>> observer = data -> {
             for(LumbarExtensionWithTimestampPanel lumbarExtensionWithTimestampPanel : data){
@@ -64,6 +68,9 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         lumbarExtensionTrainingRepository.selectTrainingSection(LocalDate.now(), observer);
     }
 
+    /** Draws a row on the TabLayout of the fragment.
+     * @return
+     */
     private void fillRow(String label, String value, String units){
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_report_rows, null);
         TextView tvLabel = v.findViewById(R.id.tvLabel);
@@ -83,6 +90,10 @@ public class SummaryDetailLumbarExtensionFragment extends Fragment {
         tableLayout.addView(v);
     }
 
+    /** Converts a long value representing a time in seconds to a string containing hours, minutes and seconds.
+     * @param value Value to convert to string.
+     * @return A string with the converted value.
+     */
     private String secondsToString(long value) {
         long seconds = value;
         long minutes = seconds / 60;

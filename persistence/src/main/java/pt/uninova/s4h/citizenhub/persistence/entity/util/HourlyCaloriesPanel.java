@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds the hour of the day to a Calories Panel. */
 public class HourlyCaloriesPanel extends AbstractCaloriesPanel implements Hourly {
 
     private Integer hourOfDay;

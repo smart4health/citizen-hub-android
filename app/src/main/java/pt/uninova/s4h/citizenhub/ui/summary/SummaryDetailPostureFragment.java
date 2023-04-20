@@ -23,6 +23,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.HourlyPosturePanel;
 import pt.uninova.s4h.citizenhub.persistence.repository.PostureMeasurementRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** This class aims to manage the detailed posture layout */
 public class SummaryDetailPostureFragment extends Fragment {
 
     private SummaryViewModel model;
@@ -95,7 +96,9 @@ public class SummaryDetailPostureFragment extends Fragment {
 
         dailyPosture();
     }
-
+    /** Calls a query to retrieve daily posture info and adds the information retrieved to the chart.
+     * @return
+     */
     private void dailyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
         Observer<List<HourlyPosturePanel>> observer = posture -> {
@@ -105,6 +108,9 @@ public class SummaryDetailPostureFragment extends Fragment {
         postureMeasurementRepository.readLastDayPosture(LocalDate.now(), observer);
     }
 
+    /** Calls a query to retrieve weekly posture info and adds the information retrieved to the chart.
+     * @return
+     */
     private void weeklyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
         Observer<List<DailyPosturePanel>> observer = posture -> {
@@ -113,6 +119,9 @@ public class SummaryDetailPostureFragment extends Fragment {
         postureMeasurementRepository.readSeveralDaysPosture(LocalDate.now(), 7, observer);
     }
 
+    /** Calls a query to retrieve monthly posture info and adds the information retrieved to the chart.
+     * @return
+     */
     private void monthlyPosture() {
         PostureMeasurementRepository postureMeasurementRepository = new PostureMeasurementRepository(getContext());
         Observer<List<DailyPosturePanel>> observer = posture -> {
