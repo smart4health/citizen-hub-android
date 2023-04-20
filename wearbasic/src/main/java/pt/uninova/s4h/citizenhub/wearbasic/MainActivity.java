@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import androidx.lifecycle.MutableLiveData;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -158,13 +158,13 @@ public class MainActivity extends FragmentActivity {
         WorkManager workManager = WorkManager.getInstance(getApplicationContext());
         PeriodicWorkRequest stepsRequest = new PeriodicWorkRequest.Builder(StepsWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(stepsRequest);
+        workManager.enqueueUniquePeriodicWork("StepsWorker", ExistingPeriodicWorkPolicy.KEEP, stepsRequest);
         PeriodicWorkRequest heartRateRequest = new PeriodicWorkRequest.Builder(HeartRateWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(heartRateRequest);
+        workManager.enqueueUniquePeriodicWork("HeartRateWorker", ExistingPeriodicWorkPolicy.KEEP, heartRateRequest);
         PeriodicWorkRequest syncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, Duration.ofMinutes(15))
                 .build();
-        workManager.enqueue(syncRequest);
+        workManager.enqueueUniquePeriodicWork("SyncWorker", ExistingPeriodicWorkPolicy.KEEP, syncRequest);
     }
 
     private void startOneTimeWorkers(){
@@ -209,7 +209,7 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = true;
             heartRateIcon.setImageResource(R.drawable.ic_heart);
             heartRateText.setText(String.valueOf(s));
-            System.out.println("Got HR Instant: " + s);
+            System.out.println("HR Measurement: " + s);
         });
         HeartRateWorker.heartRateToSave.observeForever(s -> {
             startService(0);
@@ -218,7 +218,7 @@ public class MainActivity extends FragmentActivity {
             saveHeartRateMeasurementLocally(s);
             heartRateText.setText(String.valueOf(s));
             heartRateIcon.setImageResource(R.drawable.ic_heart_disconnected);
-            System.out.println("Got HR Avg: " + s);
+            System.out.println("Avg HR Saved: " + s);
             startOneTimeWorkerSync();
         });
         StepsWorker.stepsInstant.observeForever(s -> {
@@ -227,7 +227,7 @@ public class MainActivity extends FragmentActivity {
             sensorsMeasuringMessage.setText(getString(R.string.main_activity_sensors_measuring));
             sensorsAreMeasuring = true;
             stepsText.setText(String.valueOf(s));
-            System.out.println("Got Steps Instant: " + s);
+            System.out.println("Steps Measurement: " + s);
         });
         StepsWorker.stepsToSave.observeForever(s -> {
             startService(0);
@@ -235,21 +235,11 @@ public class MainActivity extends FragmentActivity {
             sensorsAreMeasuring = false;
             saveStepsMeasurementLocally(s);
             stepsText.setText(String.valueOf(s));
-            System.out.println("Got Steps to save: " + s);
+            System.out.println("Steps Saved: " + s);
             startOneTimeWorkerSync();
         });
-        MessageService.connection.observeForever(s -> {
-            System.out.println("Wear connection is " + s);
-        });
-        MessageService.heartRate.observeForever(s -> {
-            System.out.println("Heart rate protocol is " + s);
-        });
-        MessageService.steps.observeForever(s -> {
-            System.out.println("Steps protocol is " + s);
-        });
-        MessageService.agent.observeForever(s -> {
-            System.out.println("Wear agent is " + s);
-        });
+        MessageService.heartRate.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
+        MessageService.steps.observeForever(s -> tagRepository.updateLabel(Long.valueOf(s), Tag.LABEL_MEASUREMENT_SYNCHRONIZED));
     }
 
     public void startService(int sensors) {

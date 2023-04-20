@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.miband2;
 
-import org.hl7.fhir.r4.model.Base;
-
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

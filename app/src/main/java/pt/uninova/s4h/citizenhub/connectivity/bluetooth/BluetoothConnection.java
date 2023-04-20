@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +57,12 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     public static final byte BLE_HCI_CONN_TERMINATED_DUE_TO_MIC_FAILURE = 0x3D;
     public static final byte BLE_HCI_CONN_FAILED_TO_BE_ESTABLISHED = 0x3E;
 
+
+    /**
+     * The private variable readying delay in milliseconds.
+     * Used to prevent the runnables to start executing before everything in the connection is ready
+     */
+    private int READYING_DELAY = 1000;
     private final Queue<Runnable> runnables;
     private final Map<Pair<UUID, UUID>, Set<CharacteristicListener>> characteristicListenerMap;
     private final Map<Triple<UUID, UUID, UUID>, Set<DescriptorListener>> descriptorListenerMap;
@@ -65,6 +73,18 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     private BluetoothConnectionState state;
 
+    public BluetoothConnection(BluetoothDevice device, int readying) {
+        this.device = device;
+        this.READYING_DELAY = readying;
+
+        runnables = new ConcurrentLinkedQueue<>();
+        characteristicListenerMap = new ConcurrentHashMap<>();
+        descriptorListenerMap = new ConcurrentHashMap<>();
+        stateChangedMessageDispatcher = new Dispatcher<>();
+
+        state = BluetoothConnectionState.DISCONNECTED;
+    }
+
     public BluetoothConnection(BluetoothDevice device) {
         this.device = device;
 
@@ -74,6 +94,10 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
         stateChangedMessageDispatcher = new Dispatcher<>();
 
         state = BluetoothConnectionState.DISCONNECTED;
+    }
+
+    public int getRunnableSize() {
+        return runnables.size();
     }
 
     public void addCharacteristicListener(CharacteristicListener listener) {
@@ -243,7 +267,6 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
     private synchronized void next() {
         if (BuildConfig.DEBUG)
             System.out.println("BluetoothConnection.next " + runnables.size());
-
         runnables.poll();
 
         if (!runnables.isEmpty()) {
@@ -327,7 +350,13 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
                     push(gatt::discoverServices);
                 } else {
-                    setState(BluetoothConnectionState.READY);
+                    setState(BluetoothConnectionState.READYING);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            setState(BluetoothConnectionState.READY);
+                        }
+                    }, READYING_DELAY);
                 }
             } else {
                 setState(BluetoothConnectionState.DISCONNECTED);
@@ -396,7 +425,6 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
                 }
             }
         }
-
         next();
     }
 
@@ -489,6 +517,9 @@ public class BluetoothConnection extends BluetoothGattCallback implements Connec
 
     private void setState(BluetoothConnectionState value) {
         if (value != state) {
+            if (value == BluetoothConnectionState.DISCONNECTED) {
+                runnables.clear();
+            }
             final BluetoothConnectionState oldValue = state;
 
             this.state = value;

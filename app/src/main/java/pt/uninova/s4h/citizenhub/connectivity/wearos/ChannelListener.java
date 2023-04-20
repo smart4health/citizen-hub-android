@@ -7,5 +7,7 @@ public interface ChannelListener {
 
     void onChange(double value, Date timestamp);
 
+    void onChange(double value, Date timestamp, long wear_sample_id);
+
     void onWrite(byte[] value);
 }

@@ -95,8 +95,11 @@ public class DeviceListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         for (int j = 0; j < adapter.getItemCount(); j++) {
+            final Agent agent = model.getAttachedAgent(adapter.getItem(j).getDevice());
 
-            model.getAttachedAgent(adapter.getItem(j).getDevice()).removeStateObserver(agentStateObserver);
+            if (agent != null) {
+                agent.removeStateObserver(agentStateObserver);
+            }
         }
     }
 

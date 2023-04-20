@@ -102,7 +102,7 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
     private void weeklyBloodPressure() {
         Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 7), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 7);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
-        bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 7, observer);
+        bloodPressureMeasurementRepository.readSeveralDays(LocalDate.now(), 7, observer);
     }
 
     /** Calls a query to retrieve monthly blood pressure and adds the information retrieved to the chart.
@@ -111,7 +111,7 @@ public class SummaryDetailBloodPressureFragment extends Fragment {
     private void monthlyBloodPressure() {
         Observer<List<DailyBloodPressurePanel>> observer = bloodPressure -> chartFunctions.setLineChartData(lineChart, chartFunctions.parseBloodPressureUtil(bloodPressure, 30), new String[]{getString(R.string.summary_detail_blood_pressure_systolic), getString(R.string.summary_detail_blood_pressure_diastolic), getString(R.string.summary_detail_blood_pressure_mean)}, 30);
         BloodPressureMeasurementRepository bloodPressureMeasurementRepository = new BloodPressureMeasurementRepository(getContext());
-        bloodPressureMeasurementRepository.selectSeveralDays(LocalDate.now(), 30, observer);
+        bloodPressureMeasurementRepository.readSeveralDays(LocalDate.now(), 30, observer);
     }
 
 }

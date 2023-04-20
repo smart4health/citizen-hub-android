@@ -11,7 +11,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +39,6 @@ import care.data4life.sdk.listener.ResultListener;
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.localization.MeasurementKindLocalization;
 import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
-import pt.uninova.s4h.citizenhub.persistence.repository.Smart4HealthMonthlyReportRepository;
 import pt.uninova.s4h.citizenhub.persistence.repository.Smart4HealthWeeklyReportRepository;
 import pt.uninova.s4h.citizenhub.report.PDFWeeklyAndMonthlyReport;
 import pt.uninova.s4h.citizenhub.report.Report;
