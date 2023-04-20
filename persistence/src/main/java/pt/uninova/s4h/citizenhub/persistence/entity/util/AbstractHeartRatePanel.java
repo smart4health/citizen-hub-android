@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Contains the basic attributes of heart rate. */
 public abstract class AbstractHeartRatePanel implements HeartRatePanel {
 
     private Double average;

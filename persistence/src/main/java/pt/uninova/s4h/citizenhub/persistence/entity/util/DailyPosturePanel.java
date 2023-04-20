@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds a specific day to a Posture Panel. */
 public class DailyPosturePanel extends AbstractPosturePanel implements Daily {
 
     private Integer day;

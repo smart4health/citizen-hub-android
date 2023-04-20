@@ -7,6 +7,7 @@ import java.time.Instant;
 
 import pt.uninova.s4h.citizenhub.persistence.conversion.DurationTypeConverter;
 
+/** Sample with all Lumbar Extension Training attributes. */
 public class LumbarExtensionTrainingSample {
 
     @TypeConverters(DurationTypeConverter.class)

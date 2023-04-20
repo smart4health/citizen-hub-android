@@ -1,5 +1,7 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 
+import static pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2.UprightGo2CalibrationProtocol.TRIGGER_CALIBRATION;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -44,14 +46,16 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         }
     };
 
-    private static final int selfUpdatingInterval = 5000;
     private final Accumulator<Boolean> posture;
+
     private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
         @Override
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
                 getConnection().addCharacteristicListener(isChargingListener);
+
+                getConnection().readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
@@ -125,7 +129,19 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         own counters, BAA6 is an internal counter)
      */
 
+    private final BaseCharacteristicListener calibrationWriteListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, TRIGGER_CALIBRATION) {
+        @Override
+        public void onWrite(byte[] value) {
+            posture.stop();
+        }
+    };
+
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
+        @Override
+        public void onRead(byte[] value) {
+            posture.set(value[0] == 0);
+        }
+
         @Override
         public void onChange(byte[] value) {
             System.out.println("ISCHARGINGGGGGGGG" + isCharging);
@@ -149,9 +165,13 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_DISABLING);
 
         final BluetoothConnection connection = getConnection();
+
         connection.removeCharacteristicListener(isChargingListener);
-        getConnection().removeConnectionStateChangeListener(connectionStateObserver);
-        getConnection().removeCharacteristicListener(postureChangedListener);
+        connection.removeCharacteristicListener(calibrationWriteListener);
+        connection.removeCharacteristicListener(postureChangedListener);
+
+        connection.removeConnectionStateChangeListener(connectionStateObserver);
+        connection.removeCharacteristicListener(postureChangedListener);
 
         connection.disableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
         connection.disableNotifications(BATTERY_SERVICE, BATTERY);
@@ -166,13 +186,17 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_ENABLING);
 
         final BluetoothConnection connection = getConnection();
-        getConnection().addConnectionStateChangeListener(connectionStateObserver);
-        getConnection().addCharacteristicListener(isChargingListener);
 
-        getConnection().addCharacteristicListener(postureChangedListener);
+        connection.addConnectionStateChangeListener(connectionStateObserver);
+        connection.addCharacteristicListener(isChargingListener);
+        connection.addCharacteristicListener(postureChangedListener);
+        connection.addCharacteristicListener(calibrationWriteListener);
+
+        connection.readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
         connection.enableNotifications(BATTERY_SERVICE, BATTERY);
+
         super.enable();
     }
 
@@ -181,5 +205,4 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         posture.clear();
         super.close();
     }
-
 }

@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -28,6 +27,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import care.data4life.sdk.Data4LifeClient;
 import care.data4life.sdk.lang.D4LException;
@@ -41,6 +41,7 @@ import pt.uninova.s4h.citizenhub.connectivity.AgentListener;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestrator;
 import pt.uninova.s4h.citizenhub.connectivity.AgentOrchestratorListener;
 import pt.uninova.s4h.citizenhub.connectivity.Connection;
+import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgent;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgentFactory;
 import pt.uninova.s4h.citizenhub.connectivity.wearos.WearOsAgentFactory;
 import pt.uninova.s4h.citizenhub.data.Device;
@@ -149,16 +150,16 @@ public class CitizenHubService extends LifecycleService {
     }
 
     private int getConnectedDevices() {
-        if (orchestrator != null) {
-            int i = 0;
-            for (Device device : orchestrator.getDevices()
-            ) {
+        int i = 0;
+        for (Device device : orchestrator.getDevices()
+        ) {
+            if (orchestrator.getAgent(device) != null) {
                 if (orchestrator.getAgent(device).getState() == Agent.AGENT_STATE_ENABLED) {
                     i++;
                 }
             }
-            return i;
-        } else return 0;
+        }
+        return i;
     }
 
     private void initAgentOrchestrator() {
@@ -207,7 +208,6 @@ public class CitizenHubService extends LifecycleService {
         orchestrator.addListener(new AgentOrchestratorListener() {
             @Override
             public void onAgentStateChanged(Agent agent) {
-                int i = 0;
                 updateNotification(getConnectedDevices());
             }
 
@@ -271,6 +271,7 @@ public class CitizenHubService extends LifecycleService {
                 }
             }
         });
+        updateNotification(getConnectedDevices());
     }
 
     @Override
@@ -350,9 +351,7 @@ public class CitizenHubService extends LifecycleService {
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             public void run() {
-                                orchestrator.
-
-                                        enableAll(CONNECTION_KIND_BLUETOOTH);
+                                enableAll(CONNECTION_KIND_BLUETOOTH);
                             }
                         }, 5000);   //5 seconds
                         break;
@@ -367,5 +366,17 @@ public class CitizenHubService extends LifecycleService {
         }
     };
 
+    private void enableAll(int connectionKind) {
+        Set<Device> bluetoothDevices = orchestrator.getDevices(connectionKind);
+
+        for (Device device : bluetoothDevices) {
+            final BluetoothAgent agent = ((BluetoothAgent) orchestrator.getAgent(device));
+
+            if (agent != null) {
+                agent.getConnection().reconnect();
+            }
+
+        }
+    }
 
 }

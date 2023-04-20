@@ -14,11 +14,15 @@ public class Accumulator<T> {
 
     private final Dispatcher<Pair<T, Duration>> dispatcher;
 
+    private boolean notify;
+
     public Accumulator() {
         this.dispatcher = new Dispatcher<>();
 
         this.timestamp = null;
         this.value = null;
+
+        this.notify = false;
     }
 
     public void addObserver(Observer<Pair<T, Duration>> observer) {
@@ -59,15 +63,13 @@ public class Accumulator<T> {
 
     public void set(T value, Instant timestamp) {
         if (this.timestamp == null) {
-            this.timestamp = timestamp;
-            this.value = value;
-        } else if (!this.value.equals(value)) {
+            notify = true;
+        } else if (notify || !this.value.equals(value)) {
             notify(timestamp);
-
-            this.timestamp = timestamp;
-            this.value = value;
         }
 
+        this.timestamp = timestamp;
+        this.value = value;
     }
 
     public void stop() {

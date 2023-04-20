@@ -53,11 +53,21 @@ public class ReportViewModel extends AndroidViewModel {
         setMonthView(year, month);
     }
 
+    /** Generates the work time report of a day.
+     * @param application Application.
+     * @param pdf Boolean that verifies if the information will be drawn into a pdf.
+     * @param observerWorkTimeReport An observer for the report itself.
+     * */
     public void getWorkTimeReport(Application application, boolean pdf, Observer<Report> observerWorkTimeReport){
         ReportGenerator reportGenerator = new ReportGenerator(getApplication().getBaseContext());
         reportGenerator.generateWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerWorkTimeReport);
     }
 
+    /** Generates the not work time report of a day.
+     * @param application Application.
+     * @param pdf Boolean that verifies if the information will be drawn into a pdf.
+     * @param observerNotWorkTimeReport An observer for the report itself.
+     * */
     public void getNotWorkTimeReport(Application application, boolean pdf, Observer<Report> observerNotWorkTimeReport){
         ReportGenerator reportGenerator = new ReportGenerator(getApplication().getBaseContext());
         reportGenerator.generateNotWorkTimeReport(new ReportRepository(application.getApplicationContext()), currentDate, pdf, observerNotWorkTimeReport);

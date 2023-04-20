@@ -8,8 +8,8 @@ android {
         applicationId "pt.uninova.s4h.citizenhub"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 120230324
-        versionName "1.0.0"
+        versionCode 120230403
+        versionName "1.0.1a"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -20,7 +20,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -95,7 +95,7 @@ dependencies {
         }
     }
 
-    def androidx_activity_version = "1.6.1"
+    def androidx_activity_version = "1.7.0"
     def androidx_appcompat_version = "1.6.1"
     def androidx_cardview_version = "1.0.0"
     def androidx_concurrent_version = "1.1.0"
@@ -103,14 +103,14 @@ dependencies {
     def androidx_coordinatorlayout_version = "1.2.0"
     def androidx_core_version = "1.9.0"
     def androidx_customview_version = "1.1.0"
-    def androidx_drawerlayout_version = "1.1.1"
-    def androidx_fragment_version = "1.5.5"
-    def androidx_lifecycle_version = "2.6.0"
+    def androidx_drawerlayout_version = "1.2.0"
+    def androidx_fragment_version = "1.5.6"
+    def androidx_lifecycle_version = "2.6.1"
     def androidx_preference_version = "1.2.0"
     def androidx_recyclerview_version = "1.3.0"
     def androidx_transition_version = "1.4.1"
     def androidx_viewpager_version = "1.0.0"
-    def androidx_work_version = "2.8.0"
+    def androidx_work_version = "2.8.1"
     def com_android_tools_version = "2.0.2"
     def ca_uhn_hapi_fhir_hapifhir_version = "6.4.2"
     def ca_uhn_hapi_fhir_org_hl7_fhir_r4_version = "5.6.971"

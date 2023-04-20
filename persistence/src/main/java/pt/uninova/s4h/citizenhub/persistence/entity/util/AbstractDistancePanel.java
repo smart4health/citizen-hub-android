@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Contains the basic attributes of distance. */
 public class AbstractDistancePanel implements DistancePanel {
 
     private Double distance;

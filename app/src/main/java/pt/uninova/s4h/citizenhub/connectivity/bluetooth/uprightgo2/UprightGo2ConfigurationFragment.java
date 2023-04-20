@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.navigation.Navigation;
 
+import java.util.Objects;
+
 import pt.uninova.s4h.citizenhub.R;
 import pt.uninova.s4h.citizenhub.connectivity.Agent;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
@@ -91,6 +93,8 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device_configuration_advanced, container, false);
+
+
         deviceAdvancedSettings = view.findViewById(R.id.layoutStubConfigurationAdvancedSettings);
         deviceAdvancedSettings.setLayoutResource(R.layout.fragment_device_configuration_uprightgo2);
         deviceAdvancedSettingsInflated = deviceAdvancedSettings.inflate();
@@ -102,11 +106,11 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         agent.getSettingsManager().get("First Time", new Observer<String>() {
             @Override
             public void observe(String value) {
-                if (value == null) {
+                if (!Objects.equals(value, "1")) {
+                    System.out.println("FIRST TIMEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                     agent.getSettingsManager().set("posture-correction-vibration", "false");
                     agent.getSettingsManager().set("vibration-angle", "0");
                     agent.getSettingsManager().set("vibration-interval", "0");
@@ -117,31 +121,31 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
                     agent.getSettingsManager().set("First Time", "1");
 
                 }
-                setupAdvancedConfigurationsUprightGo2(deviceAdvancedSettingsInflated);
+
+                setupAdvancedConfigurationsUprightGo2();
 
             }
         });
         agent.getSettingsManager().get("posture-correction-vibration", postureSwitchObserver);
 
-
     }
 
-    protected void setupAdvancedConfigurationsUprightGo2(View view) {
-        //vibration-angle (1 (strict) to 6 (relaxed))
+    protected void setupAdvancedConfigurationsUprightGo2() {
 
+        //vibration-angle (1 (strict) to 6 (relaxed))
         agent.getSettingsManager().get("vibration-angle", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerAngle.setSelection(Integer.parseInt(value));
                 angle = Integer.parseInt(value);
+                spinnerAngle.setSelection(angle);
             }
         });
 
         agent.getSettingsManager().get("vibration-interval", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerInterval.setSelection(Integer.parseInt(value));
                 interval = Integer.parseInt(value);
+                spinnerInterval.setSelection(interval);
             }
         });
 
@@ -151,142 +155,135 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
         agent.getSettingsManager().get("vibration-pattern", new Observer<String>() {
             @Override
             public void observe(String value) {
-                spinnerPattern.setSelection(Integer.parseInt(value));
                 pattern = Integer.parseInt(value);
+                spinnerPattern.setSelection(pattern);
             }
         });
 
         agent.getSettingsManager().get("vibration-strength", new Observer<String>() {
             @Override
             public void observe(String value) {
-                if (value == null) {
-                    correctionStrength.setSelection(0);
-                    strength = 0;
-                } else {
-                    correctionStrength.setSelection(Integer.parseInt(value));
-                    strength = Integer.parseInt(value);
-                }
+                strength = Integer.parseInt(value);
+                System.out.println("STRENGTH " + strength);
+
+                correctionStrength.setSelection(Integer.parseInt(value));
             }
         });
 
     }
 
     private void setListeners() {
+        requireActivity().runOnUiThread(() -> {
+            disableListeners();
+            buttonCalibration.setOnClickListener(view1 -> Navigation.findNavController(requireView()).navigate(pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToUprightGo2CalibrationFragment()));
 
-        disableListeners();
-        buttonCalibration.setOnClickListener(view1 -> Navigation.findNavController(requireView()).navigate(pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToUprightGo2CalibrationFragment()));
+            correctionStrength.setSelection(strength, false);
+            correctionStrength.post(new Runnable() {
+                @Override
+                public void run() {
 
-        correctionStrength.setSelection(strength, false);
-        correctionStrength.post(new Runnable() {
-            @Override
-            public void run() {
+                    correctionStrength.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            agent.getSettingsManager().set("vibration-strength", String.valueOf((correctionStrength.getSelectedItemPosition())));
+                            strength = (correctionStrength.getSelectedItemPosition());
+                            setSetting(agent, true);
+                        }
 
-                correctionStrength.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        agent.getSettingsManager().set("vibration-strength", String.valueOf((correctionStrength.getSelectedItemPosition())));
-                        strength = (correctionStrength.getSelectedItemPosition());
-                        setSetting(agent, true);
-                    }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-
-                    }
-                });
-            }
-        });
-
-        spinnerPattern.setSelection(pattern, false);
-        spinnerPattern.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerPattern.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-pattern", String.valueOf(spinnerPattern.getSelectedItemPosition()));
-                        pattern = spinnerPattern.getSelectedItemPosition();
-                        setSetting(agent, true);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-
-        spinnerInterval.setSelection(interval, false);
-        spinnerInterval.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-interval", String.valueOf(spinnerInterval.getSelectedItemPosition()));
-                        interval = spinnerInterval.getSelectedItemPosition();
-                        setSetting(agent, false);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-
-        spinnerAngle.setSelection(angle, false);
-        spinnerAngle.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerAngle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-angle", String.valueOf(spinnerAngle.getSelectedItemPosition()));
-                        angle = spinnerAngle.getSelectedItemPosition();
-
-                        setSetting(agent, false);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-        postureCorrectionVibration.setOnCheckedChangeListener(null);
-        postureCorrectionVibration.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (postureCorrectionVibration.isPressed()) {
-                if (isChecked && agent.getState() == Agent.AGENT_STATE_ENABLED) {
-                    agent.getSettingsManager().set("posture-correction-vibration", "true");
-                    vibration = true;
-                    enable();
-                    setSetting(agent, true);
-                } else {
-                    agent.getSettingsManager().set("posture-correction-vibration", "false");
-                    vibration = false;
-                    disable();
-                    setSetting(agent, false);
+                        }
+                    });
                 }
-            }
-        });
+            });
 
+            spinnerPattern.setSelection(pattern, false);
+            spinnerPattern.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerPattern.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-pattern", String.valueOf(spinnerPattern.getSelectedItemPosition()));
+                            pattern = spinnerPattern.getSelectedItemPosition();
+                            setSetting(agent, true);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+
+            spinnerInterval.setSelection(interval, false);
+            spinnerInterval.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-interval", String.valueOf(spinnerInterval.getSelectedItemPosition()));
+                            interval = spinnerInterval.getSelectedItemPosition();
+                            setSetting(agent, false);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+
+            spinnerAngle.setSelection(angle, false);
+            spinnerAngle.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerAngle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-angle", String.valueOf(spinnerAngle.getSelectedItemPosition()));
+                            angle = spinnerAngle.getSelectedItemPosition();
+
+                            setSetting(agent, false);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+            postureCorrectionVibration.setOnCheckedChangeListener(null);
+            postureCorrectionVibration.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (postureCorrectionVibration.isPressed()) {
+                    if (isChecked && agent.getState() == Agent.AGENT_STATE_ENABLED) {
+                        agent.getSettingsManager().set("posture-correction-vibration", "true");
+                        vibration = true;
+                        enable();
+                        setSetting(agent, true);
+                    } else {
+                        agent.getSettingsManager().set("posture-correction-vibration", "false");
+                        vibration = false;
+                        disable();
+                        setSetting(agent, false);
+                    }
+                }
+            });
+        });
     }
 
     private void setSetting(Agent agent, boolean vibrate) {
         //some value adaptation
         int time = 5;
-        if (interval == 0)
-            time = 5;
-        else if (interval == 1)
-            time = 15;
-        else if (interval == 2)
-            time = 30;
-        else if (interval == 3)
-            time = 60;
+        if (interval == 0) time = 5;
+        else if (interval == 1) time = 15;
+        else if (interval == 2) time = 30;
+        else if (interval == 3) time = 60;
 
         //Send Message vibration settings
         if (agent.getState() == Agent.AGENT_STATE_ENABLED) {
@@ -301,14 +298,9 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     @Override
     public void onResume() {
         super.onResume();
+        setupAdvancedConfigurationsUprightGo2();
         agent.addStateObserver(agentStateObserver);
-        requireActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setListeners();
-
-            }
-        });
+        setListeners();
         if (agent.getState() != Agent.AGENT_STATE_ENABLED) {
             requireActivity().runOnUiThread(this::disable);
         }
@@ -335,17 +327,22 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     public void enable() {
-        setView(buttonCalibration, true);
-        setView(spinnerIntervalLayout, true);
-        setView(spinnerStrengthLayout, true);
-        setView(spinnerPatternLayout, true);
+        requireActivity().runOnUiThread(() -> {
+            setView(buttonCalibration, true);
+            setView(spinnerIntervalLayout, true);
+            setView(spinnerStrengthLayout, true);
+            setView(spinnerPatternLayout, true);
+        });
     }
 
     public void disable() {
-        setView(buttonCalibration, false);
-        setView(spinnerIntervalLayout, false);
-        setView(spinnerStrengthLayout, false);
-        setView(spinnerPatternLayout, false);
+        requireActivity().runOnUiThread(() -> {
+            setView(buttonCalibration, false);
+            setView(spinnerIntervalLayout, false);
+            setView(spinnerStrengthLayout, false);
+            setView(spinnerPatternLayout, false);
+        });
+
     }
 
     public void setView(ViewGroup layout, boolean enabled) {

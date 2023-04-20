@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/** Generates a daily posture report with random data. */
 public class DailyPostureReport {
 
+    /** Generates a random data to add to the report.
+     * @param patientId Patient id.
+     * @param localDate Date. */
     public static DailyPostureReport generateRandom(String patientId, LocalDate localDate) {
         final Instant startTime = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         final Instant endTime = localDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).minusSeconds(1).toInstant();

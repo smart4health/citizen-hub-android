@@ -1,14 +1,22 @@
 package pt.uninova.s4h.citizenhub.ui.devices;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -30,10 +38,28 @@ public class DeviceIdentificationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_device_configuration_update_test, container, false);
 
-        final Device device = model.getSelectedDevice().getValue();
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == android.R.id.home) {
+                    onBackPressed();
+                    requireActivity().onBackPressed();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
+
         nameDevice = view.findViewById(R.id.textConfigurationDeviceNameValue);
         addressDevice = view.findViewById(R.id.textConfigurationAddressValue);
         setHeaderValues(model.getSelectedDevice().getValue());
@@ -46,9 +72,7 @@ public class DeviceIdentificationFragment extends Fragment {
                 Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceUnsupportedFragment());
             } else {
                 if (model.getSelectedDeviceAgent() != null) {
-                    DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> {
-                        Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceConfigurationStreamsFragment());
-                    });
+                    DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> Navigation.findNavController(DeviceIdentificationFragment.this.requireView()).navigate(DeviceIdentificationFragmentDirections.actionDeviceIdentificationFragmentToDeviceConfigurationStreamsFragment()));
                 } else {
                     DeviceIdentificationFragment.this.requireActivity().runOnUiThread(() -> {
                         addFragment(new DeviceConfigurationFeaturesFragment(agent));
@@ -81,4 +105,30 @@ public class DeviceIdentificationFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requireView().setFocusableInTouchMode(true);
+        requireView().requestFocus();
+        requireView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed();
+                requireActivity().onBackPressed();
+                return true;
+            }
+            return false;
+        });
+
+    }
+
+
+    public void onBackPressed() {
+
+        final DeviceViewModel model = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+
+        model.getDeviceConnection().disconnect();
+        model.getDeviceConnection().close();
+
+    }
 }

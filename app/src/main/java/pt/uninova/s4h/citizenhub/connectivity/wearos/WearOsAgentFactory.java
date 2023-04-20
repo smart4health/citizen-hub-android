@@ -1,6 +1,7 @@
 package pt.uninova.s4h.citizenhub.connectivity.wearos;
 
 import pt.uninova.s4h.citizenhub.connectivity.AgentFactory;
+import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.service.CitizenHubService;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
@@ -46,6 +47,11 @@ public class WearOsAgentFactory implements AgentFactory<WearOSAgent> {
 
     @Override
     public void create(Device device, Class<?> c, Observer<WearOSAgent> observer) {
+
+    }
+
+    @Override
+    public void create(Connection connection, Observer<WearOSAgent> observer) {
 
     }
 }

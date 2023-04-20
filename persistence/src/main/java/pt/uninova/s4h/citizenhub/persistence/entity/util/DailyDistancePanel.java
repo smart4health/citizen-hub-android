@@ -1,5 +1,6 @@
 package pt.uninova.s4h.citizenhub.persistence.entity.util;
 
+/** Adds a specific day to a Distance Panel. */
 public class DailyDistancePanel extends AbstractDistancePanel implements Daily {
 
     private Integer day;

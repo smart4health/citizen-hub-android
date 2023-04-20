@@ -19,6 +19,7 @@ import pt.uninova.s4h.citizenhub.persistence.entity.util.ReportUtil;
 import pt.uninova.s4h.citizenhub.persistence.repository.ReportRepository;
 import pt.uninova.s4h.citizenhub.util.messaging.Observer;
 
+/** Class used to organize the queries return into a Report.java class where all the attributes are organized into groups. */
 public class ReportGenerator {
 
     private final Resources resources;
@@ -30,7 +31,12 @@ public class ReportGenerator {
         this.localization = new MeasurementKindLocalization(context);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
-
+    /** Groups the simple records for the report. The simple records are: calories, steps, distance, breathing rate, heart rate and posture. They are all fetched in the same query.
+     * @param reportUtil Contains all the attributes returned from the query.
+     * @param groups A list of group that will have all the attributes grouped.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @return
+     * */
     private void groupSimpleRecords(ReportUtil reportUtil, List<Group> groups, boolean pdf) {
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -92,6 +98,12 @@ public class ReportGenerator {
         }
     }
 
+    /** Groups the blood pressure information for the report.
+     * @param observerBloodPressure Contains all the blood pressure information returned from the query.
+     * @param groups A list of group that will group the blood pressure information.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @return
+     * */
     private void groupBloodPressure(List<BloodPressureSample> observerBloodPressure, List<Group> groups, boolean pdf) {
         if(preferences.getBoolean("account.smart4health.report.data.blood-pressure", true) || !pdf) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -112,6 +124,12 @@ public class ReportGenerator {
         }
     }
 
+    /** Groups the blood pressure information for the report.
+     * @param observerLumbarExtension Contains all the lumbar extension information returned from the query.
+     * @param groups A list of group that will group the lumbar extension information.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @return
+     * */
     private void groupLumbarExtensionTraining(List<LumbarExtensionTrainingSample> observerLumbarExtension, List<Group> groups, boolean pdf) {
         if(preferences.getBoolean("account.smart4health.report.data.lumbar-extension-training", true) || !pdf) {
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -135,6 +153,10 @@ public class ReportGenerator {
         }
     }
 
+    /** Converts a long value representing a time in seconds to a string containing hours, minutes and seconds.
+     * @param value Value to convert to string.
+     * @return A string with the converted value.
+     */
     private String secondsToString(long value) {
         long seconds = value;
         long minutes = seconds / 60;
@@ -152,6 +174,13 @@ public class ReportGenerator {
         return result.equals("") ? "0s" : result;
     }
 
+    /** Fetch the information regarding working hours for a daily report.
+     * @param reportRepository Repository.
+     * @param date Date of the report.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @param observerReport Verifies if the report was generated.
+     * @return
+     * */
     public void generateWorkTimeReport(ReportRepository reportRepository, LocalDate date, boolean pdf, Observer<Report> observerReport) {
 
         Report report = new Report(() -> "Work Time Daily Report", new LocalDateLocalizedResource(date));
@@ -173,6 +202,13 @@ public class ReportGenerator {
 
     }
 
+    /** Fetch the information not regarding working hours for a daily report.
+     * @param reportRepository Repository.
+     * @param date Date of the report.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @param observerReport Verifies if the report was generated.
+     * @return
+     * */
     public void generateNotWorkTimeReport(ReportRepository reportRepository, LocalDate date, boolean pdf, Observer<Report> observerReport) {
 
         Report report = new Report(() -> "Work Time Daily Report", new LocalDateLocalizedResource(date));
@@ -194,6 +230,13 @@ public class ReportGenerator {
 
     }
 
+    /** Fetch the information regarding working hours for a weekly and monthly report.
+     * @param reportRepository Repository.
+     * @param localDate Date of the report.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @param reportObserver Verifies if the report was generated.
+     * @return
+     * */
     public void generateWeeklyOrMonthlyWorkTimeReport(ReportRepository reportRepository, LocalDate localDate, int days, boolean pdf, Observer<Report> reportObserver){
 
         String title;
@@ -214,6 +257,13 @@ public class ReportGenerator {
         });
     }
 
+    /** Fetch the information not regarding working hours for a daily report.
+     * @param reportRepository Repository.
+     * @param localDate Date of the report.
+     * @param pdf A boolean used to determine if the information will be written into a PDF file.
+     * @param reportObserver Verifies if the report was generated.
+     * @return
+     * */
     public void generateWeeklyOrMonthlyNotWorkTimeReport(ReportRepository reportRepository, LocalDate localDate, int days, boolean pdf, Observer<Report> reportObserver){
 
         String title;
