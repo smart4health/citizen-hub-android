@@ -172,121 +172,117 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     private void setListeners() {
+        requireActivity().runOnUiThread(() -> {
+            disableListeners();
+            buttonCalibration.setOnClickListener(view1 -> Navigation.findNavController(requireView()).navigate(pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToUprightGo2CalibrationFragment()));
 
-        disableListeners();
-        buttonCalibration.setOnClickListener(view1 -> Navigation.findNavController(requireView()).navigate(pt.uninova.s4h.citizenhub.ui.devices.DeviceConfigurationFragmentDirections.actionDeviceConfigurationStreamsFragmentToUprightGo2CalibrationFragment()));
+            correctionStrength.setSelection(strength, false);
+            correctionStrength.post(new Runnable() {
+                @Override
+                public void run() {
 
-        correctionStrength.setSelection(strength, false);
-        correctionStrength.post(new Runnable() {
-            @Override
-            public void run() {
+                    correctionStrength.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            agent.getSettingsManager().set("vibration-strength", String.valueOf((correctionStrength.getSelectedItemPosition())));
+                            strength = (correctionStrength.getSelectedItemPosition());
+                            setSetting(agent, true);
+                        }
 
-                correctionStrength.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        agent.getSettingsManager().set("vibration-strength", String.valueOf((correctionStrength.getSelectedItemPosition())));
-                        strength = (correctionStrength.getSelectedItemPosition());
-                        setSetting(agent, true);
-                    }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-
-                    }
-                });
-            }
-        });
-
-        spinnerPattern.setSelection(pattern, false);
-        spinnerPattern.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerPattern.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-pattern", String.valueOf(spinnerPattern.getSelectedItemPosition()));
-                        pattern = spinnerPattern.getSelectedItemPosition();
-                        setSetting(agent, true);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-
-        spinnerInterval.setSelection(interval, false);
-        spinnerInterval.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-interval", String.valueOf(spinnerInterval.getSelectedItemPosition()));
-                        interval = spinnerInterval.getSelectedItemPosition();
-                        setSetting(agent, false);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-
-        spinnerAngle.setSelection(angle, false);
-        spinnerAngle.post(new Runnable() {
-            @Override
-            public void run() {
-                spinnerAngle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                        agent.getSettingsManager().set("vibration-angle", String.valueOf(spinnerAngle.getSelectedItemPosition()));
-                        angle = spinnerAngle.getSelectedItemPosition();
-
-                        setSetting(agent, false);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        setSetting(agent, false);
-                    }
-                });
-            }
-        });
-        postureCorrectionVibration.setOnCheckedChangeListener(null);
-        postureCorrectionVibration.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (postureCorrectionVibration.isPressed()) {
-                if (isChecked && agent.getState() == Agent.AGENT_STATE_ENABLED) {
-                    agent.getSettingsManager().set("posture-correction-vibration", "true");
-                    vibration = true;
-                    enable();
-                    setSetting(agent, true);
-                } else {
-                    agent.getSettingsManager().set("posture-correction-vibration", "false");
-                    vibration = false;
-                    disable();
-                    setSetting(agent, false);
+                        }
+                    });
                 }
-            }
-        });
+            });
 
+            spinnerPattern.setSelection(pattern, false);
+            spinnerPattern.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerPattern.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-pattern", String.valueOf(spinnerPattern.getSelectedItemPosition()));
+                            pattern = spinnerPattern.getSelectedItemPosition();
+                            setSetting(agent, true);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+
+            spinnerInterval.setSelection(interval, false);
+            spinnerInterval.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-interval", String.valueOf(spinnerInterval.getSelectedItemPosition()));
+                            interval = spinnerInterval.getSelectedItemPosition();
+                            setSetting(agent, false);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+
+            spinnerAngle.setSelection(angle, false);
+            spinnerAngle.post(new Runnable() {
+                @Override
+                public void run() {
+                    spinnerAngle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            agent.getSettingsManager().set("vibration-angle", String.valueOf(spinnerAngle.getSelectedItemPosition()));
+                            angle = spinnerAngle.getSelectedItemPosition();
+
+                            setSetting(agent, false);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            setSetting(agent, false);
+                        }
+                    });
+                }
+            });
+            postureCorrectionVibration.setOnCheckedChangeListener(null);
+            postureCorrectionVibration.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (postureCorrectionVibration.isPressed()) {
+                    if (isChecked && agent.getState() == Agent.AGENT_STATE_ENABLED) {
+                        agent.getSettingsManager().set("posture-correction-vibration", "true");
+                        vibration = true;
+                        enable();
+                        setSetting(agent, true);
+                    } else {
+                        agent.getSettingsManager().set("posture-correction-vibration", "false");
+                        vibration = false;
+                        disable();
+                        setSetting(agent, false);
+                    }
+                }
+            });
+        });
     }
 
     private void setSetting(Agent agent, boolean vibrate) {
         //some value adaptation
         int time = 5;
-        if (interval == 0)
-            time = 5;
-        else if (interval == 1)
-            time = 15;
-        else if (interval == 2)
-            time = 30;
-        else if (interval == 3)
-            time = 60;
+        if (interval == 0) time = 5;
+        else if (interval == 1) time = 15;
+        else if (interval == 2) time = 30;
+        else if (interval == 3) time = 60;
 
         //Send Message vibration settings
         if (agent.getState() == Agent.AGENT_STATE_ENABLED) {
@@ -326,26 +322,34 @@ public class UprightGo2ConfigurationFragment extends AbstractConfigurationFragme
     }
 
     private void disableListeners() {
-        buttonCalibration.setOnClickListener(null);
-        postureCorrectionVibration.setOnCheckedChangeListener(null);
-        spinnerAngle.setOnItemSelectedListener(null);
-        spinnerPattern.setOnItemSelectedListener(null);
-        spinnerInterval.setOnItemSelectedListener(null);
-        correctionStrength.setOnItemSelectedListener(null);
+
+        requireActivity().runOnUiThread(() -> {
+            buttonCalibration.setOnClickListener(null);
+            postureCorrectionVibration.setOnCheckedChangeListener(null);
+            spinnerAngle.setOnItemSelectedListener(null);
+            spinnerPattern.setOnItemSelectedListener(null);
+            spinnerInterval.setOnItemSelectedListener(null);
+            correctionStrength.setOnItemSelectedListener(null);
+        });
     }
 
     public void enable() {
-        setView(buttonCalibration, true);
-        setView(spinnerIntervalLayout, true);
-        setView(spinnerStrengthLayout, true);
-        setView(spinnerPatternLayout, true);
+        requireActivity().runOnUiThread(() -> {
+            setView(buttonCalibration, true);
+            setView(spinnerIntervalLayout, true);
+            setView(spinnerStrengthLayout, true);
+            setView(spinnerPatternLayout, true);
+        });
     }
 
     public void disable() {
-        setView(buttonCalibration, false);
-        setView(spinnerIntervalLayout, false);
-        setView(spinnerStrengthLayout, false);
-        setView(spinnerPatternLayout, false);
+        requireActivity().runOnUiThread(() -> {
+            setView(buttonCalibration, false);
+            setView(spinnerIntervalLayout, false);
+            setView(spinnerStrengthLayout, false);
+            setView(spinnerPatternLayout, false);
+        });
+
     }
 
     public void setView(ViewGroup layout, boolean enabled) {
