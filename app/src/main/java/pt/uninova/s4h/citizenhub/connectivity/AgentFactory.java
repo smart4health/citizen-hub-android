@@ -13,4 +13,6 @@ public interface AgentFactory<T extends Agent> {
 
     void create(Device device, Class<?> c, Observer<T> observer);
 
+    void create(Connection connection, Observer<T> observer);
+
 }

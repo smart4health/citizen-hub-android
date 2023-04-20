@@ -10,4 +10,9 @@ public interface Connection {
 
     String getAddress();
 
+    void connect();
+
+    void disconnect();
+
+    void close();
 }

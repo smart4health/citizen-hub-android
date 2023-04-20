@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         NavController navController = ((NavHostFragment) this.getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
 
         if (navController.getCurrentBackStackEntry().getDestination().getId() == R.id.summary_fragment) {

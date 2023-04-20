@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import pt.uninova.s4h.citizenhub.connectivity.AgentFactory;
+import pt.uninova.s4h.citizenhub.connectivity.Connection;
 import pt.uninova.s4h.citizenhub.connectivity.StateChangedMessage;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.and.BloodPressureMonitorAgentMatcher;
 import pt.uninova.s4h.citizenhub.connectivity.bluetooth.digitsole.DigitSoleAgentMatcher;
@@ -118,4 +119,23 @@ public class BluetoothAgentFactory implements AgentFactory<BluetoothAgent> {
     public void create(Device device, Class<?> c, Observer<BluetoothAgent> observer) {
         create(device.getAddress(), c, observer);
     }
+
+    @Override
+    public void create(Connection connection, Observer<BluetoothAgent> observer) {
+        ((BluetoothConnection) connection).addConnectionStateChangeListener(new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
+
+            @Override
+            public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
+                if (value.getNewState() == BluetoothConnectionState.READY) {
+                    final BluetoothConnection source = value.getSource();
+
+                    value.getSource().removeConnectionStateChangeListener(this);
+
+                    initAgent((identifyAgent(source)), source, observer);
+                }
+            }
+        });
+        connection.connect();
+    }
+
 }

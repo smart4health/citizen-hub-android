@@ -141,6 +141,14 @@ public class AgentOrchestrator {
         }
     }
 
+    public void identify(Connection connection, Observer<Agent> observer) {
+        final AgentFactory<? extends Agent> factory = agentFactoryMap.get(connection.getConnectionKind());
+
+        if (factory != null) {
+            factory.create(connection, observer::observe);
+        }
+    }
+
     private void put(Device device, Agent agent) {
         agentMap.put(device, agent);
     }
