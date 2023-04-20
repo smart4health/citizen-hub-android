@@ -1,17 +1,15 @@
 package pt.uninova.s4h.citizenhub.connectivity;
 
-import static pt.uninova.s4h.citizenhub.connectivity.Connection.CONNECTION_KIND_BLUETOOTH;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import pt.uninova.s4h.citizenhub.connectivity.bluetooth.BluetoothAgent;
 import pt.uninova.s4h.citizenhub.data.Device;
 import pt.uninova.s4h.citizenhub.data.Sample;
 import pt.uninova.s4h.citizenhub.util.UUIDv5;
@@ -125,30 +123,14 @@ public class AgentOrchestrator {
         return Collections.unmodifiableSet(new TreeSet<>(agentMap.keySet()));
     }
 
-    public void enableDevice(Device device) {
-        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
-            BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
-            agent.getConnection().reconnect();
-        }
-    }
-
-    public int getRunnableSize(Device device) {
-        if (device.getConnectionKind() == CONNECTION_KIND_BLUETOOTH) {
-            BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
-            return agent.getConnection().getRunnableSize();
-        } else return 0;
-    }
-
-    public void enableAll(int connectionType) {
+    public Set<Device> getDevices(int connectionKind) {
+        Set<Device> deviceSet = new HashSet<>();
         for (Device device : getDevices()) {
-            if (device.getConnectionKind() == connectionType) {
-                final BluetoothAgent agent = ((BluetoothAgent) getAgent(device));
-
-                if (agent != null) {
-                    agent.getConnection().reconnect();
-                }
+            if (device.getConnectionKind() == connectionKind) {
+                deviceSet.add(device);
             }
         }
+        return deviceSet;
     }
 
     public void identify(Device device, Observer<Agent> observer) {
