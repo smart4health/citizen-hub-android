@@ -1,7 +1,5 @@
 package pt.uninova.s4h.citizenhub;
 
-import static java.util.Objects.requireNonNull;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,14 +102,17 @@ public class DeviceListFragment extends Fragment {
     }
 
     public void updateItemAgentState(Agent agent, int state) {
-        int pos = requireNonNull(model.getDeviceList().getValue()).indexOf(agent.getSource());
-        if (state == 1) {
-            adapter.getItem(pos).setImageResource(R.drawable.ic_devices_connected);
-        } else {
-            adapter.getItem(pos).setImageResource(R.drawable.ic_devices_unpaired);
+        if (model.getDeviceList().getValue() != null) {
+            int pos = model.getDeviceList().getValue().indexOf(agent.getSource());
+            if (pos != -1) {
+                if (state == 1) {
+                    adapter.getItem(pos).setImageResource(R.drawable.ic_devices_connected);
+                } else {
+                    adapter.getItem(pos).setImageResource(R.drawable.ic_devices_unpaired);
+                }
+                requireActivity().runOnUiThread(() -> adapter.updateItem(pos, adapter.getItem(pos)));
+            }
         }
-
-        requireActivity().runOnUiThread(() -> adapter.updateItem(pos, adapter.getItem(pos)));
     }
 
     public void onDeviceListChanged(List<Device> deviceList) {
