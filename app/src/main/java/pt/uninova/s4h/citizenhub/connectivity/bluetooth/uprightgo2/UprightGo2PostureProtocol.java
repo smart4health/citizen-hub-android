@@ -1,5 +1,7 @@
 package pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2;
 
+import static pt.uninova.s4h.citizenhub.connectivity.bluetooth.uprightgo2.UprightGo2CalibrationProtocol.TRIGGER_CALIBRATION;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -28,13 +30,15 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     final private static UUID POSTURE_CORRECTION = UUID.fromString("0000bac3-0000-1000-8000-00805f9b34fb"); //bac3
     final private static UUID CHARACTERISTIC = UUID.fromString("0000bac4-0000-1000-8000-00805f9b34fb"); //bac4
 
-    private static final int selfUpdatingInterval = 5000;
     private final Accumulator<Boolean> posture;
+
     private final Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>> connectionStateObserver = new Observer<StateChangedMessage<BluetoothConnectionState, BluetoothConnection>>() {
         @Override
         public void observe(StateChangedMessage<BluetoothConnectionState, BluetoothConnection> value) {
             if (value.getNewState() == BluetoothConnectionState.READY) {
                 UprightGo2PostureProtocol.this.setState(Protocol.STATE_ENABLED);
+
+                getConnection().readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
@@ -88,7 +92,19 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         own counters, BAA6 is an internal counter)
      */
 
+    private final BaseCharacteristicListener calibrationWriteListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, TRIGGER_CALIBRATION) {
+        @Override
+        public void onWrite(byte[] value) {
+            posture.stop();
+        }
+    };
+
     private final BaseCharacteristicListener postureChangedListener = new BaseCharacteristicListener(MEASUREMENTS_SERVICE, POSTURE_CORRECTION) {
+        @Override
+        public void onRead(byte[] value) {
+            posture.set(value[0] == 0);
+        }
+
         @Override
         public void onChange(byte[] value) {
             posture.set(value[0] == 0);
@@ -114,6 +130,7 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         setState(Protocol.STATE_DISABLING);
 
         final BluetoothConnection connection = getConnection();
+        connection.removeCharacteristicListener(calibrationWriteListener);
         connection.removeCharacteristicListener(postureChangedListener);
         getConnection().removeConnectionStateChangeListener(connectionStateObserver);
 
@@ -126,11 +143,11 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
     @Override
     public void enable() {
         setState(Protocol.STATE_ENABLING);
-
         final BluetoothConnection connection = getConnection();
+        connection.addCharacteristicListener(calibrationWriteListener);
         connection.addCharacteristicListener(postureChangedListener);
         getConnection().addConnectionStateChangeListener(connectionStateObserver);
-
+        getConnection().readCharacteristic(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
         connection.enableNotifications(MEASUREMENTS_SERVICE, POSTURE_CORRECTION);
 
         super.enable();
@@ -141,5 +158,4 @@ public class UprightGo2PostureProtocol extends BluetoothMeasuringProtocol {
         posture.clear();
         super.close();
     }
-
 }
